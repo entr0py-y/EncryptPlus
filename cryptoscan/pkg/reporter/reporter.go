@@ -1,0 +1,11 @@
+// Copyright 2025-2026 CyberSecurity NonProfit (CSNP)
+// SPDX-License-Identifier: Apache-2.0
+
+package reporter
+
+import "github.com/csnp/cryptoscan/pkg/scanner"
+
+// Reporter interface for generating output in various formats
+type Reporter interface {
+	Generate(results *scanner.Results) (string, error)
+}

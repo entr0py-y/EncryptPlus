@@ -1,0 +1,36 @@
+# Static crypto knowledge base
+QUANTUM_STATUS = {
+    "RSA": "VULNERABLE",
+    "ElGamal": "VULNERABLE",
+    "DSA": "VULNERABLE",
+    "ECDSA": "VULNERABLE",
+    "Ed25519": "VULNERABLE",
+    "DH": "VULNERABLE",
+    "ECDH": "VULNERABLE",
+    "AES-128": "PARTIAL",
+    "AES-192": "SAFE",
+    "AES-256": "SAFE",
+    "SHA-1": "VULNERABLE",
+    "MD5": "VULNERABLE",
+    "SHA-256": "PARTIAL",
+    "SHA-384": "SAFE",
+    "SHA-512": "SAFE",
+    "SHA3-256": "PARTIAL",
+    "SHA3-384": "SAFE",
+    "SHA3-512": "SAFE",
+    "ML-KEM": "SAFE",
+    "ML-DSA": "SAFE",
+    "SLH-DSA": "SAFE",
+}
+
+PQC_RECOMMENDATIONS = {
+    "RSA": "ML-KEM-768 or ML-KEM-1024 / ML-DSA-65",
+    "DSA": "ML-DSA-65",
+    "ECDSA": "ML-DSA-44 or ML-DSA-65",
+    "Ed25519": "ML-DSA-44",
+    "DH": "ML-KEM-768",
+    "ECDH": "ML-KEM-768",
+    "AES-128": "AES-256",
+    "MD5": "SHA-256 or SHA-3",
+    "SHA-1": "SHA-256 or SHA-3",
+}

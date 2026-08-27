@@ -1,0 +1,16 @@
+fastapi
+uvicorn
+sqlalchemy
+psycopg2-binary
+alembic
+pydantic
+pydantic-settings
+celery
+redis
+jinja2
+python-multipart
+python-jose[cryptography]
+passlib[bcrypt]
+httpx
+pytest
+pytest-asyncio

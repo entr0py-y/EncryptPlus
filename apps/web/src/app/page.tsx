@@ -58,22 +58,22 @@ export default function LandingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#09090b] text-[#f4f4f5] flex flex-col justify-between p-6 md:p-10 select-none">
+    <div className="min-h-screen bg-[#09090b] text-[#f4f4f5] flex flex-col justify-between p-6 md:p-10 select-none font-sans">
       {/* Minimal Top Header */}
       <header className="w-full max-w-5xl mx-auto flex items-center justify-between">
         <div className="flex items-center gap-2.5">
-          <div className="w-7 h-7 rounded-lg bg-white text-zinc-950 flex items-center justify-center font-mono font-bold text-xs">
+          <div className="w-7 h-7 rounded-lg bg-white text-zinc-950 flex items-center justify-center font-bold text-xs font-mono">
             E+
           </div>
-          <span className="text-sm font-bold font-mono tracking-tight text-white">
+          <span className="text-sm font-semibold tracking-tight text-white">
             ENCRYPT PLUS
           </span>
         </div>
 
-        <nav className="flex items-center gap-5 text-xs font-mono text-zinc-500">
+        <nav className="flex items-center gap-5 text-xs text-zinc-400">
           <Link
             href="/scans"
-            className="hover:text-zinc-200 transition-colors"
+            className="hover:text-zinc-100 transition-colors"
           >
             Past Audits
           </Link>
@@ -81,7 +81,7 @@ export default function LandingPage() {
             href="https://github.com/entr0py-y/EncryptPlus"
             target="_blank"
             rel="noreferrer"
-            className="hover:text-zinc-200 transition-colors"
+            className="hover:text-zinc-100 transition-colors"
           >
             Documentation
           </a>
@@ -92,10 +92,10 @@ export default function LandingPage() {
       <main className="w-full max-w-2xl mx-auto my-auto flex flex-col items-center text-center space-y-8 py-12">
         {/* Brand & Subtitle */}
         <div className="space-y-2">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-white font-mono">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-white">
             ENCRYPT PLUS
           </h1>
-          <p className="text-xs sm:text-sm font-mono text-zinc-400 max-w-md mx-auto">
+          <p className="text-xs sm:text-sm text-zinc-400 max-w-md mx-auto">
             Enterprise Cryptographic Discovery & Analysis Tool
           </p>
         </div>
@@ -121,6 +121,7 @@ export default function LandingPage() {
               </svg>
             </div>
 
+            {/* Monospace Input strictly for the URL string */}
             <input
               type="text"
               placeholder="https://github.com/organization/repository"
@@ -142,9 +143,9 @@ export default function LandingPage() {
             )}
           </div>
 
-          {/* Grayscale Validation Error Message */}
+          {/* Validation Error Message */}
           {errorMsg && (
-            <div className="text-xs font-mono text-zinc-400 bg-zinc-900/90 border border-zinc-800 py-2 px-3 rounded-xl inline-block">
+            <div className="text-xs text-zinc-400 bg-zinc-900/90 border border-zinc-800 py-2 px-3 rounded-xl inline-block">
               {errorMsg}
             </div>
           )}
@@ -153,27 +154,27 @@ export default function LandingPage() {
           <button
             type="submit"
             disabled={isSubmitting || !repoUrl.trim()}
-            className="w-full h-13 py-3.5 rounded-2xl bg-white text-zinc-950 hover:bg-zinc-200 active:scale-[0.99] font-mono font-bold text-sm tracking-wide transition-all shadow-md disabled:opacity-40 disabled:pointer-events-none flex items-center justify-center gap-2"
+            className="w-full h-13 py-3.5 rounded-2xl bg-white text-zinc-950 hover:bg-zinc-200 active:scale-[0.99] font-medium text-sm tracking-wide transition-all shadow-md disabled:opacity-40 disabled:pointer-events-none flex items-center justify-center gap-2"
           >
             {isSubmitting ? (
               <>
                 <Loader2 className="w-4 h-4 animate-spin" />
-                <span>SCANNING…</span>
+                <span>Scanning…</span>
               </>
             ) : (
-              <span>SCAN REPOSITORY</span>
+              <span>Scan Repository</span>
             )}
           </button>
         </form>
 
         {/* Supporting Quiet Text */}
-        <p className="text-xs font-mono text-zinc-500 max-w-sm leading-relaxed">
-          Discover cryptographic assets, assess quantum risk, and plan migration.
+        <p className="text-xs text-zinc-400 max-w-sm leading-relaxed">
+          Discover cryptographic assets and assess security and post-quantum readiness.
         </p>
       </main>
 
       {/* Minimal Footer */}
-      <footer className="w-full max-w-5xl mx-auto text-center text-[11px] font-mono text-zinc-600 py-2">
+      <footer className="w-full max-w-5xl mx-auto text-center text-[11px] text-zinc-600 py-2">
         ENCRYPT PLUS • Enterprise Cryptographic Discovery & Analysis
       </footer>
     </div>

@@ -7,16 +7,17 @@ export interface SectionItem {
   id: string;
   number: string;
   label: string;
-  angle: number; // in degrees for radial distribution
+  angle: number; // in degrees for semi-circle arc (0 deg = horizontally right from left edge)
 }
 
+// 6 Anchors distributed along a vertical right-facing semi-circle from top (-75 deg) to bottom (+75 deg)
 const SECTIONS: SectionItem[] = [
-  { id: "overview", number: "01", label: "Overview", angle: -90 },
-  { id: "inventory", number: "02", label: "Inventory", angle: -30 },
-  { id: "findings", number: "03", label: "Findings", angle: 30 },
-  { id: "risk", number: "04", label: "Risk & Health", angle: 90 },
-  { id: "quantum", number: "05", label: "Quantum", angle: 150 },
-  { id: "migration", number: "06", label: "Migration", angle: 210 },
+  { id: "overview", number: "01", label: "Overview", angle: -75 },
+  { id: "inventory", number: "02", label: "Inventory", angle: -45 },
+  { id: "findings", number: "03", label: "Findings", angle: -15 },
+  { id: "risk", number: "04", label: "Risk & Health", angle: 15 },
+  { id: "quantum", number: "05", label: "Quantum", angle: 45 },
+  { id: "migration", number: "06", label: "Migration", angle: 75 },
 ];
 
 export function RadialScrollNav({ className }: { className?: string }) {
@@ -31,10 +32,8 @@ export function RadialScrollNav({ className }: { className?: string }) {
 
     const observer = new IntersectionObserver(
       (entries) => {
-        // Find visible entry with highest intersection ratio
         const visibleEntries = entries.filter((e) => e.isIntersecting);
         if (visibleEntries.length > 0) {
-          // Sort by bounding client rect to find the one closest to top viewport
           const topEntry = visibleEntries.sort(
             (a, b) => Math.abs(a.boundingClientRect.top) - Math.abs(b.boundingClientRect.top)
           )[0];
@@ -45,7 +44,7 @@ export function RadialScrollNav({ className }: { className?: string }) {
       },
       {
         root: null,
-        rootMargin: "-20% 0px -50% 0px",
+        rootMargin: "-15% 0px -55% 0px",
         threshold: [0, 0.1, 0.25, 0.5, 0.75],
       }
     );
@@ -61,65 +60,81 @@ export function RadialScrollNav({ className }: { className?: string }) {
     }
   };
 
-  // Radial geometry parameters (Center: 100, 100 on 200x200 canvas)
-  const radius = 68;
-  const getCoordinates = (angleDeg: number) => {
+  // Semi-circle geometry parameters:
+  // Center is at (0, 200) on a 260x400 SVG canvas anchored to the screen's left edge
+  const centerX = 0;
+  const centerY = 200;
+  const radius = 135;
+
+  const getCoordinates = (angleDeg: number, r: number = radius) => {
     const angleRad = (angleDeg * Math.PI) / 180;
     return {
-      x: 100 + radius * Math.cos(angleRad),
-      y: 100 + radius * Math.sin(angleRad),
+      x: centerX + r * Math.cos(angleRad),
+      y: centerY + r * Math.sin(angleRad),
     };
   };
 
+  // Construct SVG arc path for the semi-circle
+  const startArc = getCoordinates(-80, radius);
+  const endArc = getCoordinates(80, radius);
+  const arcPath = `M ${startArc.x} ${startArc.y} A ${radius} ${radius} 0 0 1 ${endArc.x} ${endArc.y}`;
+
+  // Inner subtle guide arc
+  const innerRadius = radius - 30;
+  const startInner = getCoordinates(-75, innerRadius);
+  const endInner = getCoordinates(75, innerRadius);
+  const innerArcPath = `M ${startInner.x} ${startInner.y} A ${innerRadius} ${innerRadius} 0 0 1 ${endInner.x} ${endInner.y}`;
+
   return (
     <>
-      {/* 1. Desktop Fixed Left-Edge Radial Navigation */}
+      {/* 1. Desktop Fixed Left-Edge Vertical Semi-Circular Navigation */}
       <nav
         aria-label="Assessment Navigation"
         className={cn(
-          "hidden xl:flex fixed left-6 top-1/2 -translate-y-1/2 z-40 flex-col items-center select-none pointer-events-auto",
+          "hidden xl:block fixed left-0 top-1/2 -translate-y-1/2 z-40 select-none pointer-events-auto",
           className
         )}
       >
-        <div className="relative w-[210px] h-[210px] flex items-center justify-center">
-          {/* Subtle SVG Geometry Ring */}
-          <svg viewBox="0 0 200 200" className="w-full h-full overflow-visible">
-            {/* Background Circular Orbit */}
-            <circle
-              cx="100"
-              cy="100"
-              r={radius}
-              fill="none"
-              stroke="#27272a"
-              strokeWidth="1"
-              strokeDasharray="2 4"
-              opacity="0.6"
-            />
-            <circle
-              cx="100"
-              cy="100"
-              r="24"
+        <div className="relative w-[280px] h-[400px]">
+          {/* Subtle SVG Semi-Circular Geometry */}
+          <svg
+            viewBox="0 0 280 400"
+            className="w-full h-full overflow-visible pointer-events-none"
+          >
+            {/* Inner dashed guide arc */}
+            <path
+              d={innerArcPath}
               fill="none"
               stroke="#1f1f23"
               strokeWidth="1"
+              strokeDasharray="2 4"
             />
 
-            {/* Radial Hub Lines to Anchor Nodes */}
+            {/* Primary Semi-Circular Arc Line */}
+            <path
+              d={arcPath}
+              fill="none"
+              stroke="#27272a"
+              strokeWidth="1.25"
+            />
+
+            {/* Hub Lines from left edge center to nodes */}
             {SECTIONS.map((sec) => {
-              const coords = getCoordinates(sec.angle);
+              const coords = getCoordinates(sec.angle, radius);
               const isActive = activeId === sec.id;
               return (
                 <g key={sec.id}>
                   <line
-                    x1="100"
-                    y1="100"
+                    x1={centerX}
+                    y1={centerY}
                     x2={coords.x}
                     y2={coords.y}
-                    stroke={isActive ? "#71717a" : "#1f1f23"}
+                    stroke={isActive ? "#52525b" : "#18181b"}
                     strokeWidth={isActive ? "1.5" : "0.75"}
-                    strokeDasharray={isActive ? "none" : "2 2"}
+                    strokeDasharray={isActive ? "none" : "2 3"}
                     className="transition-colors duration-200"
                   />
+                  {/* Outer connection pulse dot */}
                   <circle
                     cx={coords.x}
                     cy={coords.y}
@@ -132,51 +147,34 @@ export function RadialScrollNav({ className }: { className?: string }) {
             })}
           </svg>
 
-          {/* Central Active Indicator Ring */}
-          <div className="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none">
-            <span className="text-[10px] font-mono font-bold text-white tracking-tight">
-              {SECTIONS.find((s) => s.id === activeId)?.number || "01"}
-            </span>
-          </div>
-
-          {/* Satellite Interactive Click Targets & Labels */}
+          {/* Semi-Circular Interactive Node Buttons */}
           {SECTIONS.map((sec) => {
-            const coords = getCoordinates(sec.angle);
+            const coords = getCoordinates(sec.angle, radius);
             const isActive = activeId === sec.id;
-
-            // Compute percentage offset for HTML overlay positioning
-            const leftPercent = (coords.x / 200) * 100;
-            const topPercent = (coords.y / 200) * 100;
-
-            // Anchor label orientation relative to circle center
-            const isRightSide = coords.x >= 100;
 
             return (
               <button
                 key={sec.id}
                 onClick={() => scrollToSection(sec.id)}
                 style={{
-                  left: `${leftPercent}%`,
-                  top: `${topPercent}%`,
-                  transform: "translate(-50%, -50%)",
+                  left: `${coords.x + 8}px`,
+                  top: `${coords.y}px`,
+                  transform: "translateY(-50%)",
                 }}
-                className={cn(
-                  "absolute z-10 group flex items-center gap-1.5 focus:outline-none transition-all duration-200 cursor-pointer p-1",
-                  isRightSide ? "flex-row" : "flex-row-reverse"
-                )}
-                title={`Go to ${sec.label}`}
+                className="absolute z-10 group flex items-center gap-2 focus:outline-none transition-all duration-200 cursor-pointer p-1"
+                title={`Jump to ${sec.label}`}
               >
-                {/* Node Pill / Label */}
+                {/* Node Pill */}
                 <div
                   className={cn(
-                    "px-2 py-0.5 rounded-md text-[11px] font-mono transition-all duration-200 whitespace-nowrap shadow-sm border",
+                    "px-2.5 py-1 rounded-lg text-xs font-mono transition-all duration-200 whitespace-nowrap shadow-md border flex items-center gap-1.5",
                     isActive
                       ? "bg-white text-zinc-950 font-bold border-white scale-105"
                       : "bg-[#121214]/90 text-zinc-400 border-zinc-800 hover:text-zinc-100 hover:border-zinc-600"
                   )}
                 >
-                  <span className="opacity-60 mr-1">{sec.number}</span>
-                  <span>{sec.label}</span>
+                  <span className="opacity-50 text-[10px]">{sec.number}</span>
+                  <span className="font-sans font-medium text-xs">{sec.label}</span>
                 </div>
               </button>
             );
@@ -185,11 +183,11 @@ export function RadialScrollNav({ className }: { className?: string }) {
       </nav>
 
       {/* 2. Mobile Floating Sticky Chapter Header */}
-      <div className="xl:hidden sticky top-14 z-30 w-full bg-[#09090b]/95 backdrop-blur-md border-b border-zinc-800/80 px-4 py-2 flex items-center justify-between overflow-x-auto gap-2 select-none text-xs font-mono">
-        <div className="flex items-center gap-1.5 shrink-0 text-zinc-500">
-          <span className="text-[10px] uppercase tracking-wider">Chapter:</span>
+      <div className="xl:hidden sticky top-14 z-30 w-full bg-[#09090b]/95 backdrop-blur-md border-b border-zinc-800/80 px-4 py-2 flex items-center justify-between overflow-x-auto gap-2 select-none text-xs">
+        <div className="flex items-center gap-1.5 shrink-0 text-zinc-500 font-mono text-[10px] uppercase tracking-wider">
+          <span>Chapter:</span>
         </div>
-        <div className="flex items-center gap-1.5 overflow-x-auto">
+        <div className="flex items-center gap-1.5 overflow-x-auto font-sans">
           {SECTIONS.map((sec) => {
             const isActive = activeId === sec.id;
             return (
@@ -203,7 +201,8 @@ export function RadialScrollNav({ className }: { className?: string }) {
                     : "text-zinc-400 hover:text-white bg-zinc-900 border border-zinc-800"
                 )}
               >
-                {sec.number} {sec.label}
+                <span className="font-mono text-[10px] mr-1">{sec.number}</span>
+                <span>{sec.label}</span>
               </button>
             );
           })}

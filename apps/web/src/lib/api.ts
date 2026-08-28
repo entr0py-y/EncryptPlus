@@ -90,13 +90,16 @@ export async function fetchScanSummary(id: string | number) {
   return res.json();
 }
 
-export async function fetchScanInventory(id: string | number, params?: { asset_type?: string; severity?: string; quantum_status?: string }): Promise<CryptoAssetRecord[]> {
+export async function fetchScanInventory(id: string | number, params?: { asset_type?: string; severity?: string; quantum_status?: string; search?: string; limit?: number; offset?: number }): Promise<CryptoAssetRecord[]> {
   let url = `${API_URL}/api/scans/${id}/inventory`;
   if (params) {
     const q = new URLSearchParams();
     if (params.asset_type) q.set('asset_type', params.asset_type);
     if (params.severity) q.set('severity', params.severity);
     if (params.quantum_status) q.set('quantum_status', params.quantum_status);
+    if (params.search) q.set('search', params.search);
+    if (params.limit !== undefined) q.set('limit', String(params.limit));
+    if (params.offset !== undefined) q.set('offset', String(params.offset));
     const qs = q.toString();
     if (qs) url += `?${qs}`;
   }
@@ -105,8 +108,18 @@ export async function fetchScanInventory(id: string | number, params?: { asset_t
   return res.json();
 }
 
-export async function fetchScanFindings(id: string | number): Promise<CryptoAssetRecord[]> {
-  const res = await fetch(`${API_URL}/api/scans/${id}/findings`);
+export async function fetchScanFindings(id: string | number, params?: { severity?: string; search?: string; limit?: number; offset?: number }): Promise<CryptoAssetRecord[]> {
+  let url = `${API_URL}/api/scans/${id}/findings`;
+  if (params) {
+    const q = new URLSearchParams();
+    if (params.severity) q.set('severity', params.severity);
+    if (params.search) q.set('search', params.search);
+    if (params.limit !== undefined) q.set('limit', String(params.limit));
+    if (params.offset !== undefined) q.set('offset', String(params.offset));
+    const qs = q.toString();
+    if (qs) url += `?${qs}`;
+  }
+  const res = await fetch(url);
   if (!res.ok) throw new Error('Failed to fetch scan findings');
   return res.json();
 }

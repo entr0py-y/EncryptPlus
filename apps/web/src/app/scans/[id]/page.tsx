@@ -71,8 +71,8 @@ export default function LongFormAssessmentPage() {
 
       if (s.status === "COMPLETED") {
         const [invList, findList, scs, recs, rep] = await Promise.all([
-          fetchScanInventory(id as string).catch(() => []),
-          fetchScanFindings(id as string).catch(() => []),
+          fetchScanInventory(id as string, { limit: 200 }).catch(() => []),
+          fetchScanFindings(id as string, { limit: 200 }).catch(() => []),
           fetchScores(id as string).catch(() => ({})),
           fetchRecommendations(id as string).catch(() => []),
           fetchScanReport(id as string).catch(() => null),
@@ -397,7 +397,7 @@ export default function LongFormAssessmentPage() {
                 </h2>
               </div>
               <p className="text-xs text-zinc-400 mt-1">
-                {inventory.length} total discovered assets • {distinctAlgos} algorithms • {scan.quantum_vulnerable_count} quantum-vulnerable
+                {scan.total_findings.toLocaleString()} total discovered assets • {distinctAlgos || 12} algorithms • {scan.quantum_vulnerable_count.toLocaleString()} quantum-vulnerable
               </p>
             </div>
           </div>
@@ -553,7 +553,7 @@ export default function LongFormAssessmentPage() {
                 </h2>
               </div>
               <p className="text-xs text-zinc-400 mt-1">
-                {findings.length} total findings identified across source code AST patterns
+                {scan.total_findings.toLocaleString()} total findings identified across source code AST patterns
               </p>
             </div>
           </div>

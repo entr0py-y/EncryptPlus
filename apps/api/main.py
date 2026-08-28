@@ -5,6 +5,7 @@ import datetime
 from fastapi import FastAPI, BackgroundTasks, Depends, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
+from sqlalchemy import func
 from typing import List, Optional
 
 from . import models, schemas, database, scanner, parser, report
@@ -223,11 +224,21 @@ def get_scan_summary(id: int, db: Session = Depends(get_db)):
 
 @app.get("/api/scans/{id}/assets")
 def get_scan_assets(id: int, db: Session = Depends(get_db),
-    severity: Optional[str] = None, quantum_status: Optional[str] = None, asset_type: Optional[str] = None):
+    severity: Optional[str] = None, quantum_status: Optional[str] = None, asset_type: Optional[str] = None,
+    search: Optional[str] = None, limit: Optional[int] = None, offset: int = 0):
     q = db.query(models.CryptoAsset).filter(models.CryptoAsset.scan_id == id)
-    if severity: q = q.filter(models.CryptoAsset.severity == severity)
-    if quantum_status: q = q.filter(models.CryptoAsset.quantum_status == quantum_status)
-    if asset_type: q = q.filter(models.CryptoAsset.asset_type == asset_type)
+    if severity and severity != "ALL": q = q.filter(models.CryptoAsset.severity == severity)
+    if quantum_status and quantum_status != "ALL": q = q.filter(models.CryptoAsset.quantum_status == quantum_status)
+    if asset_type and asset_type != "ALL": q = q.filter(models.CryptoAsset.asset_type == asset_type)
+    if search:
+        s_term = f"%{search}%"
+        q = q.filter(
+            (models.CryptoAsset.algorithm.ilike(s_term)) |
+            (models.CryptoAsset.file_path.ilike(s_term)) |
+            (models.CryptoAsset.category.ilike(s_term))
+        )
+    if limit is not None:
+        q = q.limit(limit).offset(offset)
     return q.all()
 
 @app.get("/api/scans/{id}/assets/{asset_id}")
@@ -237,21 +248,22 @@ def get_asset(id: int, asset_id: int, db: Session = Depends(get_db)):
     return a
 
 @app.get("/api/scans/{id}/findings")
-def get_findings(id: int, db: Session = Depends(get_db)):
-    return get_scan_assets(id, db)
+def get_findings(id: int, db: Session = Depends(get_db),
+    severity: Optional[str] = None, search: Optional[str] = None, limit: Optional[int] = 100, offset: int = 0):
+    return get_scan_assets(id, db, severity=severity, search=search, limit=limit, offset=offset)
 
 @app.get("/api/scans/{id}/inventory")
-def get_inventory(id: int, db: Session = Depends(get_db)):
-    return get_scan_assets(id, db)
+def get_inventory(id: int, db: Session = Depends(get_db),
+    asset_type: Optional[str] = None, quantum_status: Optional[str] = None, search: Optional[str] = None, limit: Optional[int] = 100, offset: int = 0):
+    return get_scan_assets(id, db, asset_type=asset_type, quantum_status=quantum_status, search=search, limit=limit, offset=offset)
 
 @app.get("/api/scans/{id}/algorithms")
 def get_algorithms(id: int, db: Session = Depends(get_db)):
-    assets = get_scan_assets(id, db)
-    algos = {}
-    for a in assets:
-        alg = a.algorithm or "UNKNOWN"
-        algos[alg] = algos.get(alg, 0) + 1
-    return algos
+    results = db.query(
+        models.CryptoAsset.algorithm,
+        func.count(models.CryptoAsset.id)
+    ).filter(models.CryptoAsset.scan_id == id).group_by(models.CryptoAsset.algorithm).all()
+    return {algo or "UNKNOWN": count for algo, count in results}
 
 @app.get("/api/scans/{id}/risk")
 def get_risk(id: int, db: Session = Depends(get_db)):
@@ -269,12 +281,11 @@ def get_quantum(id: int, db: Session = Depends(get_db)):
 
 @app.get("/api/scans/{id}/mosca")
 def get_mosca(id: int, db: Session = Depends(get_db)):
-    assets = get_scan_assets(id, db)
-    res = {}
-    for a in assets:
-        r = a.mosca_risk or "UNKNOWN"
-        res[r] = res.get(r, 0) + 1
-    return res
+    results = db.query(
+        models.CryptoAsset.mosca_risk,
+        func.count(models.CryptoAsset.id)
+    ).filter(models.CryptoAsset.scan_id == id).group_by(models.CryptoAsset.mosca_risk).all()
+    return {r or "UNKNOWN": count for r, count in results}
 
 @app.get("/api/scans/{id}/pqc")
 def get_scan_pqc(id: int, db: Session = Depends(get_db)):
@@ -296,7 +307,7 @@ def get_migration(id: int, db: Session = Depends(get_db)):
 @app.get("/api/scans/{id}/report")
 def get_report(id: int, db: Session = Depends(get_db)):
     s = get_scan(id, db)
-    assets = get_scan_assets(id, db)
+    assets = db.query(models.CryptoAsset).filter(models.CryptoAsset.scan_id == id).limit(500).all()
     comp = get_scan_compliance(id, db)
     recs = get_recommendations(id, db)
     scs = scoring.calculate_category_scores(assets)
@@ -304,17 +315,30 @@ def get_report(id: int, db: Session = Depends(get_db)):
 
 @app.get("/api/scans/{id}/cbom")
 def get_cbom(id: int, db: Session = Depends(get_db)):
-    assets = get_scan_assets(id, db)
-    return {"bomFormat": "CycloneDX", "components": [{"name": a.algorithm} for a in assets if a.algorithm]}
+    results = db.query(
+        models.CryptoAsset.algorithm,
+        func.count(models.CryptoAsset.id)
+    ).filter(models.CryptoAsset.scan_id == id).group_by(models.CryptoAsset.algorithm).all()
+    return {"bomFormat": "CycloneDX", "components": [{"name": algo, "count": count} for algo, count in results if algo]}
 
 @app.get("/api/scans/{id}/scores")
 def get_scores(id: int, db: Session = Depends(get_db)):
-    assets = get_scan_assets(id, db)
+    assets = db.query(
+        models.CryptoAsset.id,
+        models.CryptoAsset.severity,
+        models.CryptoAsset.quantum_status,
+        models.CryptoAsset.algorithm,
+        models.CryptoAsset.category,
+        models.CryptoAsset.asset_type,
+        models.CryptoAsset.key_size,
+        models.CryptoAsset.finding_type,
+        models.CryptoAsset.cryptoscan_id
+    ).filter(models.CryptoAsset.scan_id == id).limit(2000).all()
     return scoring.calculate_category_scores(assets)
 
 @app.get("/api/scans/{id}/evidence")
-def get_evidence(id: int, db: Session = Depends(get_db)):
-    assets = get_scan_assets(id, db)
+def get_evidence(id: int, db: Session = Depends(get_db), limit: int = 50):
+    assets = db.query(models.CryptoAsset).filter(models.CryptoAsset.scan_id == id).limit(limit).all()
     return [{"asset_id": a.id, "evidence": a.evidence, "context": a.context} for a in assets]
 
 @app.patch("/api/assets/{id}")

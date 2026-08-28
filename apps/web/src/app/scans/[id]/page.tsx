@@ -13,7 +13,6 @@ import {
   ScanRecord,
   CryptoAssetRecord
 } from "@/lib/api";
-import { RadialScrollNav } from "@/components/ui/radial-scroll-nav";
 import { RadialPostureMap } from "@/components/ui/radial-posture-map";
 import { DetailDrawer } from "@/components/ui/detail-drawer";
 import { CodeEvidence } from "@/components/ui/code-evidence";
@@ -260,11 +259,8 @@ export default function LongFormAssessmentPage() {
 
   return (
     <div className="relative min-h-screen bg-[#09090b] text-[#f4f4f5] font-sans select-none">
-      {/* Fixed Left Radial Navigation Scroll-Spy */}
-      <RadialScrollNav />
-
       {/* Main Continuous Document Body */}
-      <div className="max-w-4xl mx-auto px-6 xl:pl-28 py-12 md:py-16 space-y-24">
+      <div className="max-w-4xl mx-auto px-6 py-12 md:py-16 space-y-24">
         {/* ========================================================================= */}
         {/* HERO CHAPTER: CRYPTOGRAPHIC POSTURE & OVERVIEW (#overview) */}
         {/* ========================================================================= */}

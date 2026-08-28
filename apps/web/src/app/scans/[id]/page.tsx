@@ -3,34 +3,18 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import { fetchScan, fetchAlgorithms, fetchScores, ScanRecord } from "@/lib/api";
+import { fetchScan, fetchScanFindings, fetchRecommendations, ScanRecord, CryptoAssetRecord } from "@/lib/api";
 import { RadialPostureMap } from "@/components/ui/radial-posture-map";
-import { QuantumHorizon } from "@/components/ui/quantum-horizon";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  Layers,
-  Search,
-  Shield,
-  FileText,
-  Zap,
-  ArrowRight,
-  Loader2,
-  AlertCircle,
-  CheckCircle2,
-  Cpu,
-  Key,
-  Award,
-  Network
-} from "lucide-react";
+import { ArrowRight, Loader2, FileCode, CheckCircle2 } from "lucide-react";
 
 export default function ScanOverviewPage() {
   const { id } = useParams();
   const router = useRouter();
   const [scan, setScan] = useState<ScanRecord | null>(null);
-  const [algorithms, setAlgorithms] = useState<Record<string, number>>({});
-  const [scores, setScores] = useState<Record<string, number>>({});
+  const [findings, setFindings] = useState<CryptoAssetRecord[]>([]);
+  const [recommendations, setRecommendations] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   const loadData = async () => {
@@ -40,12 +24,12 @@ export default function ScanOverviewPage() {
       setScan(s);
 
       if (s.status === "COMPLETED") {
-        const [algos, scs] = await Promise.all([
-          fetchAlgorithms(id as string).catch(() => ({})),
-          fetchScores(id as string).catch(() => ({})),
+        const [fList, recList] = await Promise.all([
+          fetchScanFindings(id as string).catch(() => []),
+          fetchRecommendations(id as string).catch(() => []),
         ]);
-        setAlgorithms(algos);
-        setScores(scs);
+        setFindings(Array.isArray(fList) ? fList : []);
+        setRecommendations(Array.isArray(recList) ? recList : []);
       }
     } catch (err) {
       console.error(err);
@@ -70,8 +54,8 @@ export default function ScanOverviewPage() {
 
   if (loading && !scan) {
     return (
-      <div className="p-12 flex flex-col items-center justify-center min-h-[70vh] space-y-4">
-        <Loader2 className="w-8 h-8 animate-spin text-zinc-500" />
+      <div className="p-16 flex flex-col items-center justify-center min-h-[70vh] space-y-4">
+        <Loader2 className="w-6 h-6 animate-spin text-zinc-500" />
         <div className="text-xs font-mono text-zinc-500 uppercase tracking-widest">
           Loading Scan #{id}...
         </div>
@@ -81,7 +65,7 @@ export default function ScanOverviewPage() {
 
   if (!scan) {
     return (
-      <div className="p-12 text-center text-xs font-mono text-zinc-500 space-y-4">
+      <div className="p-16 text-center text-xs font-mono text-zinc-500 space-y-4">
         <div>Scan #{id} could not be located.</div>
         <Link href="/">
           <Button variant="outline" size="sm" className="font-mono text-xs">
@@ -95,36 +79,31 @@ export default function ScanOverviewPage() {
   const isRunning = scan.status && scan.status !== "COMPLETED" && scan.status !== "FAILED";
   const isFailed = scan.status === "FAILED";
 
-  // Calculate progress percentage and stage label
+  // Progress logic
   let progressPct = 20;
   let stageLabel = "Cloning repository";
-  let stageSub = "Fetching source tree and isolating workspace...";
   if (scan.status === "SCANNING") {
     progressPct = 40;
     stageLabel = "Discovering cryptographic assets";
-    stageSub = "Parsing AST tokens, keys, certificates, and cipher suites...";
   } else if (scan.status === "ANALYZING") {
     progressPct = 60;
     stageLabel = "Categorizing Cryptographic Bill of Materials (CBOM)";
-    stageSub = "Normalizing primitives, parameter sets, and library dependencies...";
   } else if (scan.status === "ASSESSING") {
     progressPct = 80;
     stageLabel = "Assessing Quantum Exposure & Mosca Window";
-    stageSub = "Evaluating Shor's algorithm, Grover's margin, and 10-category risk...";
   } else if (scan.status === "GENERATING_REPORT") {
     progressPct = 95;
     stageLabel = "Assembling 18-Section Assessment Report";
-    stageSub = "Compiling executive telemetry and migration roadmap...";
   }
 
-  // MINIMAL SCAN PROGRESS VIEW DURING RUNNING STATE
+  // MINIMAL CALM PROGRESS SCREEN
   if (isRunning) {
     const repoDisplayName = scan.repository_url
       ? scan.repository_url.replace(/^https?:\/\/(www\.)?github\.com\//, "").replace(/\.git$/, "")
       : "Local Repository";
 
     return (
-      <div className="min-h-[80vh] flex flex-col items-center justify-center p-6 select-none max-w-xl mx-auto text-center space-y-8">
+      <div className="min-h-[75vh] flex flex-col items-center justify-center p-8 select-none max-w-lg mx-auto text-center space-y-8">
         <div className="space-y-2">
           <div className="text-[10px] font-mono uppercase tracking-widest text-zinc-500">
             ENCRYPT PLUS
@@ -137,7 +116,6 @@ export default function ScanOverviewPage() {
           </div>
         </div>
 
-        {/* Minimal Progress Bar */}
         <div className="w-full space-y-3">
           <div className="flex items-center justify-between text-xs font-mono text-zinc-400">
             <span>{stageLabel}</span>
@@ -150,211 +128,265 @@ export default function ScanOverviewPage() {
               className="h-full bg-white rounded-full transition-all duration-500"
             />
           </div>
-
-          <p className="text-[11px] font-mono text-zinc-500 text-left">
-            {stageSub}
-          </p>
         </div>
 
-        {/* 5 Minimal Stage Steps */}
-        <div className="w-full pt-4 border-t border-zinc-800/80 grid grid-cols-5 gap-2 text-center text-[10px] font-mono">
-          <div className={`p-2 rounded-lg border ${progressPct >= 20 ? "border-zinc-700 bg-zinc-900 text-white" : "border-zinc-800 text-zinc-600"}`}>
-            01. Repo
-          </div>
-          <div className={`p-2 rounded-lg border ${progressPct >= 40 ? "border-zinc-700 bg-zinc-900 text-white" : "border-zinc-800 text-zinc-600"}`}>
-            02. AST
-          </div>
-          <div className={`p-2 rounded-lg border ${progressPct >= 60 ? "border-zinc-700 bg-zinc-900 text-white" : "border-zinc-800 text-zinc-600"}`}>
-            03. CBOM
-          </div>
-          <div className={`p-2 rounded-lg border ${progressPct >= 80 ? "border-zinc-700 bg-zinc-900 text-white" : "border-zinc-800 text-zinc-600"}`}>
-            04. Quantum
-          </div>
-          <div className={`p-2 rounded-lg border ${progressPct >= 95 ? "border-zinc-700 bg-zinc-900 text-white" : "border-zinc-800 text-zinc-600"}`}>
-            05. Report
-          </div>
+        <div className="w-full pt-6 border-t border-zinc-800/80 grid grid-cols-5 gap-2 text-center text-[10px] font-mono text-zinc-500">
+          <span className={progressPct >= 20 ? "text-white font-semibold" : ""}>Repository</span>
+          <span className={progressPct >= 40 ? "text-white font-semibold" : ""}>Discovery</span>
+          <span className={progressPct >= 60 ? "text-white font-semibold" : ""}>Assessment</span>
+          <span className={progressPct >= 80 ? "text-white font-semibold" : ""}>Quantum</span>
+          <span className={progressPct >= 95 ? "text-white font-semibold" : ""}>Report</span>
         </div>
       </div>
     );
   }
 
-  // FAILED STATE VIEW
+  // FAILED STATE
   if (isFailed) {
     return (
-      <div className="p-12 max-w-xl mx-auto text-center space-y-6">
-        <div className="w-12 h-12 rounded-2xl bg-zinc-900 border border-zinc-800 flex items-center justify-center mx-auto text-zinc-400">
-          <AlertCircle className="w-6 h-6" />
-        </div>
-        <div className="space-y-2">
-          <h2 className="text-xl font-bold text-white font-mono">Scan Failed</h2>
-          <p className="text-xs font-mono text-zinc-400">
-            {scan.error_message || "Could not complete cryptographic analysis on the target repository."}
-          </p>
-        </div>
+      <div className="p-16 max-w-lg mx-auto text-center space-y-6">
+        <h2 className="text-xl font-bold text-white font-mono">Scan Failed</h2>
+        <p className="text-xs font-mono text-zinc-400">
+          {scan.error_message || "Could not complete cryptographic analysis on the target repository."}
+        </p>
         <Link href="/">
           <Button variant="outline" size="sm" className="font-mono text-xs">
-            Try Another Repository
+            Scan Another Repository
           </Button>
         </Link>
       </div>
     );
   }
 
-  // FULL COMPLETED SCAN DASHBOARD
-  const algoCount = Object.keys(algorithms).length;
+  // CALM, FOCUSED POST-SCAN DASHBOARD
+  const repoName = scan.repository_url
+    ? scan.repository_url.replace(/^https?:\/\/(www\.)?github\.com\//, "").replace(/\.git$/, "")
+    : "Local Codebase";
 
   return (
-    <div className="p-8 max-w-[1600px] mx-auto space-y-8 select-none">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-zinc-800/80 pb-6">
+    <div className="p-10 max-w-5xl mx-auto space-y-12 select-none">
+      {/* 1. Header with Repository Title */}
+      <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-4 border-b border-zinc-800 pb-6">
         <div>
           <div className="text-[10px] font-mono uppercase tracking-widest text-zinc-500">
             Cryptographic Audit Overview
           </div>
-          <h1 className="text-3xl font-bold tracking-tight text-white font-mono mt-1">
-            Scan #{id}: {scan.repository_url ? scan.repository_url.split("/").pop() : "Local Workspace"}
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white font-mono mt-1">
+            {repoName}
           </h1>
-          <p className="text-xs font-mono text-zinc-400 mt-1 flex items-center gap-2">
-            <span>Target: <strong className="text-zinc-200">{scan.repository_url || "Local"}</strong></span>
-            <span>•</span>
-            <span>Audited: {new Date(scan.started_at).toLocaleString()}</span>
-            <span>•</span>
-            <span>Duration: {(scan.scan_duration_ms / 1000).toFixed(1)}s</span>
+          <p className="text-xs font-mono text-zinc-500 mt-1">
+            Scan #{scan.id} • {new Date(scan.started_at).toLocaleDateString()} • {scan.files_scanned} files inspected
           </p>
         </div>
 
         <div className="flex items-center gap-3">
           <Link href={`/scans/${id}/report`}>
-            <Button variant="secondary" size="sm" className="font-mono text-xs gap-2">
-              <FileText className="w-3.5 h-3.5" />
-              <span>Full 18-Section Report</span>
-            </Button>
-          </Link>
-          <Link href={`/scans/${id}/inventory`}>
-            <Button size="sm" className="font-mono text-xs gap-2">
-              <Layers className="w-3.5 h-3.5" />
-              <span>Explore CBOM</span>
+            <Button variant="outline" size="sm" className="font-mono text-xs">
+              View Report
             </Button>
           </Link>
         </div>
       </div>
 
-      {/* Primary Metrics */}
-      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
-        <div className="p-5 rounded-2xl border border-zinc-800 bg-[#121215] space-y-1">
-          <div className="text-[10px] font-mono uppercase tracking-wider text-zinc-500">Risk Score</div>
-          <div className="text-4xl font-bold font-mono text-white leading-none">
-            {scan.overall_risk_score !== null && scan.overall_risk_score !== undefined
-              ? Number(scan.overall_risk_score).toFixed(1)
-              : "—"}
+      {/* 2. Four Primary Metrics (Single Cohesive Bar) */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-6 rounded-2xl border border-zinc-800/80 bg-[#121214]">
+        <div className="space-y-1">
+          <div className="text-[10px] font-mono uppercase tracking-wider text-zinc-500">
+            Overall Risk
           </div>
-          <div className="text-[11px] font-mono text-zinc-400 uppercase">{scan.overall_risk_level || "MODERATE"} LEVEL</div>
+          <div className="text-3xl font-bold font-mono text-white">
+            {scan.overall_risk_score !== null ? Number(scan.overall_risk_score).toFixed(1) : "—"}
+          </div>
+          <div className="text-[10px] font-mono text-zinc-400 uppercase">
+            {scan.overall_risk_level || "MODERATE"}
+          </div>
         </div>
 
-        <div className="p-5 rounded-2xl border border-zinc-800 bg-[#121215] space-y-1">
-          <div className="text-[10px] font-mono uppercase tracking-wider text-zinc-500">PQC Readiness</div>
-          <div className="text-4xl font-bold font-mono text-white leading-none">
-            {scan.pqc_readiness_score !== null && scan.pqc_readiness_score !== undefined
-              ? `${Number(scan.pqc_readiness_score).toFixed(1)}%`
-              : "—"}
+        <div className="space-y-1">
+          <div className="text-[10px] font-mono uppercase tracking-wider text-zinc-500">
+            PQC Readiness
           </div>
-          <div className="text-[11px] font-mono text-zinc-400 uppercase">{scan.pqc_readiness_level || "NOT_READY"}</div>
+          <div className="text-3xl font-bold font-mono text-white">
+            {scan.pqc_readiness_score !== null ? `${Number(scan.pqc_readiness_score).toFixed(1)}%` : "—"}
+          </div>
+          <div className="text-[10px] font-mono text-zinc-400 uppercase">
+            {scan.pqc_readiness_level || "DEVELOPING"}
+          </div>
         </div>
 
-        <div className="p-5 rounded-2xl border border-zinc-800 bg-[#121215] space-y-1">
-          <div className="text-[10px] font-mono uppercase tracking-wider text-zinc-500">Total Artefacts</div>
-          <div className="text-4xl font-bold font-mono text-white leading-none">
+        <div className="space-y-1">
+          <div className="text-[10px] font-mono uppercase tracking-wider text-zinc-500">
+            Crypto Assets
+          </div>
+          <div className="text-3xl font-bold font-mono text-white">
             {scan.total_findings.toLocaleString()}
           </div>
-          <div className="text-[11px] font-mono text-zinc-400">{algoCount} Algorithms</div>
+          <div className="text-[10px] font-mono text-zinc-400">
+            Discovered Elements
+          </div>
         </div>
 
-        <div className="p-5 rounded-2xl border border-zinc-800 bg-[#121215] space-y-1">
-          <div className="text-[10px] font-mono uppercase tracking-wider text-zinc-500">Quantum Vulnerable</div>
-          <div className="text-4xl font-bold font-mono text-white leading-none">
+        <div className="space-y-1">
+          <div className="text-[10px] font-mono uppercase tracking-wider text-zinc-500">
+            Quantum Vulnerable
+          </div>
+          <div className="text-3xl font-bold font-mono text-white">
             {scan.quantum_vulnerable_count.toLocaleString()}
           </div>
-          <div className="text-[11px] font-mono text-zinc-400">Shor's Susceptible</div>
-        </div>
-
-        <div className="p-5 rounded-2xl border border-zinc-800 bg-[#121215] space-y-1 col-span-2 lg:col-span-1">
-          <div className="text-[10px] font-mono uppercase tracking-wider text-zinc-500">Files / Lines</div>
-          <div className="text-4xl font-bold font-mono text-white leading-none">
-            {scan.files_scanned.toLocaleString()}
+          <div className="text-[10px] font-mono text-zinc-400">
+            Shor's Susceptible
           </div>
-          <div className="text-[11px] font-mono text-zinc-400">{scan.lines_scanned.toLocaleString()} Lines</div>
         </div>
       </div>
 
-      {/* Main Grid: Posture Map + Quantum + Breakdown */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-        {/* Left: Domain Spectrum */}
-        <div className="lg:col-span-3 space-y-6">
-          <Card className="p-5 space-y-4">
-            <div className="text-[10px] font-mono uppercase tracking-widest text-zinc-500">
-              Audit Breakdown
-            </div>
-            <div className="space-y-2 text-xs font-mono">
-              <Link href={`/scans/${id}/algorithms`} className="flex items-center justify-between p-2.5 rounded-xl bg-zinc-900 border border-zinc-800 hover:border-zinc-600 transition-colors">
-                <span className="flex items-center gap-2 text-zinc-300">
-                  <Cpu className="w-3.5 h-3.5 text-zinc-400" />
-                  <span>Algorithms</span>
-                </span>
-                <span className="font-bold text-white">{algoCount || 12}</span>
-              </Link>
-              <Link href={`/scans/${id}/certificates`} className="flex items-center justify-between p-2.5 rounded-xl bg-zinc-900 border border-zinc-800 hover:border-zinc-600 transition-colors">
-                <span className="flex items-center gap-2 text-zinc-300">
-                  <Award className="w-3.5 h-3.5 text-zinc-400" />
-                  <span>X.509 PKI</span>
-                </span>
-                <span className="font-bold text-white">{scan.total_findings > 100 ? Math.round(scan.total_findings * 0.75) : 8}</span>
-              </Link>
-              <Link href={`/scans/${id}/keys`} className="flex items-center justify-between p-2.5 rounded-xl bg-zinc-900 border border-zinc-800 hover:border-zinc-600 transition-colors">
-                <span className="flex items-center gap-2 text-zinc-300">
-                  <Key className="w-3.5 h-3.5 text-zinc-400" />
-                  <span>Key Material</span>
-                </span>
-                <span className="font-bold text-white">8</span>
-              </Link>
-              <Link href={`/scans/${id}/protocols`} className="flex items-center justify-between p-2.5 rounded-xl bg-zinc-900 border border-zinc-800 hover:border-zinc-600 transition-colors">
-                <span className="flex items-center gap-2 text-zinc-300">
-                  <Network className="w-3.5 h-3.5 text-zinc-400" />
-                  <span>Protocols & TLS</span>
-                </span>
-                <span className="font-bold text-white">73</span>
-              </Link>
-            </div>
-          </Card>
+      {/* 3. Central Cohesive Surface: Posture Gauge & Summary */}
+      <div className="p-8 rounded-2xl border border-zinc-800/80 bg-[#121214] flex flex-col md:flex-row items-center justify-between gap-8">
+        <div className="flex-1 space-y-3 max-w-md text-left">
+          <div className="text-[10px] font-mono uppercase tracking-widest text-zinc-500">
+            Posture Assessment
+          </div>
+          <h2 className="text-xl font-bold text-white font-mono">
+            Cryptographic Exposure Summary
+          </h2>
+          <p className="text-xs font-mono text-zinc-400 leading-relaxed">
+            {scan.quantum_vulnerable_count} cryptographic mechanisms in this repository are vulnerable to Shor's algorithm. Immediate migration is recommended for long-term secret confidentiality.
+          </p>
+          <div className="pt-2 flex items-center gap-3">
+            <Link href={`/scans/${id}/inventory`}>
+              <Button size="sm" className="font-mono text-xs">
+                Explore Inventory ({scan.total_findings})
+              </Button>
+            </Link>
+            <Link href={`/scans/${id}/quantum`}>
+              <Button variant="ghost" size="sm" className="font-mono text-xs text-zinc-400 hover:text-white">
+                Quantum Analysis →
+              </Button>
+            </Link>
+          </div>
         </div>
 
-        {/* Center: Radial Posture Map */}
-        <div className="lg:col-span-6 flex flex-col items-center justify-center p-6 rounded-3xl border border-zinc-800 bg-[#0e0e11] shadow-2xl relative">
+        <div className="shrink-0">
           <RadialPostureMap
             overallRisk={scan.overall_risk_score || 0}
             overallRiskLevel={scan.overall_risk_level || "LOW"}
             pqcReadiness={scan.pqc_readiness_score || 0}
-            pqcReadinessLevel={scan.pqc_readiness_level || "NOT_READY"}
-            totalFindings={scan.total_findings}
-            quantumVulnerable={scan.quantum_vulnerable_count}
-            quantumPartial={scan.quantum_partial_count}
-            quantumSafe={scan.quantum_safe_count}
-            filesScanned={scan.files_scanned}
-            algorithmsCount={algoCount}
           />
         </div>
+      </div>
 
-        {/* Right: Quantum Horizon */}
-        <div className="lg:col-span-3 space-y-6">
-          <Card className="p-5 space-y-4">
+      {/* 4. Priority Findings Section (Clean Horizontal Rows) */}
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <div>
             <div className="text-[10px] font-mono uppercase tracking-widest text-zinc-500">
-              Quantum Risk Horizon
+              Priority Attention
             </div>
-            <QuantumHorizon
-              vulnerableCount={scan.quantum_vulnerable_count}
-              partialCount={scan.quantum_partial_count}
-              safeCount={scan.quantum_safe_count}
-            />
-          </Card>
+            <h3 className="text-base font-bold text-white font-mono">
+              Key Security Findings
+            </h3>
+          </div>
+          <Link href={`/scans/${id}/findings`}>
+            <Button variant="ghost" size="sm" className="font-mono text-xs text-zinc-400 hover:text-white">
+              All Findings ({findings.length}) →
+            </Button>
+          </Link>
+        </div>
+
+        <div className="border border-zinc-800/80 rounded-2xl bg-[#121214] divide-y divide-zinc-800/60 overflow-hidden">
+          {findings.slice(0, 5).map((f) => (
+            <Link
+              key={f.id}
+              href={`/scans/${id}/findings/${f.id}`}
+              className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-zinc-900/50 transition-colors text-xs font-mono"
+            >
+              <div className="flex items-center gap-3 min-w-0">
+                <Badge
+                  variant={
+                    f.severity === "CRITICAL"
+                      ? "critical"
+                      : f.severity === "HIGH"
+                      ? "high"
+                      : "medium"
+                  }
+                  className="shrink-0"
+                >
+                  {f.severity || "INFO"}
+                </Badge>
+                <div className="truncate">
+                  <div className="font-semibold text-white truncate">
+                    {f.algorithm || f.finding_type}
+                  </div>
+                  <div className="text-[10px] text-zinc-500 truncate flex items-center gap-1.5 mt-0.5">
+                    <FileCode className="w-3 h-3 text-zinc-600 shrink-0" />
+                    <span>{f.file_path}:{f.line_start || 1}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-4 shrink-0 sm:text-right">
+                <span className="text-zinc-400 font-medium">
+                  {f.quantum_status === "VULNERABLE" ? "Quantum Vuln" : "Classical"}
+                </span>
+                <span className="text-zinc-500">→</span>
+              </div>
+            </Link>
+          ))}
+
+          {findings.length === 0 && (
+            <div className="p-8 text-center text-zinc-500 font-mono text-xs">
+              No critical findings discovered.
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* 5. Primary Migration Target Queue */}
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <div>
+            <div className="text-[10px] font-mono uppercase tracking-widest text-zinc-500">
+              Remediation
+            </div>
+            <h3 className="text-base font-bold text-white font-mono">
+              Migration Roadmap
+            </h3>
+          </div>
+          <Link href={`/scans/${id}/migration`}>
+            <Button variant="ghost" size="sm" className="font-mono text-xs text-zinc-400 hover:text-white">
+              Full Roadmap →
+            </Button>
+          </Link>
+        </div>
+
+        <div className="border border-zinc-800/80 rounded-2xl bg-[#121215] divide-y divide-zinc-800/60 overflow-hidden">
+          {recommendations.slice(0, 3).map((rec, i) => (
+            <div
+              key={rec.id || i}
+              className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs font-mono"
+            >
+              <div className="space-y-0.5">
+                <div className="flex items-center gap-2">
+                  <Badge variant={rec.priority === "P0" || rec.priority === "P1" ? "critical" : "medium"}>
+                    {rec.priority || "P1"}
+                  </Badge>
+                  <span className="font-semibold text-white">{rec.title}</span>
+                </div>
+                <div className="text-[11px] text-zinc-500">
+                  {rec.current_algorithm || "Classical"} → <strong className="text-zinc-300">{rec.recommended_algorithm || "ML-KEM-768"}</strong>
+                </div>
+              </div>
+
+              <div className="text-zinc-500 text-[11px]">
+                {rec.finding_count || 1} occurrences
+              </div>
+            </div>
+          ))}
+
+          {recommendations.length === 0 && (
+            <div className="p-8 text-center text-zinc-500 font-mono text-xs">
+              No migration recommendations pending.
+            </div>
+          )}
         </div>
       </div>
     </div>

@@ -15,7 +15,6 @@ export default function LandingPage() {
   const validateUrl = (url: string) => {
     const trimmed = url.trim();
     if (!trimmed) return false;
-    // Allow standard github URLs, git URLs, or local repository names
     return (
       trimmed.startsWith("https://github.com/") ||
       trimmed.startsWith("http://github.com/") ||
@@ -105,9 +104,12 @@ export default function LandingPage() {
         <form onSubmit={handleSubmit} className="w-full space-y-4">
           <div className="relative w-full">
             {/* GitHub SVG Icon Inside Input */}
-            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500 pointer-events-none">
+            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500 pointer-events-none flex items-center justify-center w-5 h-5">
               <svg
-                className="w-5 h-5 fill-current"
+                width="20"
+                height="20"
+                style={{ width: "20px", height: "20px", maxWidth: "20px", maxHeight: "20px" }}
+                className="w-5 h-5 fill-current shrink-0"
                 viewBox="0 0 24 24"
                 aria-hidden="true"
               >

@@ -68,7 +68,7 @@ export function Topbar() {
 
   return (
     <>
-      <header className="h-15 border-b border-zinc-200 dark:border-zinc-800/80 bg-white/90 dark:bg-[#09090b]/90 backdrop-blur-md sticky top-0 z-30 px-4 sm:px-6 md:px-8 lg:px-10 flex items-center justify-between select-none font-sans transition-colors duration-200">
+      <header className="h-14 border-b border-zinc-200 dark:border-zinc-800/80 bg-white/90 dark:bg-[#09090b]/90 backdrop-blur-md sticky top-0 z-30 px-4 sm:px-6 flex items-center justify-between select-none font-sans transition-colors duration-200">
         {/* Leftmost: Brand Logo + Scan Switcher */}
         <div className="flex items-center gap-3 sm:gap-5">
           <Link href="/" className="flex items-center gap-2 group">

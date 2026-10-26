@@ -6,6 +6,9 @@ import { ThemeProvider } from "@/components/shared/theme-provider";
 export const metadata: Metadata = {
   title: "ENCRYPT PLUS — Enterprise Cryptographic Discovery & Analysis Tool",
   description: "Discover cryptographic assets, assess quantum risk, and plan migration.",
+  icons: {
+    icon: "/logo.svg",
+  },
 };
 
 export default function RootLayout({

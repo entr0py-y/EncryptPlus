@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/shared/theme-toggle";
 import { AgentDrawer } from "@/components/agent/agent-drawer";
 import { cn } from "@/lib/utils";
+import { Logo } from "@/components/shared/logo";
 
 export function Topbar() {
   const router = useRouter();
@@ -67,9 +68,7 @@ export function Topbar() {
         {/* Leftmost: Brand Logo + Scan Switcher */}
         <div className="flex items-center gap-3 sm:gap-5">
           <Link href="/" className="flex items-center gap-2 group">
-            <div className="w-7 h-7 rounded-lg bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 flex items-center justify-center font-bold text-xs font-mono shadow-sm group-hover:scale-105 transition-all">
-              E+
-            </div>
+            <Logo className="w-6 h-6 text-zinc-950 dark:text-white shrink-0 group-hover:scale-105 transition-all" />
             <span className="text-sm font-semibold tracking-tight text-zinc-950 dark:text-white hidden sm:inline-block">
               ENCRYPT PLUS
             </span>

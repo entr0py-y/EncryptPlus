@@ -14,6 +14,7 @@ import {
   Bot
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Logo } from "@/components/shared/logo";
 
 export function Sidebar({ currentScanId }: { currentScanId?: string | number }) {
   const pathname = usePathname();
@@ -35,9 +36,7 @@ export function Sidebar({ currentScanId }: { currentScanId?: string | number }) 
         {/* Brand Header */}
         <div className="p-6 border-b border-zinc-800/80">
           <Link href="/" className="flex items-center gap-2.5">
-            <div className="w-6 h-6 rounded bg-white text-zinc-950 flex items-center justify-center font-mono font-bold text-xs">
-              E+
-            </div>
+            <Logo className="w-6 h-6 text-white shrink-0" />
             <div>
               <div className="text-sm font-bold tracking-tight text-white font-mono leading-none">
                 ENCRYPT PLUS

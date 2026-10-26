@@ -13,7 +13,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#09090b] text-[#f4f4f5]">
+    <div className="min-h-screen flex flex-col bg-[#fafafa] dark:bg-[#09090b] text-zinc-900 dark:text-[#f4f4f5] transition-colors duration-200">
       <Topbar />
       <main className="flex-1 w-full">{children}</main>
     </div>

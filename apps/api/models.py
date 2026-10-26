@@ -159,3 +159,27 @@ class ScanComparison(Base):
     resolved_findings_count = Column(Integer, default=0)
     comparison_data_json = Column(Text, nullable=True)
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
+
+class AgentTask(Base):
+    __tablename__ = "agent_tasks"
+    id = Column(Integer, primary_key=True, index=True)
+    task_id = Column(String, unique=True, index=True)
+    user_id = Column(String, default="dev_user", index=True)
+    task_type = Column(String, default="SCAN")
+    original_prompt = Column(Text, nullable=True)
+    target_resource = Column(String, nullable=True)
+    branch = Column(String, nullable=True)
+    scan_id = Column(Integer, ForeignKey("scans.id"), nullable=True)
+    status = Column(String, default="queued", index=True)  # queued, running, completed, failed, interrupted, awaiting_verification
+    verification_state = Column(String, default="unverified")  # unverified, verified, failed_verification
+    result_summary = Column(Text, nullable=True)
+    error_info = Column(Text, nullable=True)
+    retry_count = Column(Integer, default=0)
+    max_retries = Column(Integer, default=2)
+    created_at = Column(DateTime, default=datetime.datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
+    started_at = Column(DateTime, nullable=True)
+    completed_at = Column(DateTime, nullable=True)
+
+    scan = relationship("Scan")
+

@@ -10,7 +10,8 @@ import {
   Zap,
   ArrowRightLeft,
   FileText,
-  FolderGit2
+  FolderGit2,
+  Bot
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -69,6 +70,25 @@ export function Sidebar({ currentScanId }: { currentScanId?: string | number }) 
               </Link>
             );
           })}
+
+          <div className="pt-2">
+            <button
+              onClick={() => {
+                if (typeof window !== "undefined") {
+                  window.dispatchEvent(new CustomEvent("open-agent-drawer"));
+                }
+              }}
+              className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-mono transition-all text-purple-400 hover:text-purple-200 hover:bg-purple-950/30 border border-purple-500/20"
+            >
+              <div className="flex items-center gap-3">
+                <Bot className="w-4 h-4 text-purple-400 shrink-0" />
+                <span>AI Assistant</span>
+              </div>
+              <span className="text-[9px] px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-300 uppercase tracking-wider font-semibold">
+                MEMORY
+              </span>
+            </button>
+          </div>
         </div>
       </div>
 

@@ -1,0 +1,10 @@
+node_modules
+apps/web/node_modules
+venv
+.venv
+.git
+Portfolio
+ecdat.db
+*.sqlite
+*.pyc
+__pycache__

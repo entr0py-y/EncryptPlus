@@ -12,5 +12,7 @@ python-multipart
 python-jose[cryptography]
 passlib[bcrypt]
 httpx
+hindsight-client
+python-dotenv
 pytest
 pytest-asyncio

@@ -20,39 +20,26 @@ services:
   api:
     build:
       context: .
-      dockerfile: apps/api/Dockerfile
+      dockerfile: Dockerfile
     ports:
       - "8000:8000"
     environment:
       - DATABASE_URL=postgresql://ecdat:ecdatpassword@db:5432/ecdat
       - REDIS_URL=redis://redis:6379/0
+      - HINDSIGHT_API_KEY=${HINDSIGHT_API_KEY:-}
+      - HINDSIGHT_BASE_URL=${HINDSIGHT_BASE_URL:-https://api.hindsight.vectorize.io}
+      - HINDSIGHT_BANK_ID=${HINDSIGHT_BANK_ID:-encryptplus-agent}
+      - HINDSIGHT_ENABLED=${HINDSIGHT_ENABLED:-true}
     depends_on:
       - db
       - redis
     volumes:
-      - ./apps/api:/app/apps/api
-      - ./packages:/app/packages
-      - ./cryptoscan:/app/cryptoscan
-
-  worker:
-    build:
-      context: .
-      dockerfile: apps/api/Dockerfile
-    command: celery -A apps.api.worker worker --loglevel=info
-    environment:
-      - DATABASE_URL=postgresql://ecdat:ecdatpassword@db:5432/ecdat
-      - REDIS_URL=redis://redis:6379/0
-    depends_on:
-      - db
-      - redis
-    volumes:
-      - ./apps/api:/app/apps/api
-      - ./packages:/app/packages
-      - ./cryptoscan:/app/cryptoscan
+      - ./ecdat.db:/app/ecdat.db
 
   web:
     build:
       context: ./apps/web
+      dockerfile: Dockerfile
     ports:
       - "3000:3000"
     environment:

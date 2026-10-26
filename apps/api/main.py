@@ -368,3 +368,60 @@ def compare_scans(current: int, previous: int, db: Session = Depends(get_db)):
         "risk_change": (curr.overall_risk_score or 0) - (prev.overall_risk_score or 0),
         "new_findings": curr.total_findings - prev.total_findings
     }
+
+# =========================================================================
+# AI AGENT & DURABLE TASK CONTINUITY ROUTES (HINDSIGHT MEMORY + ECDAT DB)
+# =========================================================================
+from .agent_service import agent_service
+from .hindsight_service import hindsight_service
+from . import task_worker
+from .agent_tools import tool_list_agent_tasks
+
+@app.on_event("startup")
+def on_startup():
+    task_worker.startup_recover_interrupted_tasks()
+
+@app.post("/api/agent/chat", response_model=schemas.AgentChatResponse)
+def agent_chat(req: schemas.AgentChatRequest, db: Session = Depends(get_db)):
+    user_id = req.user_id or "dev_user"
+    result = agent_service.process_chat(
+        message=req.message,
+        db=db,
+        user_id=user_id,
+        session_id=req.session_id or "default_session"
+    )
+
+    return schemas.AgentChatResponse(
+        response=result.get("content", ""),
+        user_id=user_id,
+        session_id=result.get("session_id", "default_session"),
+        task_id=result.get("task_id"),
+        scan_id=result.get("scan_id"),
+        recalled_memories=result.get("recalled_memories", []),
+        verified_data=result.get("verified_data"),
+        links=result.get("links", []),
+        status=result.get("status", "success")
+    )
+
+@app.get("/api/agent/tasks")
+def list_agent_tasks(user_id: str = "dev_user", limit: int = 10, db: Session = Depends(get_db)):
+    return tool_list_agent_tasks(db, user_id=user_id, limit=limit)
+
+@app.get("/api/agent/tasks/{task_id}")
+def get_agent_task(task_id: str, db: Session = Depends(get_db)):
+    t = db.query(models.AgentTask).filter(models.AgentTask.task_id == task_id).first()
+    if not t:
+        raise HTTPException(404, "Task not found")
+    return t
+
+@app.post("/api/agent/tasks/{task_id}/recover")
+def recover_agent_task(task_id: str, bg_tasks: BackgroundTasks, db: Session = Depends(get_db)):
+    return task_worker.recover_agent_task(task_id, bg_tasks=bg_tasks)
+
+@app.get("/api/agent/memories")
+def get_user_memories(user_id: str = "dev_user"):
+    return {
+        "user_id": user_id,
+        "memories": hindsight_service.retrieve_conversation_context(user_id=user_id)
+    }
+

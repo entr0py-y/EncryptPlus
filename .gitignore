@@ -40,11 +40,15 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# OS Files
+# OS & Runtime Files
 .DS_Store
 Thumbs.db
+.encryptplus_pids
 
 # Temporary
 tmp/
 temp/
 /tmp/
+
+# Separate repositories
+Portfolio/

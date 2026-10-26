@@ -258,7 +258,7 @@ export default function LongFormAssessmentPage() {
   const distinctAlgos = new Set(inventory.map((a) => a.algorithm).filter(Boolean)).size;
 
   return (
-    <div className="relative min-h-screen bg-[#09090b] text-[#f4f4f5] font-sans select-none">
+    <div className="relative min-h-screen bg-[#fafafa] dark:bg-[#09090b] text-zinc-900 dark:text-[#f4f4f5] font-sans select-none transition-colors duration-200">
       {/* Main Continuous Document Body */}
       <div className="max-w-4xl mx-auto px-6 py-12 md:py-16 space-y-24">
         {/* ========================================================================= */}
@@ -266,16 +266,16 @@ export default function LongFormAssessmentPage() {
         {/* ========================================================================= */}
         <section id="overview" className="space-y-12 scroll-mt-20">
           {/* Header Bar */}
-          <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-4 border-b border-zinc-800 pb-6">
+          <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-4 border-b border-zinc-200 dark:border-zinc-800 pb-6">
             <div className="space-y-1">
               <div className="text-[10px] uppercase tracking-widest text-zinc-500">
                 Enterprise Cryptographic Assessment
               </div>
-              <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-white">
+              <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-zinc-950 dark:text-white">
                 {repoName}
               </h1>
-              <p className="text-xs text-zinc-400 flex items-center gap-2 pt-0.5">
-                <span>Scan <strong className="font-mono text-zinc-200">#{scan.id}</strong></span>
+              <p className="text-xs text-zinc-500 dark:text-zinc-400 flex items-center gap-2 pt-0.5">
+                <span>Scan <strong className="font-mono text-zinc-700 dark:text-zinc-200">#{scan.id}</strong></span>
                 <span>•</span>
                 <span>{new Date(scan.started_at).toLocaleDateString()}</span>
                 <span>•</span>
@@ -297,15 +297,15 @@ export default function LongFormAssessmentPage() {
           </div>
 
           {/* 4 Primary Metric Numbers (Single Cohesive Bar) */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 p-6 rounded-2xl border border-zinc-800/80 bg-[#121214]">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 p-6 rounded-2xl border border-zinc-200 dark:border-zinc-800/80 bg-white dark:bg-[#121214] shadow-sm">
             <div className="space-y-1">
               <div className="text-[10px] uppercase tracking-wider text-zinc-500">
                 Overall Risk
               </div>
-              <div className="text-3xl font-bold text-white font-mono">
+              <div className="text-3xl font-bold text-zinc-950 dark:text-white font-mono">
                 {scan.overall_risk_score !== null ? Number(scan.overall_risk_score).toFixed(1) : "—"}
               </div>
-              <div className="text-[10px] text-zinc-400 uppercase">
+              <div className="text-[10px] text-zinc-500 dark:text-zinc-400 uppercase">
                 {scan.overall_risk_level || "MODERATE"} EXPOSURE
               </div>
             </div>
@@ -314,10 +314,10 @@ export default function LongFormAssessmentPage() {
               <div className="text-[10px] uppercase tracking-wider text-zinc-500">
                 PQC Readiness
               </div>
-              <div className="text-3xl font-bold text-white font-mono">
+              <div className="text-3xl font-bold text-zinc-950 dark:text-white font-mono">
                 {scan.pqc_readiness_score !== null ? `${Number(scan.pqc_readiness_score).toFixed(1)}%` : "—"}
               </div>
-              <div className="text-[10px] text-zinc-400 uppercase">
+              <div className="text-[10px] text-zinc-500 dark:text-zinc-400 uppercase">
                 {scan.pqc_readiness_level || "DEVELOPING"}
               </div>
             </div>
@@ -326,10 +326,10 @@ export default function LongFormAssessmentPage() {
               <div className="text-[10px] uppercase tracking-wider text-zinc-500">
                 Crypto Assets
               </div>
-              <div className="text-3xl font-bold text-white font-mono">
+              <div className="text-3xl font-bold text-zinc-950 dark:text-white font-mono">
                 {scan.total_findings.toLocaleString()}
               </div>
-              <div className="text-[10px] text-zinc-400">
+              <div className="text-[10px] text-zinc-500 dark:text-zinc-400">
                 {distinctAlgos} Distinct Algorithms
               </div>
             </div>
@@ -338,26 +338,26 @@ export default function LongFormAssessmentPage() {
               <div className="text-[10px] uppercase tracking-wider text-zinc-500">
                 Quantum Vulnerable
               </div>
-              <div className="text-3xl font-bold text-white font-mono">
+              <div className="text-3xl font-bold text-zinc-950 dark:text-white font-mono">
                 {scan.quantum_vulnerable_count.toLocaleString()}
               </div>
-              <div className="text-[10px] text-zinc-400">
+              <div className="text-[10px] text-zinc-500 dark:text-zinc-400">
                 Shor's Susceptible
               </div>
             </div>
           </div>
 
           {/* Central Posture Visualization Surface */}
-          <div className="p-8 rounded-2xl border border-zinc-800/80 bg-[#121214] flex flex-col md:flex-row items-center justify-between gap-8">
+          <div className="p-8 rounded-2xl border border-zinc-200 dark:border-zinc-800/80 bg-white dark:bg-[#121214] shadow-sm flex flex-col md:flex-row items-center justify-between gap-8">
             <div className="flex-1 space-y-3 max-w-md text-left">
               <div className="text-[10px] uppercase tracking-widest text-zinc-500 font-semibold">
                 Posture Assessment
               </div>
-              <h2 className="text-xl font-bold text-white">
+              <h2 className="text-xl font-bold text-zinc-950 dark:text-white">
                 Cryptographic Security Posture
               </h2>
-              <p className="text-xs text-zinc-400 leading-relaxed">
-                The repository operates with an overall risk rating of <strong className="text-white">{Number(scan.overall_risk_score || 0).toFixed(1)}/100</strong> ({scan.overall_risk_level || "MODERATE"}). There are <strong className="text-white">{scan.quantum_vulnerable_count}</strong> cryptographic mechanisms susceptible to quantum cryptanalysis (Shor's algorithm).
+              <p className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed">
+                The repository operates with an overall risk rating of <strong className="text-zinc-900 dark:text-white">{Number(scan.overall_risk_score || 0).toFixed(1)}/100</strong> ({scan.overall_risk_level || "MODERATE"}). There are <strong className="text-zinc-900 dark:text-white">{scan.quantum_vulnerable_count}</strong> cryptographic mechanisms susceptible to quantum cryptanalysis (Shor's algorithm).
               </p>
             </div>
 

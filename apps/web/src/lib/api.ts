@@ -198,3 +198,59 @@ export async function createScan(targetPath: string, branch?: string): Promise<{
   if (!res.ok) throw new Error('Failed to create scan');
   return res.json();
 }
+
+export interface AgentTaskRecord {
+  task_id: string;
+  target?: string | null;
+  status: string;
+  verification_state: string;
+  scan_id?: number | null;
+  result_summary?: string | null;
+  error_info?: string | null;
+  retry_count: number;
+  created_at?: string | null;
+  report_url?: string | null;
+}
+
+export interface AgentChatResponse {
+  response: string;
+  user_id: string;
+  session_id: string;
+  task_id?: string | null;
+  scan_id?: number | null;
+  recalled_memories: string[];
+  verified_data?: any;
+  links: { title: string; url: string }[];
+  status: string;
+}
+
+export async function sendAgentMessage(message: string, userId: string = "dev_user", sessionId: string = "default_session"): Promise<AgentChatResponse> {
+  const res = await fetch(`${API_URL}/api/agent/chat`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ message, user_id: userId, session_id: sessionId })
+  });
+  if (!res.ok) throw new Error('Failed to get response from AI Agent');
+  return res.json();
+}
+
+export async function fetchAgentTasks(userId: string = "dev_user"): Promise<AgentTaskRecord[]> {
+  const res = await fetch(`${API_URL}/api/agent/tasks?user_id=${encodeURIComponent(userId)}`);
+  if (!res.ok) throw new Error('Failed to fetch agent tasks');
+  return res.json();
+}
+
+export async function recoverAgentTask(taskId: string): Promise<any> {
+  const res = await fetch(`${API_URL}/api/agent/tasks/${taskId}/recover`, {
+    method: 'POST'
+  });
+  if (!res.ok) throw new Error('Failed to recover task');
+  return res.json();
+}
+
+export async function fetchUserMemories(userId: string = "dev_user"): Promise<{ user_id: string; memories: string[] }> {
+  const res = await fetch(`${API_URL}/api/agent/memories?user_id=${encodeURIComponent(userId)}`);
+  if (!res.ok) throw new Error('Failed to fetch user memories');
+  return res.json();
+}
+

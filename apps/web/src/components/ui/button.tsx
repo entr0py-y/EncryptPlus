@@ -8,19 +8,19 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          "bg-zinc-100 text-zinc-950 hover:bg-white active:scale-[0.98] shadow-sm font-semibold",
+          "bg-zinc-950 text-white hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-950 dark:hover:bg-white active:scale-[0.98] shadow-sm font-semibold",
         destructive:
-          "bg-zinc-900 border border-zinc-700 text-zinc-100 hover:bg-zinc-800 hover:border-zinc-500",
+          "bg-red-600 text-white hover:bg-red-700 dark:bg-zinc-900 dark:border dark:border-zinc-700 dark:text-zinc-100 dark:hover:bg-zinc-800",
         outline:
-          "border border-zinc-800 bg-transparent text-zinc-200 hover:bg-zinc-900 hover:border-zinc-700 hover:text-white",
+          "border border-zinc-200 dark:border-zinc-800 bg-transparent text-zinc-800 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-900 hover:border-zinc-300 dark:hover:border-zinc-700 hover:text-zinc-950 dark:hover:text-white",
         secondary:
-          "bg-zinc-900 text-zinc-300 border border-zinc-800/80 hover:bg-zinc-800 hover:text-white",
+          "bg-zinc-100 dark:bg-zinc-900 text-zinc-800 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-800/80 hover:bg-zinc-200 dark:hover:bg-zinc-800 hover:text-zinc-950 dark:hover:text-white",
         ghost:
-          "text-zinc-400 hover:bg-zinc-900 hover:text-zinc-100",
+          "text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-900 hover:text-zinc-950 dark:hover:text-zinc-100",
         link:
-          "text-zinc-300 underline-offset-4 hover:underline",
+          "text-zinc-700 dark:text-zinc-300 underline-offset-4 hover:underline",
         subtle:
-          "bg-zinc-900/60 text-zinc-400 border border-zinc-800/40 hover:bg-zinc-900 hover:text-zinc-200 hover:border-zinc-700",
+          "bg-zinc-100 dark:bg-zinc-900/60 text-zinc-600 dark:text-zinc-400 border border-zinc-200 dark:border-zinc-800/40 hover:bg-zinc-200 dark:hover:bg-zinc-900 hover:text-zinc-950 dark:hover:text-zinc-200",
       },
       size: {
         default: "h-10 px-4 py-2",

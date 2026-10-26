@@ -3,6 +3,7 @@ from sqlalchemy import inspect, text
 from sqlalchemy.orm import Session
 from .database import engine, SessionLocal
 from . import models
+from .auth import hash_password
 
 logger = logging.getLogger("ecdat.migrations")
 
@@ -35,22 +36,53 @@ def run_migrations():
                 conn.execute(text("ALTER TABLE projects ADD COLUMN user_id VARCHAR"))
                 conn.commit()
 
-    # 4. Ensure default dev_user exists for legacy tasks/scans
+    # 4. Ensure default demo and developer accounts exist with valid credentials
     db: Session = SessionLocal()
     try:
+        default_pwd_hash = hash_password("EncryptPlus2026!")
+
+        # 4a. dev_user
         dev_user = db.query(models.User).filter(models.User.id == "dev_user").first()
         if not dev_user:
-            # Create a placeholder legacy user for existing pre-auth scans/tasks
             dev_user = models.User(
                 id="dev_user",
                 email="developer@encryptplus.local",
                 name="Local Developer",
-                password_hash="!legacy_disabled_password",
+                password_hash=default_pwd_hash,
                 is_active=True
             )
             db.add(dev_user)
-            db.commit()
-            logger.info("Created legacy 'dev_user' account to preserve existing pre-auth scans and tasks.")
+            logger.info("Created default 'dev_user' (developer@encryptplus.local) account.")
+        elif dev_user.password_hash.startswith("!legacy"):
+            dev_user.password_hash = default_pwd_hash
+
+        # 4b. demo@encryptplus.com
+        demo_user = db.query(models.User).filter(models.User.email == "demo@encryptplus.com").first()
+        if not demo_user:
+            demo_user = models.User(
+                id="usr_demo_auditor",
+                email="demo@encryptplus.com",
+                name="Demo Auditor",
+                password_hash=default_pwd_hash,
+                is_active=True
+            )
+            db.add(demo_user)
+            logger.info("Created default 'demo@encryptplus.com' account.")
+
+        # 4c. admin@encryptplus.com
+        admin_user = db.query(models.User).filter(models.User.email == "admin@encryptplus.com").first()
+        if not admin_user:
+            admin_user = models.User(
+                id="usr_admin_default",
+                email="admin@encryptplus.com",
+                name="Administrator",
+                password_hash=default_pwd_hash,
+                is_active=True
+            )
+            db.add(admin_user)
+            logger.info("Created default 'admin@encryptplus.com' account.")
+
+        db.commit()
 
         # Ensure any pre-existing unowned scans are claimed by dev_user to preserve legacy data
         db.query(models.Scan).filter(models.Scan.user_id.is_(None)).update(

@@ -44,7 +44,11 @@ export default function LoginPage() {
       await login(trimmedEmail, password);
       router.push("/scans");
     } catch (err: any) {
-      setErrorMsg(err.message || "Invalid email or password.");
+      setErrorMsg(
+        err.message?.includes("Invalid email") || err.message?.includes("401")
+          ? "Invalid email or password. If you haven't created an account yet on this deployment, click 'Create Account' below to sign up, or use 1-Click Demo Login."
+          : err.message || "Invalid email or password."
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -147,6 +151,44 @@ export default function LoginPage() {
             >
               Create Account
             </Link>
+          </div>
+
+          {/* Quick Demo Access */}
+          <div className="mt-4 p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-xs flex flex-col gap-2">
+            <div className="flex items-center justify-between">
+              <span className="font-mono font-medium text-amber-400">
+                Demo Credentials
+              </span>
+              <span className="font-mono text-[10px] text-zinc-500">
+                Instant Access
+              </span>
+            </div>
+            <div className="font-mono text-[11px] text-zinc-400 flex flex-col gap-0.5">
+              <div>Email: <span className="text-zinc-200">demo@encryptplus.com</span></div>
+              <div>Password: <span className="text-zinc-200">EncryptPlus2026!</span></div>
+            </div>
+            <button
+              type="button"
+              disabled={isSubmitting}
+              onClick={async () => {
+                setEmail("demo@encryptplus.com");
+                setPassword("EncryptPlus2026!");
+                setIsSubmitting(true);
+                setErrorMsg("");
+                try {
+                  await login("demo@encryptplus.com", "EncryptPlus2026!");
+                  router.push("/scans");
+                } catch (err: any) {
+                  setErrorMsg(err.message || "Demo login failed");
+                } finally {
+                  setIsSubmitting(false);
+                }
+              }}
+              className="mt-1 w-full py-1.5 px-3 rounded-lg bg-amber-500 hover:bg-amber-400 text-zinc-950 font-medium text-xs transition-colors flex items-center justify-center gap-1.5 cursor-pointer shadow-sm"
+            >
+              <span>1-Click Sign In as Demo User</span>
+              <ArrowRight className="w-3 h-3" />
+            </button>
           </div>
         </div>
       </main>

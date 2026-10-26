@@ -80,7 +80,11 @@ export function AuthModal({
       onClose();
       onSuccess?.();
     } catch (err: any) {
-      setErrorMsg(err.message || "Invalid email or password.");
+      setErrorMsg(
+        err.message?.includes("Invalid email") || err.message?.includes("401")
+          ? "Invalid email or password. If you haven't created an account yet on this deployment, switch to 'Create Account' above, or click Demo Login below."
+          : err.message || "Invalid email or password."
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -259,6 +263,47 @@ export function AuthModal({
               >
                 Create one now
               </button>
+            </div>
+
+            {/* Quick Demo Access */}
+            <div className="mt-4 pt-3.5 border-t border-zinc-200/60 dark:border-zinc-800/60">
+              <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-xs flex flex-col gap-2">
+                <div className="flex items-center justify-between">
+                  <span className="font-mono font-medium text-amber-600 dark:text-amber-400">
+                    Demo Credentials
+                  </span>
+                  <span className="font-mono text-[10px] text-zinc-500 dark:text-zinc-400">
+                    Instant Access
+                  </span>
+                </div>
+                <div className="font-mono text-[11px] text-zinc-600 dark:text-zinc-400 flex flex-col gap-0.5">
+                  <div>Email: <span className="text-zinc-900 dark:text-zinc-200">demo@encryptplus.com</span></div>
+                  <div>Password: <span className="text-zinc-900 dark:text-zinc-200">EncryptPlus2026!</span></div>
+                </div>
+                <button
+                  type="button"
+                  disabled={isSubmitting}
+                  onClick={async () => {
+                    setEmail("demo@encryptplus.com");
+                    setPassword("EncryptPlus2026!");
+                    setIsSubmitting(true);
+                    setErrorMsg("");
+                    try {
+                      await login("demo@encryptplus.com", "EncryptPlus2026!");
+                      onClose();
+                      onSuccess?.();
+                    } catch (err: any) {
+                      setErrorMsg(err.message || "Demo login failed");
+                    } finally {
+                      setIsSubmitting(false);
+                    }
+                  }}
+                  className="mt-1 w-full py-1.5 px-3 rounded-lg bg-amber-500 hover:bg-amber-400 text-zinc-950 font-medium text-xs transition-colors flex items-center justify-center gap-1.5 cursor-pointer shadow-sm"
+                >
+                  <span>1-Click Sign In as Demo User</span>
+                  <ArrowRight className="w-3 h-3" />
+                </button>
+              </div>
             </div>
           </form>
         )}

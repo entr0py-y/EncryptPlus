@@ -335,16 +335,6 @@ export default function LongFormAssessmentPage() {
               <span>Export CBOM</span>
             </Button>
           </a>
-
-          <Link href="/scans">
-            <Button
-              size="sm"
-              className="h-10 px-4 gap-2 text-xs font-mono btn-yellow-hover rounded-xl"
-            >
-              <Play className="w-3.5 h-3.5" />
-              <span>New Scan</span>
-            </Button>
-          </Link>
         </div>
       </div>
 

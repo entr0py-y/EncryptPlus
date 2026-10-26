@@ -116,17 +116,31 @@ export interface AgentChatResponse {
   status: string;
 }
 
+export interface AuthResponse {
+  user: UserRecord;
+  token?: string;
+  status?: string;
+  message?: string;
+}
+
 /**
- * Standard fetch helper that always includes session credentials (cookies)
+ * Standard fetch helper that includes session credentials (cookies)
+ * and dual Authorization Bearer token header for cross-domain deployments.
  */
 async function fetchWithCredentials(url: string, init?: RequestInit): Promise<Response> {
+  const token = typeof window !== 'undefined' ? localStorage.getItem('ecdat_token') : null;
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+    ...((init?.headers as Record<string, string>) || {})
+  };
+  if (token && !headers['Authorization'] && !headers['authorization']) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+
   const mergedInit: RequestInit = {
     ...init,
     credentials: 'include',
-    headers: {
-      'Content-Type': 'application/json',
-      ...(init?.headers || {})
-    }
+    headers
   };
   return fetch(url, mergedInit);
 }
@@ -140,7 +154,7 @@ export async function signupUser(payload: {
   email: string;
   password: string;
   confirm_password: string;
-}): Promise<{ user: UserRecord }> {
+}): Promise<AuthResponse> {
   const res = await fetchWithCredentials(`${API_URL}/api/auth/signup`, {
     method: 'POST',
     body: JSON.stringify(payload)
@@ -149,13 +163,17 @@ export async function signupUser(payload: {
     const err = await res.json().catch(() => ({}));
     throw new Error(err.detail || 'Signup failed');
   }
-  return res.json();
+  const data: AuthResponse = await res.json();
+  if (data.token && typeof window !== 'undefined') {
+    localStorage.setItem('ecdat_token', data.token);
+  }
+  return data;
 }
 
 export async function loginUser(payload: {
   email: string;
   password: string;
-}): Promise<{ user: UserRecord }> {
+}): Promise<AuthResponse> {
   const res = await fetchWithCredentials(`${API_URL}/api/auth/login`, {
     method: 'POST',
     body: JSON.stringify(payload)
@@ -164,10 +182,17 @@ export async function loginUser(payload: {
     const err = await res.json().catch(() => ({}));
     throw new Error(err.detail || 'Login failed');
   }
-  return res.json();
+  const data: AuthResponse = await res.json();
+  if (data.token && typeof window !== 'undefined') {
+    localStorage.setItem('ecdat_token', data.token);
+  }
+  return data;
 }
 
 export async function logoutUser(): Promise<{ status: string }> {
+  if (typeof window !== 'undefined') {
+    localStorage.removeItem('ecdat_token');
+  }
   const res = await fetchWithCredentials(`${API_URL}/api/auth/logout`, {
     method: 'POST'
   });
@@ -180,10 +205,11 @@ export async function logoutUser(): Promise<{ status: string }> {
 export async function fetchCurrentUser(): Promise<UserRecord | null> {
   try {
     const res = await fetchWithCredentials(`${API_URL}/api/auth/me`);
-    if (!res.ok) {
+    if (res.status === 204 || !res.ok) {
       return null;
     }
-    return res.json();
+    const data = await res.json();
+    return data;
   } catch {
     return null;
   }
@@ -195,7 +221,10 @@ export async function fetchCurrentUser(): Promise<UserRecord | null> {
 
 export async function fetchScans(): Promise<ScanRecord[]> {
   const res = await fetchWithCredentials(`${API_URL}/api/scans`);
-  if (!res.ok) throw new Error('Failed to fetch scans');
+  if (!res.ok) {
+    if (res.status === 401) return [];
+    throw new Error('Failed to fetch scans');
+  }
   return res.json();
 }
 

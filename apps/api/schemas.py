@@ -92,6 +92,7 @@ class UserResponse(BaseModel):
 
 class AuthResponse(BaseModel):
     user: UserResponse
+    token: Optional[str] = None
     status: str = "success"
     message: Optional[str] = None
 

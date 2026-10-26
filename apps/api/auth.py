@@ -44,10 +44,15 @@ if not JWT_SECRET_KEY or JWT_SECRET_KEY == "change-this-to-a-secure-random-secre
             pass
 
 ALGORITHM = "HS256"
+AUTH_COOKIE_NAME = "ecdat_session"
 SESSION_EXPIRY_HOURS = int(os.getenv("AUTH_SESSION_EXPIRY_HOURS", "24"))
-AUTH_COOKIE_NAME = os.getenv("AUTH_COOKIE_NAME", "ecdat_session")
-SECURE_COOKIE = os.getenv("APP_ENV", "development").lower() == "production"
-SAMESITE_COOKIE = "lax"
+IS_PROD = (
+    os.getenv("APP_ENV", "development").lower() == "production"
+    or os.getenv("RENDER") is not None
+    or os.getenv("SECURE_COOKIE", "").lower() in ("true", "1")
+)
+SECURE_COOKIE = IS_PROD
+SAMESITE_COOKIE = "none" if SECURE_COOKIE else "lax"
 
 # In-memory sliding window rate limiter for login attempts (max 10 attempts per 5 minutes per key)
 _login_attempts: Dict[str, list] = defaultdict(list)
@@ -138,16 +143,18 @@ def validate_password_policy(password: str) -> Tuple[bool, Optional[str]]:
 
 # FastAPI Dependencies
 def get_token_from_request(request: Request) -> Optional[str]:
-    """Extracts JWT token from HttpOnly cookie or Authorization Bearer header."""
-    # 1. Check HttpOnly cookie first
+    """Extracts JWT token from Authorization Bearer header or HttpOnly cookie."""
+    # 1. Check Authorization: Bearer <token> (preferred for cross-origin deployment)
+    auth_header = request.headers.get("Authorization") or request.headers.get("authorization")
+    if auth_header and auth_header.startswith("Bearer "):
+        token = auth_header[7:].strip()
+        if token:
+            return token
+
+    # 2. Check HttpOnly cookie
     token = request.cookies.get(AUTH_COOKIE_NAME)
     if token:
         return token
-
-    # 2. Check Authorization: Bearer <token>
-    auth_header = request.headers.get("Authorization")
-    if auth_header and auth_header.startswith("Bearer "):
-        return auth_header[7:].strip()
 
     return None
 

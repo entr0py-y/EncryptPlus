@@ -16,6 +16,7 @@ from .auth import (
     record_failed_login,
     clear_login_attempts,
     get_current_user,
+    get_optional_current_user,
     AUTH_COOKIE_NAME,
     SECURE_COOKIE,
     SAMESITE_COOKIE,
@@ -109,6 +110,7 @@ def signup(req: schemas.UserSignupRequest, response: Response, db: Session = Dep
             email=user.email,
             created_at=user.created_at
         ),
+        token=token,
         status="success",
         message="Account created successfully."
     )
@@ -169,6 +171,7 @@ def login(req: schemas.UserLoginRequest, request: Request, response: Response, d
             email=user.email,
             created_at=user.created_at
         ),
+        token=token,
         status="success",
         message="Login successful."
     )
@@ -187,12 +190,14 @@ def logout(response: Response):
     )
     return {"status": "ok", "message": "Logged out successfully."}
 
-@router.get("/me", response_model=schemas.UserResponse)
-def get_current_user_profile(current_user: models.User = Depends(get_current_user)):
+@router.get("/me")
+def get_current_user_profile(current_user = Depends(get_optional_current_user)):
     """
     Returns the authenticated user's profile.
-    Used by the frontend to restore sessions on page refresh.
+    Returns 204 No Content for unauthenticated requests, preventing 401 errors in the console.
     """
+    if not current_user:
+        return Response(status_code=status.HTTP_204_NO_CONTENT)
     return schemas.UserResponse(
         id=current_user.id,
         name=current_user.name,

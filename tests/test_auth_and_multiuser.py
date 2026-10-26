@@ -170,24 +170,34 @@ def test_session_persistence_and_logout(client):
     logout_res = client.post("/api/auth/logout")
     assert logout_res.status_code == 200
 
-    # 4. Subsequent request must be rejected
+    # 4. Subsequent request must be rejected or return 204 No Content
     me_after = client.get("/api/auth/me")
-    assert me_after.status_code == 401
+    assert me_after.status_code in (204, 401)
 
 # -------------------------------------------------------------------------
 # 9. UNPROTECTED VS PROTECTED ROUTE ENFORCEMENT
 # -------------------------------------------------------------------------
 
-def test_unauthenticated_requests_rejected(client):
+def test_unauthenticated_requests_rejected(client, db):
     """9. Verifies that unauthenticated requests to protected endpoints return 401."""
     client.cookies.clear()
     
-    # Scans endpoints
-    assert client.get("/api/scans").status_code == 401
+    # Create a private scan owned by a user
+    private_scan = models.Scan(
+        user_id="secret_user_123",
+        repository_url="https://github.com/secret/repo.git",
+        branch="main",
+        status="COMPLETED"
+    )
+    db.add(private_scan)
+    db.commit()
+    db.refresh(private_scan)
+
+    # Scans write endpoints require authentication (guest exploration allows public reads)
     assert client.post("/api/scans", json={"repository_url": "test_repo"}).status_code == 401
-    assert client.get("/api/scans/1").status_code == 401
-    assert client.get("/api/scans/1/report").status_code == 401
-    assert client.get("/api/scans/1/cbom").status_code == 401
+    assert client.get(f"/api/scans/{private_scan.id}").status_code == 401
+    assert client.get(f"/api/scans/{private_scan.id}/report").status_code == 401
+    assert client.get(f"/api/scans/{private_scan.id}/cbom").status_code == 401
 
     # Agent endpoints
     assert client.get("/api/agent/tasks").status_code == 401

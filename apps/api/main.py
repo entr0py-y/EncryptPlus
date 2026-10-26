@@ -233,26 +233,33 @@ def create_scan(scan_in: schemas.ScanCreate, bg_tasks: BackgroundTasks, current_
     return {"scan_id": scan.id}
 
 @app.get("/api/scans")
-def list_scans(current_user: models.User = Depends(get_current_user), db: Session = Depends(get_db)):
-    """Returns only the authenticated user's private scans."""
+def list_scans(current_user: Optional[models.User] = Depends(get_optional_current_user), db: Session = Depends(get_db)):
+    """Returns the authenticated user's private scans, or public demo scans for guests."""
+    if current_user:
+        return (
+            db.query(models.Scan)
+            .filter((models.Scan.user_id == current_user.id) | (models.Scan.user_id == "dev_user") | (models.Scan.user_id == None))
+            .order_by(models.Scan.id.desc())
+            .all()
+        )
     return (
         db.query(models.Scan)
-        .filter(models.Scan.user_id == current_user.id)
+        .filter((models.Scan.user_id == "dev_user") | (models.Scan.user_id == None))
         .order_by(models.Scan.id.desc())
         .all()
     )
 
 @app.get("/api/scans/{id}")
-def get_scan(id: int, current_user: models.User = Depends(get_current_user), db: Session = Depends(get_db)):
+def get_scan(id: int, current_user: Optional[models.User] = Depends(get_optional_current_user), db: Session = Depends(get_db)):
     return get_user_scan(id, current_user, db)
 
 @app.get("/api/scans/{id}/status")
-def get_scan_status(id: int, current_user: models.User = Depends(get_current_user), db: Session = Depends(get_db)):
+def get_scan_status(id: int, current_user: Optional[models.User] = Depends(get_optional_current_user), db: Session = Depends(get_db)):
     s = get_user_scan(id, current_user, db)
     return {"status": s.status, "error_message": s.error_message}
 
 @app.get("/api/scans/{id}/summary")
-def get_scan_summary(id: int, current_user: models.User = Depends(get_current_user), db: Session = Depends(get_db)):
+def get_scan_summary(id: int, current_user: Optional[models.User] = Depends(get_optional_current_user), db: Session = Depends(get_db)):
     s = get_user_scan(id, current_user, db)
     return {
         "overall_risk_score": s.overall_risk_score,
@@ -262,7 +269,7 @@ def get_scan_summary(id: int, current_user: models.User = Depends(get_current_us
     }
 
 @app.get("/api/scans/{id}/assets")
-def get_scan_assets(id: int, current_user: models.User = Depends(get_current_user), db: Session = Depends(get_db),
+def get_scan_assets(id: int, current_user: Optional[models.User] = Depends(get_optional_current_user), db: Session = Depends(get_db),
     severity: Optional[str] = None, quantum_status: Optional[str] = None, asset_type: Optional[str] = None,
     search: Optional[str] = None, limit: Optional[int] = None, offset: int = 0):
     get_user_scan(id, current_user, db)
@@ -282,24 +289,24 @@ def get_scan_assets(id: int, current_user: models.User = Depends(get_current_use
     return q.all()
 
 @app.get("/api/scans/{id}/assets/{asset_id}")
-def get_asset(id: int, asset_id: int, current_user: models.User = Depends(get_current_user), db: Session = Depends(get_db)):
+def get_asset(id: int, asset_id: int, current_user: Optional[models.User] = Depends(get_optional_current_user), db: Session = Depends(get_db)):
     get_user_scan(id, current_user, db)
     a = db.query(models.CryptoAsset).filter(models.CryptoAsset.id == asset_id, models.CryptoAsset.scan_id == id).first()
     if not a: raise HTTPException(404)
     return a
 
 @app.get("/api/scans/{id}/findings")
-def get_findings(id: int, current_user: models.User = Depends(get_current_user), db: Session = Depends(get_db),
+def get_findings(id: int, current_user: Optional[models.User] = Depends(get_optional_current_user), db: Session = Depends(get_db),
     severity: Optional[str] = None, search: Optional[str] = None, limit: Optional[int] = 100, offset: int = 0):
     return get_scan_assets(id, current_user, db, severity=severity, search=search, limit=limit, offset=offset)
 
 @app.get("/api/scans/{id}/inventory")
-def get_inventory(id: int, current_user: models.User = Depends(get_current_user), db: Session = Depends(get_db),
+def get_inventory(id: int, current_user: Optional[models.User] = Depends(get_optional_current_user), db: Session = Depends(get_db),
     asset_type: Optional[str] = None, quantum_status: Optional[str] = None, search: Optional[str] = None, limit: Optional[int] = 100, offset: int = 0):
     return get_scan_assets(id, current_user, db, asset_type=asset_type, quantum_status=quantum_status, search=search, limit=limit, offset=offset)
 
 @app.get("/api/scans/{id}/algorithms")
-def get_algorithms(id: int, current_user: models.User = Depends(get_current_user), db: Session = Depends(get_db)):
+def get_algorithms(id: int, current_user: Optional[models.User] = Depends(get_optional_current_user), db: Session = Depends(get_db)):
     get_user_scan(id, current_user, db)
     results = db.query(
         models.CryptoAsset.algorithm,
@@ -308,12 +315,12 @@ def get_algorithms(id: int, current_user: models.User = Depends(get_current_user
     return {algo or "UNKNOWN": count for algo, count in results}
 
 @app.get("/api/scans/{id}/risk")
-def get_risk(id: int, current_user: models.User = Depends(get_current_user), db: Session = Depends(get_db)):
+def get_risk(id: int, current_user: Optional[models.User] = Depends(get_optional_current_user), db: Session = Depends(get_db)):
     s = get_user_scan(id, current_user, db)
     return {"score": s.overall_risk_score, "level": s.overall_risk_level}
 
 @app.get("/api/scans/{id}/quantum")
-def get_quantum(id: int, current_user: models.User = Depends(get_current_user), db: Session = Depends(get_db)):
+def get_quantum(id: int, current_user: Optional[models.User] = Depends(get_optional_current_user), db: Session = Depends(get_db)):
     s = get_user_scan(id, current_user, db)
     return {
         "vulnerable": s.quantum_vulnerable_count,
@@ -322,7 +329,7 @@ def get_quantum(id: int, current_user: models.User = Depends(get_current_user), 
     }
 
 @app.get("/api/scans/{id}/mosca")
-def get_mosca(id: int, current_user: models.User = Depends(get_current_user), db: Session = Depends(get_db)):
+def get_mosca(id: int, current_user: Optional[models.User] = Depends(get_optional_current_user), db: Session = Depends(get_db)):
     get_user_scan(id, current_user, db)
     results = db.query(
         models.CryptoAsset.mosca_risk,
@@ -331,26 +338,26 @@ def get_mosca(id: int, current_user: models.User = Depends(get_current_user), db
     return {r or "UNKNOWN": count for r, count in results}
 
 @app.get("/api/scans/{id}/pqc")
-def get_scan_pqc(id: int, current_user: models.User = Depends(get_current_user), db: Session = Depends(get_db)):
+def get_scan_pqc(id: int, current_user: Optional[models.User] = Depends(get_optional_current_user), db: Session = Depends(get_db)):
     s = get_user_scan(id, current_user, db)
     return {"score": s.pqc_readiness_score, "level": s.pqc_readiness_level}
 
 @app.get("/api/scans/{id}/compliance")
-def get_scan_compliance(id: int, current_user: models.User = Depends(get_current_user), db: Session = Depends(get_db)):
+def get_scan_compliance(id: int, current_user: Optional[models.User] = Depends(get_optional_current_user), db: Session = Depends(get_db)):
     get_user_scan(id, current_user, db)
     return db.query(models.ComplianceResult).filter(models.ComplianceResult.scan_id == id).all()
 
 @app.get("/api/scans/{id}/recommendations")
-def get_recommendations(id: int, current_user: models.User = Depends(get_current_user), db: Session = Depends(get_db)):
+def get_recommendations(id: int, current_user: Optional[models.User] = Depends(get_optional_current_user), db: Session = Depends(get_db)):
     get_user_scan(id, current_user, db)
     return db.query(models.Recommendation).filter(models.Recommendation.scan_id == id).all()
 
 @app.get("/api/scans/{id}/migration")
-def get_migration(id: int, current_user: models.User = Depends(get_current_user), db: Session = Depends(get_db)):
+def get_migration(id: int, current_user: Optional[models.User] = Depends(get_optional_current_user), db: Session = Depends(get_db)):
     return get_recommendations(id, current_user, db)
 
 @app.get("/api/scans/{id}/report")
-def get_report(id: int, current_user: models.User = Depends(get_current_user), db: Session = Depends(get_db)):
+def get_report(id: int, current_user: Optional[models.User] = Depends(get_optional_current_user), db: Session = Depends(get_db)):
     s = get_user_scan(id, current_user, db)
     assets = db.query(models.CryptoAsset).filter(models.CryptoAsset.scan_id == id).limit(500).all()
     comp = db.query(models.ComplianceResult).filter(models.ComplianceResult.scan_id == id).all()
@@ -359,7 +366,7 @@ def get_report(id: int, current_user: models.User = Depends(get_current_user), d
     return report.generate_report(s, assets, comp, recs, scs)
 
 @app.get("/api/scans/{id}/cbom")
-def get_cbom(id: int, current_user: models.User = Depends(get_current_user), db: Session = Depends(get_db)):
+def get_cbom(id: int, current_user: Optional[models.User] = Depends(get_optional_current_user), db: Session = Depends(get_db)):
     get_user_scan(id, current_user, db)
     results = db.query(
         models.CryptoAsset.algorithm,
@@ -368,7 +375,7 @@ def get_cbom(id: int, current_user: models.User = Depends(get_current_user), db:
     return {"bomFormat": "CycloneDX", "components": [{"name": algo, "count": count} for algo, count in results if algo]}
 
 @app.get("/api/scans/{id}/scores")
-def get_scores(id: int, current_user: models.User = Depends(get_current_user), db: Session = Depends(get_db)):
+def get_scores(id: int, current_user: Optional[models.User] = Depends(get_optional_current_user), db: Session = Depends(get_db)):
     get_user_scan(id, current_user, db)
     assets = db.query(
         models.CryptoAsset.id,
@@ -384,7 +391,7 @@ def get_scores(id: int, current_user: models.User = Depends(get_current_user), d
     return scoring.calculate_category_scores(assets)
 
 @app.get("/api/scans/{id}/evidence")
-def get_evidence(id: int, current_user: models.User = Depends(get_current_user), db: Session = Depends(get_db), limit: int = 50):
+def get_evidence(id: int, current_user: Optional[models.User] = Depends(get_optional_current_user), db: Session = Depends(get_db), limit: int = 50):
     get_user_scan(id, current_user, db)
     assets = db.query(models.CryptoAsset).filter(models.CryptoAsset.scan_id == id).limit(limit).all()
     return [{"asset_id": a.id, "evidence": a.evidence, "context": a.context} for a in assets]

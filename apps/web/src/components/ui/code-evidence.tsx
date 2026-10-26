@@ -32,12 +32,24 @@ export function CodeEvidence({
       const parsed = JSON.parse(sourceContextJson);
       if (parsed.lines && Array.isArray(parsed.lines)) {
         const start = parsed.startLine || (lineNumber ? lineNumber - 2 : 1);
-        lines = parsed.lines.map((lineStr: string, idx: number) => {
-          const currentNum = start + idx;
+        lines = parsed.lines.map((item: any, idx: number) => {
+          let lineNum = start + idx;
+          let content = "";
+          let isMatch = false;
+
+          if (item && typeof item === "object") {
+            lineNum = item.number !== undefined ? item.number : lineNum;
+            content = String(item.content !== undefined ? item.content : item.text || "");
+            isMatch = !!item.isMatch || lineNum === (parsed.matchLine || lineNumber);
+          } else {
+            content = String(item || "");
+            isMatch = lineNum === (parsed.matchLine || lineNumber);
+          }
+
           return {
-            num: currentNum,
-            text: lineStr,
-            isMatch: currentNum === (parsed.matchLine || lineNumber),
+            num: lineNum,
+            text: content,
+            isMatch,
           };
         });
       }
@@ -49,11 +61,13 @@ export function CodeEvidence({
   if (lines.length === 0) {
     const rawSnippet = contextText || matchText || "// No source context available";
     const baseLine = lineNumber || 1;
-    lines = rawSnippet.split("\n").map((lineStr, idx) => ({
-      num: baseLine + idx,
-      text: lineStr,
-      isMatch: idx === 0,
-    }));
+    lines = String(rawSnippet)
+      .split("\n")
+      .map((lineStr, idx) => ({
+        num: baseLine + idx,
+        text: String(lineStr),
+        isMatch: idx === 0,
+      }));
   }
 
   const handleCopy = () => {
@@ -64,55 +78,59 @@ export function CodeEvidence({
   };
 
   return (
-    <div className={cn("rounded-xl border border-zinc-800 bg-[#0c0c0e] overflow-hidden", className)}>
+    <div className={cn("rounded-xl border border-zinc-200/80 dark:border-zinc-800/70 bg-transparent dark:bg-zinc-950/40 backdrop-blur-sm overflow-hidden font-mono", className)}>
       {/* File Header Bar */}
-      <div className="flex items-center justify-between px-4 py-2.5 bg-zinc-900/80 border-b border-zinc-800/80 text-xs font-mono">
+      <div className="flex items-center justify-between px-4 py-2.5 bg-zinc-900/60 border-b border-zinc-800/70 text-xs">
         <div className="flex items-center gap-2 text-zinc-300 truncate">
-          <FileCode className="w-3.5 h-3.5 text-zinc-400 shrink-0" />
+          <FileCode className="w-3.5 h-3.5 text-yellow-500 shrink-0" />
           <span className="truncate">{filePath || "unknown_source_file"}</span>
           {lineNumber && (
-            <span className="text-zinc-500 font-semibold shrink-0">
+            <span className="text-yellow-500 font-semibold shrink-0">
               :{lineNumber}{column ? `:${column}` : ""}
             </span>
           )}
         </div>
         <button
           onClick={handleCopy}
-          className="flex items-center gap-1 text-[11px] text-zinc-400 hover:text-white px-2 py-1 rounded bg-zinc-800/60 border border-zinc-700/60 hover:border-zinc-500 transition-colors shrink-0"
+          className="flex items-center gap-1.5 text-[11px] text-zinc-400 hover:text-white px-2 py-1 rounded-lg bg-zinc-800/50 border border-zinc-700/60 hover:border-zinc-500 transition-colors shrink-0"
         >
-          {copied ? <Check className="w-3 h-3 text-white" /> : <Copy className="w-3 h-3" />}
+          {copied ? <Check className="w-3 h-3 text-yellow-400" /> : <Copy className="w-3 h-3" />}
           <span>{copied ? "Copied" : "Copy"}</span>
         </button>
       </div>
 
       {/* Code Snippet Box */}
-      <div className="p-3 overflow-x-auto text-xs font-mono leading-relaxed select-text">
-        {lines.map((l, i) => (
-          <div
-            key={i}
-            className={cn(
-              "flex items-start gap-4 px-2 py-0.5 rounded transition-colors",
-              l.isMatch ? "bg-white/10 border-l-2 border-white text-white font-medium" : "text-zinc-400 hover:bg-zinc-900/40"
-            )}
-          >
-            <span className="w-8 text-right text-zinc-600 select-none shrink-0 font-mono text-[11px]">
-              {l.num}
-            </span>
-            <span className="whitespace-pre flex-1">
-              {l.isMatch && matchText && l.text.includes(matchText) ? (
-                <span>
-                  {l.text.substring(0, l.text.indexOf(matchText))}
-                  <span className="bg-white text-zinc-950 px-1 py-0.2 rounded font-bold">
-                    {matchText}
-                  </span>
-                  {l.text.substring(l.text.indexOf(matchText) + matchText.length)}
-                </span>
-              ) : (
-                l.text
+      <div className="p-3 overflow-x-auto text-xs leading-relaxed select-text">
+        {lines.map((l, i) => {
+          const hasMatch = l.isMatch && matchText && typeof l.text === "string" && l.text.includes(matchText);
+
+          return (
+            <div
+              key={i}
+              className={cn(
+                "flex items-start gap-4 px-2 py-0.5 rounded transition-colors",
+                l.isMatch ? "bg-yellow-500/10 border-l-2 border-yellow-500 text-white font-medium" : "text-zinc-400 hover:bg-zinc-900/40"
               )}
-            </span>
-          </div>
-        ))}
+            >
+              <span className="w-8 text-right text-zinc-600 select-none shrink-0 font-mono text-[11px]">
+                {l.num}
+              </span>
+              <span className="whitespace-pre flex-1 font-mono">
+                {hasMatch ? (
+                  <span>
+                    {l.text.substring(0, l.text.indexOf(matchText))}
+                    <span className="bg-yellow-500 text-zinc-950 px-1 py-0.5 rounded font-bold shadow-[0_0_10px_rgba(234,179,8,0.4)]">
+                      {matchText}
+                    </span>
+                    {l.text.substring(l.text.indexOf(matchText) + matchText.length)}
+                  </span>
+                ) : (
+                  l.text
+                )}
+              </span>
+            </div>
+          );
+        })}
       </div>
     </div>
   );

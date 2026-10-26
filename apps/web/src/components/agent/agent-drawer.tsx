@@ -273,13 +273,13 @@ export function AgentDrawer({ isOpen, onClose }: AgentDrawerProps) {
 
                 {/* Recalled Memory Badges */}
                 {m.recalledMemories && m.recalledMemories.length > 0 && (
-                  <div className="p-2 rounded-xl border border-purple-500/20 bg-purple-500/5 text-purple-600 dark:text-purple-300 text-[11px] font-mono space-y-1 w-full">
+                  <div className="p-2 rounded-xl border border-yellow-500/20 bg-yellow-500/10 text-yellow-700 dark:text-yellow-300 text-[11px] font-mono space-y-1 w-full">
                     <div className="flex items-center gap-1 font-semibold uppercase tracking-wider text-[9px]">
                       <Sparkles className="w-3 h-3" />
                       <span>Hindsight Recalled Memory</span>
                     </div>
                     {m.recalledMemories.map((mem, idx) => (
-                      <div key={idx} className="italic text-[10px] pl-2 border-l border-purple-400/40">
+                      <div key={idx} className="italic text-[10px] pl-2 border-l border-yellow-400/40">
                         "{mem}"
                       </div>
                     ))}
@@ -470,7 +470,13 @@ export function AgentDrawer({ isOpen, onClose }: AgentDrawerProps) {
                 disabled={loading}
                 className="flex-1 h-10 px-3.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-[#09090b] text-xs font-sans text-zinc-900 dark:text-white placeholder:text-zinc-400 focus:outline-none focus:ring-1 focus:ring-zinc-400 dark:focus:ring-zinc-600 transition-all"
               />
-              <Button type="submit" size="sm" disabled={loading || !input.trim()} className="h-10 px-3.5 gap-1.5 text-xs">
+              <Button
+                type="submit"
+                variant="yellow"
+                size="sm"
+                disabled={loading || !input.trim()}
+                className="h-10 px-3.5 gap-1.5 text-xs font-semibold cursor-pointer"
+              >
                 <Send className="w-3.5 h-3.5" />
                 <span className="hidden sm:inline">Send</span>
               </Button>

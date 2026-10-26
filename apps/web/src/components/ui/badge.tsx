@@ -9,6 +9,8 @@ const badgeVariants = cva(
       variant: {
         default:
           "border border-zinc-800 bg-zinc-900 text-zinc-200",
+        yellow:
+          "border border-yellow-500/30 dark:border-yellow-400/30 bg-yellow-500/10 text-yellow-600 dark:text-yellow-400 font-semibold",
         secondary:
           "border border-zinc-800/60 bg-zinc-950 text-zinc-400",
         outline:
@@ -18,21 +20,21 @@ const badgeVariants = cva(
         muted:
           "border border-zinc-900 bg-zinc-900/40 text-zinc-500",
         critical:
-          "border border-zinc-200 bg-white text-zinc-950 font-bold",
+          "border border-rose-500/40 bg-rose-500/15 text-rose-400 font-bold",
         high:
-          "border border-zinc-400 bg-zinc-200 text-zinc-900 font-semibold",
+          "border border-orange-500/40 bg-orange-500/15 text-orange-400 font-semibold",
         medium:
-          "border border-zinc-700 bg-zinc-800 text-zinc-200",
+          "border border-yellow-500/40 bg-yellow-500/15 text-yellow-400 font-medium",
         low:
-          "border border-zinc-800 bg-zinc-900 text-zinc-400",
+          "border border-zinc-800 bg-zinc-900/60 text-zinc-400",
         info:
-          "border border-zinc-800/80 bg-zinc-950 text-zinc-500",
+          "border border-zinc-800/80 bg-zinc-950/60 text-zinc-400",
         vulnerable:
-          "border border-zinc-300 bg-zinc-100 text-zinc-950 font-bold",
+          "border border-rose-500/40 bg-rose-500/15 text-rose-400 font-bold",
         partial:
-          "border border-zinc-700 bg-zinc-800/80 text-zinc-300",
+          "border border-yellow-500/40 bg-yellow-500/15 text-yellow-400 font-semibold",
         safe:
-          "border border-zinc-800 bg-zinc-950 text-zinc-300",
+          "border border-emerald-500/40 bg-emerald-500/15 text-emerald-400 font-semibold",
       },
     },
     defaultVariants: {

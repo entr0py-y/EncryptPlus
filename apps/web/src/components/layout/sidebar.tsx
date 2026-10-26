@@ -80,13 +80,13 @@ export function Sidebar({ currentScanId }: { currentScanId?: string | number }) 
                   window.dispatchEvent(new CustomEvent("open-agent-drawer"));
                 }
               }}
-              className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-mono transition-all text-purple-400 hover:text-purple-200 hover:bg-purple-950/30 border border-purple-500/20"
+              className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-mono transition-all text-yellow-600 dark:text-yellow-400 hover:text-yellow-700 dark:hover:text-yellow-200 hover:bg-yellow-500/10 dark:hover:bg-yellow-950/30 border border-yellow-500/20"
             >
               <div className="flex items-center gap-3">
-                <Bot className="w-4 h-4 text-purple-400 shrink-0" />
+                <Bot className="w-4 h-4 text-yellow-600 dark:text-yellow-400 shrink-0" />
                 <span>AI Assistant</span>
               </div>
-              <span className="text-[9px] px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-300 uppercase tracking-wider font-semibold">
+              <span className="text-[9px] px-1.5 py-0.5 rounded bg-yellow-500/20 text-yellow-700 dark:text-yellow-300 uppercase tracking-wider font-semibold">
                 MEMORY
               </span>
             </button>

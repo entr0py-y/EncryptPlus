@@ -8,7 +8,12 @@ import { DetailDrawer } from "@/components/ui/detail-drawer";
 import { CodeEvidence } from "@/components/ui/code-evidence";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Search, ChevronLeft, ChevronRight, FileCode } from "lucide-react";
+import { Search, ChevronLeft, ChevronRight, FileCode, ArrowRight } from "lucide-react";
+
+function cleanFilePath(path?: string | null): string {
+  if (!path) return "—";
+  return path.replace(/^.*\/ecdat_work_[^/]+\//, "").replace(/^\/tmp\/[^/]+\//, "");
+}
 
 export default function InventoryPage() {
   const { id } = useParams();
@@ -60,22 +65,29 @@ export default function InventoryPage() {
   const quantumVulnCount = assets.filter((a) => a.quantum_status === "VULNERABLE").length;
 
   return (
-    <div className="p-10 max-w-5xl mx-auto space-y-8 select-none">
+    <div className="w-full px-4 sm:px-6 py-4 sm:py-6 space-y-6 select-none font-sans">
       {/* 1. Header with Minimal Summary Row */}
-      <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-4 border-b border-zinc-800 pb-6">
+      <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-4 border-b border-zinc-200 dark:border-zinc-800/80 pb-6">
         <div>
-          <div className="text-[10px] font-mono uppercase tracking-widest text-zinc-500">
-            Cryptographic Bill of Materials
+          <Link
+            href={`/scans/${id}`}
+            className="inline-flex items-center gap-1.5 text-xs font-mono text-zinc-400 hover:text-yellow-400 transition-colors mb-2"
+          >
+            <ChevronLeft className="w-3.5 h-3.5" />
+            <span>Back to Scan #{id} Assessment</span>
+          </Link>
+          <div className="text-[10px] font-mono uppercase tracking-widest text-yellow-500 dark:text-yellow-400 font-semibold">
+            Cryptographic Bill of Materials (CBOM)
           </div>
           <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white font-mono mt-1">
             CRYPTOGRAPHIC INVENTORY
           </h1>
           <div className="text-xs font-mono text-zinc-400 mt-1 flex items-center gap-2">
-            <span><strong>{assets.length}</strong> Total Assets</span>
+            <span><strong className="text-white">{assets.length}</strong> Total Assets</span>
             <span>•</span>
-            <span><strong>{distinctAlgos}</strong> Algorithms</span>
+            <span><strong className="text-yellow-400">{distinctAlgos}</strong> Algorithms</span>
             <span>•</span>
-            <span><strong>{quantumVulnCount}</strong> Quantum Vulnerable</span>
+            <span><strong className="text-rose-400">{quantumVulnCount}</strong> Quantum Vulnerable</span>
           </div>
         </div>
       </div>
@@ -92,7 +104,7 @@ export default function InventoryPage() {
               setSearchQuery(e.target.value);
               setPage(1);
             }}
-            className="w-full h-10 pl-10 pr-4 rounded-xl border border-zinc-800 bg-[#121214] text-xs font-mono text-white placeholder:text-zinc-600 focus:outline-none focus:border-zinc-500 transition-all"
+            className="w-full h-11 pl-10 pr-4 rounded-xl border border-zinc-200/80 dark:border-zinc-800/70 bg-transparent dark:bg-zinc-900/20 text-xs font-mono text-white placeholder:text-zinc-600 focus:outline-none focus:ring-1 focus:ring-amber-500/50 transition-all"
           />
         </div>
 
@@ -104,10 +116,10 @@ export default function InventoryPage() {
                 setSelectedType(t);
                 setPage(1);
               }}
-              className={`px-3 py-1.5 rounded-lg border transition-all text-xs ${
+              className={`px-3.5 py-2 rounded-xl border transition-all text-xs font-mono ${
                 selectedType === t
-                  ? "bg-white text-zinc-950 border-white font-bold"
-                  : "bg-[#121214] border-zinc-800 text-zinc-400 hover:text-white"
+                  ? "bg-yellow-500 text-zinc-950 border-yellow-500 font-bold shadow-[0_0_15px_rgba(234,179,8,0.3)]"
+                  : "bg-transparent dark:bg-zinc-900/20 border-zinc-800/70 text-zinc-400 hover:text-white hover:border-zinc-700"
               }`}
             >
               {t}
@@ -117,10 +129,10 @@ export default function InventoryPage() {
       </div>
 
       {/* 3. ONE Clean Table */}
-      <div className="border border-zinc-800/80 rounded-2xl bg-[#121214] overflow-hidden">
+      <div className="border border-zinc-200/80 dark:border-zinc-800/70 rounded-2xl bg-transparent dark:bg-transparent overflow-hidden shadow-xl">
         <div className="overflow-x-auto">
           <table className="w-full text-xs font-mono text-left">
-            <thead className="bg-zinc-900/60 border-b border-zinc-800 text-zinc-400 uppercase text-[10px] tracking-wider">
+            <thead className="bg-transparent dark:bg-zinc-900/20 border-b border-zinc-200/80 dark:border-zinc-800/60 text-zinc-500 dark:text-zinc-400 uppercase text-[10px] tracking-wider">
               <tr>
                 <th className="p-4 font-semibold">Asset / Mechanism</th>
                 <th className="p-4 font-semibold">Type</th>
@@ -129,25 +141,27 @@ export default function InventoryPage() {
                 <th className="p-4 font-semibold text-right">Action</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-zinc-800/60">
+            <tbody className="divide-y divide-zinc-200/60 dark:divide-zinc-800/40">
               {paginatedAssets.map((asset) => (
                 <tr
                   key={asset.id}
                   onClick={() => setInspectedAsset(asset)}
-                  className="hover:bg-zinc-900/40 transition-colors cursor-pointer"
+                  className="hover:bg-zinc-50/20 dark:hover:bg-zinc-900/20 transition-colors cursor-pointer"
                 >
                   <td className="p-4 font-medium text-white max-w-[240px] truncate" title={asset.algorithm || ""}>
-                    <div className="truncate">{asset.algorithm || "Undetermined"}</div>
+                    <div className="truncate font-mono">{asset.algorithm || "Undetermined"}</div>
                     {asset.category && (
-                      <div className="text-[10px] text-zinc-500 font-normal">{asset.category}</div>
+                      <div className="text-[10px] text-yellow-500/80 font-mono mt-0.5">{asset.category}</div>
                     )}
                   </td>
                   <td className="p-4 text-zinc-400">
-                    <span className="text-[11px]">{asset.asset_type || "UNKNOWN"}</span>
+                    <Badge variant="outline" className="border-zinc-800 bg-zinc-900/30 text-[10px] font-mono">
+                      {asset.asset_type || "UNKNOWN"}
+                    </Badge>
                   </td>
-                  <td className="p-4 text-zinc-400 max-w-[220px] truncate" title={asset.file_path || ""}>
+                  <td className="p-4 text-zinc-400 max-w-[220px] truncate font-mono text-xs" title={asset.file_path || ""}>
                     <div className="truncate text-zinc-300">
-                      {asset.file_path ? asset.file_path.split("/").pop() : "—"}:{asset.line_start || 1}
+                      {cleanFilePath(asset.file_path)}:{asset.line_start || 1}
                     </div>
                   </td>
                   <td className="p-4">
@@ -165,15 +179,18 @@ export default function InventoryPage() {
                     )}
                   </td>
                   <td className="p-4 text-right">
-                    <button
+                    <Button
+                      variant="outline"
+                      size="sm"
                       onClick={(e) => {
                         e.stopPropagation();
                         setInspectedAsset(asset);
                       }}
-                      className="text-zinc-400 hover:text-white font-mono text-[11px] underline-offset-4 hover:underline"
+                      className="h-7 text-[11px] gap-1 font-mono text-zinc-900 dark:text-white"
                     >
-                      View
-                    </button>
+                      <span>Inspect</span>
+                      <ArrowRight className="w-3 h-3" />
+                    </Button>
                   </td>
                 </tr>
               ))}

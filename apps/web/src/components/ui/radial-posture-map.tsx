@@ -33,13 +33,37 @@ export function RadialPostureMap({
           viewBox="0 0 300 300"
           className="w-full h-full -rotate-[135deg]"
         >
+          {/* Outer Technical Dashed Ring */}
+          <circle
+            cx="150"
+            cy="150"
+            r="136"
+            fill="none"
+            stroke="#3f3f46"
+            strokeWidth="1"
+            strokeDasharray="2 8"
+            className="opacity-30"
+          />
+
+          {/* Inner Amber Guide Ring */}
+          <circle
+            cx="150"
+            cy="150"
+            r="104"
+            fill="none"
+            stroke="#eab308"
+            strokeWidth="1"
+            strokeDasharray="4 12"
+            className="opacity-20"
+          />
+
           {/* Subtle Background Track */}
           <circle
             cx="150"
             cy="150"
             r={radius}
             fill="none"
-            stroke="#1f1f23"
+            stroke="#27272a"
             strokeWidth="8"
             strokeDasharray={`${arcLength} ${circumference}`}
             strokeLinecap="round"
@@ -51,28 +75,28 @@ export function RadialPostureMap({
             cy="150"
             r={radius}
             fill="none"
-            stroke="#ffffff"
+            stroke="#eab308"
             strokeWidth="8"
             strokeDasharray={`${arcLength} ${circumference}`}
             strokeDashoffset={strokeOffset}
             strokeLinecap="round"
-            className="transition-all duration-1000 ease-out"
+            className="transition-all duration-1000 ease-out drop-shadow-[0_0_16px_rgba(234,179,8,0.6)]"
           />
         </svg>
 
         {/* Calm Central Typographic Hierarchy */}
-        <div className="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none">
-          <div className="text-[10px] font-mono uppercase tracking-widest text-zinc-500 mb-1">
+        <div className="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none font-mono">
+          <div className="text-[10px] uppercase tracking-widest text-zinc-500 mb-1">
             Overall Posture Risk
           </div>
-          <div className="text-6xl font-bold tracking-tight text-white font-mono leading-none">
+          <div className="text-6xl font-bold tracking-tight text-white leading-none">
             {riskNum.toFixed(1)}
           </div>
-          <div className="text-[11px] font-mono text-zinc-400 uppercase tracking-widest mt-2 font-medium">
+          <div className="text-[11px] text-yellow-500 dark:text-yellow-400 uppercase tracking-widest mt-2 font-medium">
             {overallRiskLevel} EXPOSURE
           </div>
-          <div className="mt-3 text-[11px] font-mono text-zinc-500">
-            PQC Readiness: <span className="text-zinc-300 font-semibold">{Number(pqcReadiness || 0).toFixed(1)}%</span>
+          <div className="mt-3 text-[11px] text-zinc-500">
+            PQC Readiness: <span className="text-yellow-400 font-semibold">{Number(pqcReadiness || 0).toFixed(1)}%</span>
           </div>
         </div>
       </div>

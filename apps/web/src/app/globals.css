@@ -138,3 +138,44 @@
 .animate-subtle-pulse {
   animation: subtle-pulse 4s ease-in-out infinite;
 }
+
+/* Smooth yellow gradient hover for primary action buttons */
+.btn-yellow-hover {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.btn-yellow-hover::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, #eab308 0%, #fde047 50%, #fef08a 100%);
+  opacity: 0;
+  transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+  border-radius: inherit;
+  z-index: 1;
+}
+
+.btn-yellow-hover:not(:disabled):hover::before {
+  opacity: 1;
+}
+
+.btn-yellow-hover:not(:disabled):hover {
+  color: #09090b !important;
+  box-shadow: 0 0 30px rgba(234, 179, 8, 0.5), 0 0 12px rgba(250, 204, 21, 0.6) !important;
+  border-color: transparent !important;
+}
+
+.btn-yellow-hover > * {
+  position: relative;
+  z-index: 2;
+  transition: color 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-yellow-hover:not(:disabled):hover > *,
+.btn-yellow-hover:not(:disabled):hover svg {
+  color: #09090b !important;
+  stroke: #09090b !important;
+}

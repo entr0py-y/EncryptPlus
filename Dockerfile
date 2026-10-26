@@ -15,7 +15,8 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY apps ./apps
-COPY packages ./packages
+COPY demo_repo ./demo_repo
+RUN mkdir -p /app/packages
 COPY --from=go-builder /app/cryptoscan/cryptoscan ./cryptoscan/cryptoscan
 
 ENV PYTHONPATH=/app

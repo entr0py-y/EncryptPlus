@@ -49,18 +49,27 @@ def scan_pipeline(scan_id: int, target: str, branch: str, db: Session):
         os.makedirs(work_dir, exist_ok=True)
         target = (target or "").strip()
         
-        # Check if it looks like a remote git URL
+        # Check if it looks like a remote git URL or owner/repo GitHub shorthand
+        is_shorthand_github = False
+        if not os.path.exists(target):
+            import re
+            if re.match(r"^[a-zA-Z0-9_.-]+/[a-zA-Z0-9_.-]+$", target):
+                is_shorthand_github = True
+
         is_remote = (
             target.startswith("http://") or 
             target.startswith("https://") or 
             target.startswith("git@") or 
             target.startswith("github.com") or 
             target.startswith("gitlab.com") or 
-            target.startswith("bitbucket.org")
+            target.startswith("bitbucket.org") or
+            is_shorthand_github
         )
         
         if is_remote:
-            if not (target.startswith("http://") or target.startswith("https://") or target.startswith("git@")):
+            if is_shorthand_github:
+                target = f"https://github.com/{target}.git"
+            elif not (target.startswith("http://") or target.startswith("https://") or target.startswith("git@")):
                 target = "https://" + target
                 
             scan.repository_url = target
@@ -105,59 +114,64 @@ def scan_pipeline(scan_id: int, target: str, branch: str, db: Session):
             return
             
         scan.raw_scan_output = json.dumps(raw_out)
-        scan.files_scanned = raw_out.get("filesScanned", 0)
-        scan.lines_scanned = raw_out.get("linesScanned", 0)
-        scan.scan_duration_ms = raw_out.get("scanDurationMs", 0)
+        scan.files_scanned = raw_out.get("summary", {}).get("filesScanned", raw_out.get("filesScanned", 0))
+        scan.lines_scanned = raw_out.get("summary", {}).get("linesScanned", raw_out.get("linesScanned", 0))
+        scan.scan_duration_ms = raw_out.get("summary", {}).get("scanDurationMs", raw_out.get("scanDurationMs", 0))
         
-        raw_assets = parser.parse_cryptoscan_output(raw_out)
+        scan.status = "ANALYZING"
+        db.commit()
         
-        db_assets = []
-        for a_dict in raw_assets:
-            asset = models.CryptoAsset(scan_id=scan.id, **a_dict)
-            
-            # Engines evaluation
-            asset.quantum_status, asset.quantum_security_level = quantum.evaluate_quantum_status(asset.algorithm, asset.key_size)
-            asset.migration_status = migration.determine_migration_status(asset.algorithm, asset.quantum_status)
-            asset.severity = pqc.determine_severity(asset.algorithm, asset.key_size, asset.quantum_status)
-            asset.risk_score, asset.risk_level, comps = risk.calculate_asset_risk(asset)
-            mosca.assess_mosca_risk(asset)
-            
-            db.add(asset)
-            db_assets.append(asset)
+        assets = parser.parse_cryptoscan_output(scan.id, raw_out)
+        db.add_all(assets)
+        db.flush()
+        
+        scan.status = "ASSESSING"
+        db.commit()
+        
+        for a in assets:
+            quantum.assess_quantum_risk(a)
+            mosca.assess_mosca_risk(a)
+            score, level, comps = risk.calculate_asset_risk(a)
+            a.risk_score = score
+            a.risk_level = level
             
         db.commit()
         
-        # Refresh to get IDs
-        for a in db_assets: db.refresh(a)
+        # Overall Risk Score
+        ov_score, ov_level = risk.calculate_overall_risk(assets)
+        scan.overall_risk_score = ov_score
+        scan.overall_risk_level = ov_level
+        
+        # PQC Readiness Score
+        p_score, p_level = pqc.calculate_pqc_readiness(assets)
+        scan.pqc_readiness_score = p_score
+        scan.pqc_readiness_level = p_level
+        scan.migration_readiness_score = p_score
+        scan.migration_readiness_level = p_level
         
         # Compliance Evaluation
-        compliance.evaluate_all_compliance(scan.id, db_assets, db)
+        comp_results = compliance.evaluate_compliance(scan.id, assets)
+        db.add_all(comp_results)
         
-        # Recommendations
-        recs = migration.generate_migration_plan(scan.id, db_assets)
-        for r_dict in recs:
-            r = models.Recommendation(scan_id=scan.id, **r_dict)
-            db.add(r)
-            
+        # Recommendations & Migration Plan
+        pqc_recs = pqc.generate_pqc_recommendations(scan.id, assets)
+        mig_plan = migration.generate_migration_plan(scan.id, assets, pqc_recs)
+        db.add_all(mig_plan)
+        
         # Summary counts
-        scan.total_findings = len(db_assets)
-        scan.critical_count = sum(1 for a in db_assets if a.severity == "CRITICAL")
-        scan.high_count = sum(1 for a in db_assets if a.severity == "HIGH")
-        scan.medium_count = sum(1 for a in db_assets if a.severity == "MEDIUM")
-        scan.low_count = sum(1 for a in db_assets if a.severity == "LOW")
-        scan.info_count = sum(1 for a in db_assets if a.severity == "INFO")
+        scan.total_findings = len(assets)
+        scan.critical_count = sum(1 for a in assets if a.severity == "CRITICAL")
+        scan.high_count = sum(1 for a in assets if a.severity == "HIGH")
+        scan.medium_count = sum(1 for a in assets if a.severity == "MEDIUM")
+        scan.low_count = sum(1 for a in assets if a.severity == "LOW")
+        scan.info_count = sum(1 for a in assets if a.severity == "INFO")
         
-        scan.quantum_vulnerable_count = sum(1 for a in db_assets if a.quantum_status == "VULNERABLE")
-        scan.quantum_safe_count = sum(1 for a in db_assets if a.quantum_status == "SAFE")
-        scan.quantum_partial_count = sum(1 for a in db_assets if a.quantum_status == "PARTIALLY_SAFE")
+        scan.quantum_vulnerable_count = sum(1 for a in assets if a.quantum_status == "VULNERABLE")
+        scan.quantum_safe_count = sum(1 for a in assets if a.quantum_status == "SAFE")
+        scan.quantum_partial_count = sum(1 for a in assets if a.quantum_status == "PARTIAL")
         
-        scan.pqc_count = sum(1 for a in db_assets if a.quantum_status == "SAFE")
-        scan.hybrid_count = sum(1 for a in db_assets if "HYBRID" in (a.algorithm or ""))
-        
-        # Overall Scores
-        scan.overall_risk_score, scan.overall_risk_level = risk.calculate_scan_overall_risk(db_assets)
-        scan.pqc_readiness_score, scan.pqc_readiness_level = pqc.calculate_pqc_readiness(db_assets)
-        scan.migration_readiness_score, scan.migration_readiness_level = migration.calculate_migration_readiness(db_assets)
+        scan.pqc_count = sum(1 for a in assets if a.quantum_status == "SAFE")
+        scan.hybrid_count = sum(1 for a in assets if "HYBRID" in (a.algorithm or "").upper() or "HYBRID" in (a.migration_status or "").upper())
         
         scan.status = "COMPLETED"
         scan.completed_at = datetime.datetime.utcnow()

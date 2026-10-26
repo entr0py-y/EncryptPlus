@@ -176,7 +176,12 @@ def infer_algorithm_details(f: dict) -> tuple[str, str, str, str]:
 
     return raw_algo, asset_type, primitive or "general", quantum_status
 
-def parse_cryptoscan_output(scan_id: int, raw_output: dict) -> List[CryptoAsset]:
+def parse_cryptoscan_output(scan_id: Any = 0, raw_output: Any = None) -> List[CryptoAsset]:
+    if isinstance(scan_id, dict) and raw_output is None:
+        raw_output = scan_id
+        scan_id = 0
+    if raw_output is None:
+        raw_output = {}
     assets = []
     findings = raw_output.get("findings", [])
     

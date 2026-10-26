@@ -7,16 +7,15 @@ import { useAuth } from "@/lib/auth-context";
 import { Logo } from "@/components/shared/logo";
 import { Loader2 } from "lucide-react";
 
-const PUBLIC_ROUTES = ["/", "/login", "/signup"];
+const PUBLIC_ROUTES = ["/", "/scans", "/login", "/signup"];
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
   const { user, loading } = useAuth();
 
-  const isPublicRoute = PUBLIC_ROUTES.includes(pathname);
-  const isLandingPage = pathname === "/";
   const isAuthPage = pathname === "/login" || pathname === "/signup";
+  const isPublicRoute = PUBLIC_ROUTES.includes(pathname) || pathname.startsWith("/scans");
 
   useEffect(() => {
     // If on a protected route and finished checking auth, redirect unauthenticated users
@@ -25,8 +24,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     }
   }, [user, loading, isPublicRoute, router]);
 
-  // Auth pages (login, signup) and landing page render directly
-  if (isLandingPage || isAuthPage) {
+  // Auth pages (login, signup) render directly without the app shell topbar
+  if (isAuthPage) {
     return <main className="min-h-screen flex flex-col">{children}</main>;
   }
 

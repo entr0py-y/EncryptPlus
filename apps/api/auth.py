@@ -194,14 +194,26 @@ def get_optional_current_user(request: Request, db: Session = Depends(get_db)) -
     return db.query(models.User).filter(models.User.id == payload["sub"], models.User.is_active == True).first()
 
 # Ownership Authorization Helpers
-def get_user_scan(scan_id: int, current_user: models.User, db: Session) -> models.Scan:
+def get_user_scan(scan_id: int, current_user: Optional[models.User], db: Session) -> models.Scan:
     """
     Retrieves a scan and validates strict user ownership.
     Returns 404 if not found, 403 Forbidden if scan belongs to another user.
+    Permits guest access to public/demo scans ('dev_user' or None).
     """
     scan = db.query(models.Scan).filter(models.Scan.id == scan_id).first()
     if not scan:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Scan not found.")
+
+    is_public = (scan.user_id is None or scan.user_id == "dev_user")
+    if is_public:
+        return scan
+
+    if not current_user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Authentication required to view this private scan.",
+            headers={"WWW-Authenticate": "Bearer"}
+        )
 
     # Strict multi-user ownership check
     if scan.user_id and scan.user_id != current_user.id:

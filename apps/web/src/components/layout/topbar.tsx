@@ -219,12 +219,20 @@ export function Topbar() {
               )}
             </div>
           ) : (
-            <Link
-              href="/login"
-              className="text-xs font-medium px-3 py-1.5 rounded-xl bg-zinc-900 dark:bg-white text-white dark:text-zinc-950 hover:opacity-90 transition-opacity"
-            >
-              Sign In
-            </Link>
+            <div className="flex items-center gap-2">
+              <Link
+                href="/login"
+                className="text-xs font-medium px-3 py-1.5 rounded-xl border border-zinc-200 dark:border-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-200 transition-colors"
+              >
+                Log In
+              </Link>
+              <Link
+                href="/signup"
+                className="text-xs font-semibold px-3 py-1.5 rounded-xl bg-zinc-900 dark:bg-white text-white dark:text-zinc-950 hover:opacity-90 transition-opacity shadow-sm"
+              >
+                Sign Up
+              </Link>
+            </div>
           )}
         </div>
       </header>

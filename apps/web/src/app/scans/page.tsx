@@ -12,11 +12,14 @@ import {
   Play,
   ArrowRight,
   GitBranch,
-  Loader2
+  Loader2,
+  ShieldAlert
 } from "lucide-react";
+import { useAuth } from "@/lib/auth-context";
 
 export default function ScansPage() {
   const router = useRouter();
+  const { user } = useAuth();
   const [scans, setScans] = useState<ScanRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [repoUrl, setRepoUrl] = useState("");
@@ -34,8 +37,8 @@ export default function ScansPage() {
         (a, b) => new Date(b.started_at).getTime() - new Date(a.started_at).getTime()
       );
       setScans(sorted);
-    } catch (err) {
-      console.error(err);
+    } catch {
+      setScans([]);
     } finally {
       setLoading(false);
     }
@@ -43,6 +46,10 @@ export default function ScansPage() {
 
   const handleLaunchScan = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!user) {
+      router.push("/login");
+      return;
+    }
     if (!repoUrl.trim()) return;
     setSubmitting(true);
     try {
@@ -167,6 +174,42 @@ export default function ScansPage() {
 
       {/* Historical Scans Table */}
       <div className="space-y-4">
+        {/* Guest Session Notice */}
+        {!user && (
+          <div className="p-4 sm:p-5 rounded-2xl border border-amber-500/25 bg-amber-500/5 dark:bg-[#151208] flex flex-col sm:flex-row sm:items-center justify-between gap-4 font-mono transition-all shadow-sm">
+            <div className="flex items-start sm:items-center gap-3.5">
+              <div className="p-2.5 rounded-xl bg-amber-500/10 text-amber-500 shrink-0">
+                <ShieldAlert className="w-5 h-5" />
+              </div>
+              <div>
+                <div className="text-xs font-bold text-zinc-900 dark:text-zinc-100 uppercase tracking-wider flex items-center gap-2">
+                  <span>Notice: Guest Audit Session</span>
+                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-600 dark:text-amber-400 font-semibold lowercase">
+                    temporary
+                  </span>
+                </div>
+                <p className="text-xs text-zinc-600 dark:text-zinc-400 mt-1 leading-relaxed">
+                  To save your audit history, retain private CBOM reports, and track repository risk deltas across sessions, please log in.
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2.5 shrink-0">
+              <Link
+                href="/login"
+                className="px-3.5 py-1.5 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 hover:bg-zinc-50 dark:hover:bg-zinc-800 text-xs font-semibold text-zinc-900 dark:text-zinc-100 transition-colors shadow-sm"
+              >
+                Log In
+              </Link>
+              <Link
+                href="/signup"
+                className="px-3.5 py-1.5 rounded-xl bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 hover:opacity-90 text-xs font-semibold transition-opacity shadow-sm"
+              >
+                Sign Up
+              </Link>
+            </div>
+          </div>
+        )}
+
         <div className="flex items-center justify-between">
           <div className="text-xs font-mono text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
             All Audited Repositories ({scans.length})

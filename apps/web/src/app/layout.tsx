@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { AppShell } from "@/components/layout/app-shell";
 import { ThemeProvider } from "@/components/shared/theme-provider";
+import { AuthProvider } from "@/lib/auth-context";
 
 export const metadata: Metadata = {
   title: "ENCRYPT PLUS — Enterprise Cryptographic Discovery & Analysis Tool",
@@ -40,7 +41,9 @@ export default function RootLayout({
       </head>
       <body className="font-sans antialiased overflow-x-hidden bg-[#fafafa] dark:bg-[#09090b] text-zinc-900 dark:text-[#f4f4f5]">
         <ThemeProvider>
-          <AppShell>{children}</AppShell>
+          <AuthProvider>
+            <AppShell>{children}</AppShell>
+          </AuthProvider>
         </ThemeProvider>
       </body>
     </html>

@@ -32,6 +32,7 @@ cryptoscan/cryptoscan
 .env.development.local
 .env.test.local
 .env.production.local
+.jwt_secret
 
 # Logs
 logs/

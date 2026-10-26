@@ -3,19 +3,36 @@ from sqlalchemy import Column, Integer, String, Float, Boolean, Text, DateTime, 
 from sqlalchemy.orm import relationship
 from .database import Base
 
+class User(Base):
+    __tablename__ = "users"
+    id = Column(String, primary_key=True, index=True)
+    name = Column(String, nullable=False)
+    email = Column(String, unique=True, index=True, nullable=False)
+    password_hash = Column(String, nullable=False)
+    is_active = Column(Boolean, default=True)
+    created_at = Column(DateTime, default=datetime.datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
+
+    scans = relationship("Scan", back_populates="user")
+    projects = relationship("Project", back_populates="user")
+    tasks = relationship("AgentTask", back_populates="user", foreign_keys="AgentTask.user_id")
+
 class Project(Base):
     __tablename__ = "projects"
     id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(String, ForeignKey("users.id"), nullable=True, index=True)
     name = Column(String, index=True)
     description = Column(String)
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
     
+    user = relationship("User", back_populates="projects")
     scans = relationship("Scan", back_populates="project")
 
 class Scan(Base):
     __tablename__ = "scans"
     id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(String, ForeignKey("users.id"), nullable=True, index=True)
     project_id = Column(Integer, ForeignKey("projects.id"), nullable=True)
     repository_url = Column(String)
     branch = Column(String)
@@ -51,6 +68,7 @@ class Scan(Base):
     
     raw_scan_output = Column(Text, nullable=True)
     
+    user = relationship("User", back_populates="scans")
     project = relationship("Project", back_populates="scans")
     assets = relationship("CryptoAsset", back_populates="scan", cascade="all, delete-orphan")
     compliance_results = relationship("ComplianceResult", back_populates="scan", cascade="all, delete-orphan")
@@ -164,7 +182,7 @@ class AgentTask(Base):
     __tablename__ = "agent_tasks"
     id = Column(Integer, primary_key=True, index=True)
     task_id = Column(String, unique=True, index=True)
-    user_id = Column(String, default="dev_user", index=True)
+    user_id = Column(String, ForeignKey("users.id"), default="dev_user", index=True)
     task_type = Column(String, default="SCAN")
     original_prompt = Column(Text, nullable=True)
     target_resource = Column(String, nullable=True)
@@ -182,4 +200,5 @@ class AgentTask(Base):
     completed_at = Column(DateTime, nullable=True)
 
     scan = relationship("Scan")
+    user = relationship("User", back_populates="tasks", foreign_keys=[user_id])
 

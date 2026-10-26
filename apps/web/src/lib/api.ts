@@ -1,8 +1,16 @@
 export const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
+export interface UserRecord {
+  id: string;
+  name: string;
+  email: string;
+  created_at?: string;
+}
+
 export interface ScanRecord {
   id: number;
   project_id?: number | null;
+  user_id?: string | null;
   repository_url: string;
   branch?: string | null;
   status: string;
@@ -48,155 +56,39 @@ export interface CryptoAssetRecord {
   context?: string | null;
   source_context_json?: string | null;
   finding_type?: string | null;
-  file_type?: string | null;
-  confidence?: string | null;
-  purpose?: string | null;
+  severity?: string | null;
   quantum_status?: string | null;
   migration_status?: string | null;
-  severity: string;
+  business_criticality?: string | null;
   data_sensitivity?: string | null;
   data_lifetime?: string | null;
-  migration_time?: string | null;
-  business_criticality?: string | null;
   risk_score?: number | null;
   risk_level?: string | null;
   mosca_risk?: string | null;
-  description?: string | null;
   remediation?: string | null;
-  impact?: string | null;
-  effort?: string | null;
-  references_json?: string | null;
-  tags_json?: string | null;
-  oid?: string | null;
-  cryptoscan_id?: string | null;
-  created_at: string;
+  description?: string | null;
 }
 
-export async function fetchScans(): Promise<ScanRecord[]> {
-  const res = await fetch(`${API_URL}/api/scans`);
-  if (!res.ok) throw new Error('Failed to fetch scans');
-  return res.json();
+export interface RecommendationRecord {
+  id: number;
+  scan_id: number;
+  priority: string;
+  title: string;
+  description: string;
+  current_algorithm?: string | null;
+  recommended_algorithm?: string | null;
+  recommended_hybrid?: string | null;
 }
 
-export async function fetchScan(id: string | number): Promise<ScanRecord> {
-  const res = await fetch(`${API_URL}/api/scans/${id}`);
-  if (!res.ok) throw new Error(`Failed to fetch scan ${id}`);
-  return res.json();
-}
-
-export async function fetchScanSummary(id: string | number) {
-  const res = await fetch(`${API_URL}/api/scans/${id}/summary`);
-  if (!res.ok) throw new Error('Failed to fetch scan summary');
-  return res.json();
-}
-
-export async function fetchScanInventory(id: string | number, params?: { asset_type?: string; severity?: string; quantum_status?: string; search?: string; limit?: number; offset?: number }): Promise<CryptoAssetRecord[]> {
-  let url = `${API_URL}/api/scans/${id}/inventory`;
-  if (params) {
-    const q = new URLSearchParams();
-    if (params.asset_type) q.set('asset_type', params.asset_type);
-    if (params.severity) q.set('severity', params.severity);
-    if (params.quantum_status) q.set('quantum_status', params.quantum_status);
-    if (params.search) q.set('search', params.search);
-    if (params.limit !== undefined) q.set('limit', String(params.limit));
-    if (params.offset !== undefined) q.set('offset', String(params.offset));
-    const qs = q.toString();
-    if (qs) url += `?${qs}`;
-  }
-  const res = await fetch(url);
-  if (!res.ok) throw new Error('Failed to fetch scan inventory');
-  return res.json();
-}
-
-export async function fetchScanFindings(id: string | number, params?: { severity?: string; search?: string; limit?: number; offset?: number }): Promise<CryptoAssetRecord[]> {
-  let url = `${API_URL}/api/scans/${id}/findings`;
-  if (params) {
-    const q = new URLSearchParams();
-    if (params.severity) q.set('severity', params.severity);
-    if (params.search) q.set('search', params.search);
-    if (params.limit !== undefined) q.set('limit', String(params.limit));
-    if (params.offset !== undefined) q.set('offset', String(params.offset));
-    const qs = q.toString();
-    if (qs) url += `?${qs}`;
-  }
-  const res = await fetch(url);
-  if (!res.ok) throw new Error('Failed to fetch scan findings');
-  return res.json();
-}
-
-export async function fetchAsset(id: string | number, assetId: string | number): Promise<CryptoAssetRecord> {
-  const res = await fetch(`${API_URL}/api/scans/${id}/assets/${assetId}`);
-  if (!res.ok) throw new Error('Failed to fetch asset');
-  return res.json();
-}
-
-export async function fetchAlgorithms(id: string | number): Promise<Record<string, number>> {
-  const res = await fetch(`${API_URL}/api/scans/${id}/algorithms`);
-  if (!res.ok) throw new Error('Failed to fetch algorithms');
-  return res.json();
-}
-
-export async function fetchRisk(id: string | number) {
-  const res = await fetch(`${API_URL}/api/scans/${id}/risk`);
-  if (!res.ok) throw new Error('Failed to fetch risk');
-  return res.json();
-}
-
-export async function fetchQuantum(id: string | number) {
-  const res = await fetch(`${API_URL}/api/scans/${id}/quantum`);
-  if (!res.ok) throw new Error('Failed to fetch quantum');
-  return res.json();
-}
-
-export async function fetchMosca(id: string | number) {
-  const res = await fetch(`${API_URL}/api/scans/${id}/mosca`);
-  if (!res.ok) throw new Error('Failed to fetch mosca');
-  return res.json();
-}
-
-export async function fetchCompliance(id: string | number) {
-  const res = await fetch(`${API_URL}/api/scans/${id}/compliance`);
-  if (!res.ok) throw new Error('Failed to fetch compliance');
-  return res.json();
-}
-
-export async function fetchRecommendations(id: string | number) {
-  const res = await fetch(`${API_URL}/api/scans/${id}/recommendations`);
-  if (!res.ok) throw new Error('Failed to fetch recommendations');
-  return res.json();
-}
-
-export async function fetchScores(id: string | number): Promise<Record<string, number>> {
-  const res = await fetch(`${API_URL}/api/scans/${id}/scores`);
-  if (!res.ok) throw new Error('Failed to fetch scores');
-  return res.json();
-}
-
-export async function fetchScanReport(id: string | number) {
-  const res = await fetch(`${API_URL}/api/scans/${id}/report`);
-  if (!res.ok) throw new Error('Failed to fetch scan report');
-  return res.json();
-}
-
-export async function fetchComparison(currentId: string | number, previousId: string | number) {
-  const res = await fetch(`${API_URL}/api/history/compare?current=${currentId}&previous=${previousId}`);
-  if (!res.ok) throw new Error('Failed to fetch comparison');
-  return res.json();
-}
-
-export async function createScan(targetPath: string, branch?: string): Promise<{ scan_id: number }> {
-  const res = await fetch(`${API_URL}/api/scans`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ 
-      repository_url: targetPath,
-      target_path: targetPath,
-      path: targetPath,
-      branch: branch || undefined
-    })
-  });
-  if (!res.ok) throw new Error('Failed to create scan');
-  return res.json();
+export interface ComplianceRecord {
+  id: number;
+  scan_id: number;
+  framework: string;
+  requirement_id: string;
+  requirement_name: string;
+  status: string;
+  explanation?: string | null;
+  remediation?: string | null;
 }
 
 export interface AgentTaskRecord {
@@ -224,33 +116,254 @@ export interface AgentChatResponse {
   status: string;
 }
 
-export async function sendAgentMessage(message: string, userId: string = "dev_user", sessionId: string = "default_session"): Promise<AgentChatResponse> {
-  const res = await fetch(`${API_URL}/api/agent/chat`, {
+/**
+ * Standard fetch helper that always includes session credentials (cookies)
+ */
+async function fetchWithCredentials(url: string, init?: RequestInit): Promise<Response> {
+  const mergedInit: RequestInit = {
+    ...init,
+    credentials: 'include',
+    headers: {
+      'Content-Type': 'application/json',
+      ...(init?.headers || {})
+    }
+  };
+  return fetch(url, mergedInit);
+}
+
+// =========================================================================
+// AUTHENTICATION API
+// =========================================================================
+
+export async function signupUser(payload: {
+  name: string;
+  email: string;
+  password: string;
+  confirm_password: string;
+}): Promise<{ user: UserRecord }> {
+  const res = await fetchWithCredentials(`${API_URL}/api/auth/signup`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ message, user_id: userId, session_id: sessionId })
+    body: JSON.stringify(payload)
   });
-  if (!res.ok) throw new Error('Failed to get response from AI Agent');
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.detail || 'Signup failed');
+  }
   return res.json();
 }
 
-export async function fetchAgentTasks(userId: string = "dev_user"): Promise<AgentTaskRecord[]> {
-  const res = await fetch(`${API_URL}/api/agent/tasks?user_id=${encodeURIComponent(userId)}`);
+export async function loginUser(payload: {
+  email: string;
+  password: string;
+}): Promise<{ user: UserRecord }> {
+  const res = await fetchWithCredentials(`${API_URL}/api/auth/login`, {
+    method: 'POST',
+    body: JSON.stringify(payload)
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.detail || 'Login failed');
+  }
+  return res.json();
+}
+
+export async function logoutUser(): Promise<{ status: string }> {
+  const res = await fetchWithCredentials(`${API_URL}/api/auth/logout`, {
+    method: 'POST'
+  });
+  if (!res.ok) {
+    throw new Error('Logout failed');
+  }
+  return res.json();
+}
+
+export async function fetchCurrentUser(): Promise<UserRecord | null> {
+  try {
+    const res = await fetchWithCredentials(`${API_URL}/api/auth/me`);
+    if (!res.ok) {
+      return null;
+    }
+    return res.json();
+  } catch {
+    return null;
+  }
+}
+
+// =========================================================================
+// SCANS & CRYPTO INTELLIGENCE API
+// =========================================================================
+
+export async function fetchScans(): Promise<ScanRecord[]> {
+  const res = await fetchWithCredentials(`${API_URL}/api/scans`);
+  if (!res.ok) throw new Error('Failed to fetch scans');
+  return res.json();
+}
+
+export async function fetchScan(id: string | number): Promise<ScanRecord> {
+  const res = await fetchWithCredentials(`${API_URL}/api/scans/${id}`);
+  if (!res.ok) throw new Error(`Failed to fetch scan ${id}`);
+  return res.json();
+}
+
+export async function fetchScanSummary(id: string | number) {
+  const res = await fetchWithCredentials(`${API_URL}/api/scans/${id}/summary`);
+  if (!res.ok) throw new Error('Failed to fetch scan summary');
+  return res.json();
+}
+
+export async function fetchScanInventory(
+  id: string | number,
+  params?: { asset_type?: string; severity?: string; quantum_status?: string; search?: string; limit?: number; offset?: number }
+): Promise<CryptoAssetRecord[]> {
+  let url = `${API_URL}/api/scans/${id}/inventory`;
+  if (params) {
+    const q = new URLSearchParams();
+    if (params.asset_type) q.set('asset_type', params.asset_type);
+    if (params.severity) q.set('severity', params.severity);
+    if (params.quantum_status) q.set('quantum_status', params.quantum_status);
+    if (params.search) q.set('search', params.search);
+    if (params.limit !== undefined) q.set('limit', String(params.limit));
+    if (params.offset !== undefined) q.set('offset', String(params.offset));
+    const qs = q.toString();
+    if (qs) url += `?${qs}`;
+  }
+  const res = await fetchWithCredentials(url);
+  if (!res.ok) throw new Error('Failed to fetch scan inventory');
+  return res.json();
+}
+
+export async function fetchScanFindings(
+  id: string | number,
+  params?: { severity?: string; search?: string; limit?: number; offset?: number }
+): Promise<CryptoAssetRecord[]> {
+  let url = `${API_URL}/api/scans/${id}/findings`;
+  if (params) {
+    const q = new URLSearchParams();
+    if (params.severity) q.set('severity', params.severity);
+    if (params.search) q.set('search', params.search);
+    if (params.limit !== undefined) q.set('limit', String(params.limit));
+    if (params.offset !== undefined) q.set('offset', String(params.offset));
+    const qs = q.toString();
+    if (qs) url += `?${qs}`;
+  }
+  const res = await fetchWithCredentials(url);
+  if (!res.ok) throw new Error('Failed to fetch scan findings');
+  return res.json();
+}
+
+export async function fetchAsset(id: string | number, assetId: string | number): Promise<CryptoAssetRecord> {
+  const res = await fetchWithCredentials(`${API_URL}/api/scans/${id}/assets/${assetId}`);
+  if (!res.ok) throw new Error('Failed to fetch asset');
+  return res.json();
+}
+
+export async function fetchAlgorithms(id: string | number): Promise<Record<string, number>> {
+  const res = await fetchWithCredentials(`${API_URL}/api/scans/${id}/algorithms`);
+  if (!res.ok) throw new Error('Failed to fetch algorithms');
+  return res.json();
+}
+
+export async function fetchRisk(id: string | number) {
+  const res = await fetchWithCredentials(`${API_URL}/api/scans/${id}/risk`);
+  if (!res.ok) throw new Error('Failed to fetch risk');
+  return res.json();
+}
+
+export async function fetchQuantum(id: string | number) {
+  const res = await fetchWithCredentials(`${API_URL}/api/scans/${id}/quantum`);
+  if (!res.ok) throw new Error('Failed to fetch quantum');
+  return res.json();
+}
+
+export async function fetchMosca(id: string | number) {
+  const res = await fetchWithCredentials(`${API_URL}/api/scans/${id}/mosca`);
+  if (!res.ok) throw new Error('Failed to fetch mosca');
+  return res.json();
+}
+
+export async function fetchCompliance(id: string | number) {
+  const res = await fetchWithCredentials(`${API_URL}/api/scans/${id}/compliance`);
+  if (!res.ok) throw new Error('Failed to fetch compliance');
+  return res.json();
+}
+
+export async function fetchRecommendations(id: string | number) {
+  const res = await fetchWithCredentials(`${API_URL}/api/scans/${id}/recommendations`);
+  if (!res.ok) throw new Error('Failed to fetch recommendations');
+  return res.json();
+}
+
+export async function fetchScores(id: string | number): Promise<Record<string, number>> {
+  const res = await fetchWithCredentials(`${API_URL}/api/scans/${id}/scores`);
+  if (!res.ok) throw new Error('Failed to fetch scores');
+  return res.json();
+}
+
+export async function fetchScanReport(id: string | number) {
+  const res = await fetchWithCredentials(`${API_URL}/api/scans/${id}/report`);
+  if (!res.ok) throw new Error('Failed to fetch scan report');
+  return res.json();
+}
+
+export async function fetchComparison(currentId: string | number, previousId: string | number) {
+  const res = await fetchWithCredentials(`${API_URL}/api/history/compare?current=${currentId}&previous=${previousId}`);
+  if (!res.ok) throw new Error('Failed to fetch comparison');
+  return res.json();
+}
+
+export async function createScan(targetPath: string, branch?: string): Promise<{ scan_id: number }> {
+  const res = await fetchWithCredentials(`${API_URL}/api/scans`, {
+    method: 'POST',
+    body: JSON.stringify({ 
+      repository_url: targetPath,
+      target_path: targetPath,
+      path: targetPath,
+      branch: branch || undefined
+    })
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.detail || 'Failed to create scan');
+  }
+  return res.json();
+}
+
+// =========================================================================
+// AI AGENT & TASKS API
+// =========================================================================
+
+export async function sendAgentMessage(
+  message: string,
+  userId?: string,
+  sessionId?: string
+): Promise<AgentChatResponse> {
+  const res = await fetchWithCredentials(`${API_URL}/api/agent/chat`, {
+    method: 'POST',
+    body: JSON.stringify({ message, user_id: userId, session_id: sessionId })
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.detail || 'Failed to get response from AI Agent');
+  }
+  return res.json();
+}
+
+export async function fetchAgentTasks(): Promise<AgentTaskRecord[]> {
+  const res = await fetchWithCredentials(`${API_URL}/api/agent/tasks`);
   if (!res.ok) throw new Error('Failed to fetch agent tasks');
   return res.json();
 }
 
 export async function recoverAgentTask(taskId: string): Promise<any> {
-  const res = await fetch(`${API_URL}/api/agent/tasks/${taskId}/recover`, {
+  const res = await fetchWithCredentials(`${API_URL}/api/agent/tasks/${taskId}/recover`, {
     method: 'POST'
   });
   if (!res.ok) throw new Error('Failed to recover task');
   return res.json();
 }
 
-export async function fetchUserMemories(userId: string = "dev_user"): Promise<{ user_id: string; memories: string[] }> {
-  const res = await fetch(`${API_URL}/api/agent/memories?user_id=${encodeURIComponent(userId)}`);
+export async function fetchUserMemories(): Promise<{ user_id: string; memories: string[] }> {
+  const res = await fetchWithCredentials(`${API_URL}/api/agent/memories`);
   if (!res.ok) throw new Error('Failed to fetch user memories');
   return res.json();
 }
-

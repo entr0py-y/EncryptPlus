@@ -4,7 +4,12 @@ from apps.api.main import app
 
 @pytest.fixture
 def client():
-    return TestClient(app)
+    c = TestClient(app)
+    from apps.api.auth import create_access_token, AUTH_COOKIE_NAME
+    token = create_access_token("dev_user", "developer@encryptplus.local")
+    c.cookies.set(AUTH_COOKIE_NAME, token)
+    c.headers.update({"Authorization": f"Bearer {token}"})
+    return c
 
 def test_health_endpoint(client):
     res = client.get("/health")
@@ -56,7 +61,7 @@ def test_new_agent_chat_endpoint(client):
     assert res.status_code == 200
     data = res.json()
     assert "response" in data
-    assert data["user_id"] == "test_user_regression"
+    assert data["user_id"] == "dev_user"
     assert data["status"] == "success"
 
 def test_new_agent_tasks_endpoint(client):

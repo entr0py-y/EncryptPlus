@@ -22,6 +22,7 @@ def test_db():
     try:
         # Seed test scan
         scan = models.Scan(
+            user_id="dev_user",
             repository_url="https://github.com/openssl/openssl.git",
             branch="master",
             status="COMPLETED",

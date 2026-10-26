@@ -27,10 +27,11 @@ def create_agent_task(
     cleaned_target = (target_resource or "").strip()
     task_id = generate_task_id("task")
 
-    # Check for active existing task on the same target
+    # Check for active existing task on the same target for this user
     existing_active = (
         db.query(models.AgentTask)
         .filter(
+            models.AgentTask.user_id == user_id,
             models.AgentTask.target_resource == cleaned_target,
             models.AgentTask.branch == branch,
             models.AgentTask.status.in_(["queued", "running", "awaiting_verification"])
@@ -38,7 +39,7 @@ def create_agent_task(
         .first()
     )
     if existing_active:
-        logger.info(f"Task already active for target '{cleaned_target}': {existing_active.task_id}")
+        logger.info(f"Task already active for user '{user_id}' on target '{cleaned_target}': {existing_active.task_id}")
         return existing_active
 
     agent_task = models.AgentTask(
@@ -109,7 +110,8 @@ def execute_agent_scan_task(task_id: str):
         scan = models.Scan(
             repository_url=target,
             branch=branch,
-            status="QUEUED"
+            status="QUEUED",
+            user_id=task.user_id
         )
         db.add(scan)
         db.commit()

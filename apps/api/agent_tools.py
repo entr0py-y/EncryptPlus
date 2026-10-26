@@ -21,10 +21,16 @@ def validate_target_string(target: str) -> str:
         raise ValueError("Directory traversal characters ('..') are not permitted.")
     return cleaned
 
-def tool_list_recent_scans(db: Session, limit: int = 5) -> List[Dict[str, Any]]:
-    """Retrieves the most recent verified scans from the database."""
+def tool_list_recent_scans(db: Session, limit: int = 5, user_id: Optional[str] = None) -> List[Dict[str, Any]]:
+    """Retrieves the most recent verified scans from the database for the user."""
     safe_limit = max(1, min(limit, 20))
-    scans = db.query(models.Scan).order_by(desc(models.Scan.id)).limit(safe_limit).all()
+    q = db.query(models.Scan)
+    if user_id:
+        if user_id == "dev_user":
+            q = q.filter((models.Scan.user_id == "dev_user") | (models.Scan.user_id.is_(None)))
+        else:
+            q = q.filter(models.Scan.user_id == user_id)
+    scans = q.order_by(desc(models.Scan.id)).limit(safe_limit).all()
     results = []
     for s in scans:
         results.append({
@@ -45,13 +51,19 @@ def tool_list_recent_scans(db: Session, limit: int = 5) -> List[Dict[str, Any]]:
         })
     return results
 
-def tool_find_previous_scan(db: Session, query: str, limit: int = 5) -> List[Dict[str, Any]]:
+def tool_find_previous_scan(db: Session, query: str, limit: int = 5, user_id: Optional[str] = None) -> List[Dict[str, Any]]:
     """Searches for previous scans matching a repository name, URL, or scan ID."""
     clean_q = (query or "").strip()
     if not clean_q:
-        return tool_list_recent_scans(db, limit)
+        return tool_list_recent_scans(db, limit, user_id=user_id)
 
     q = db.query(models.Scan)
+    if user_id:
+        if user_id == "dev_user":
+            q = q.filter((models.Scan.user_id == "dev_user") | (models.Scan.user_id.is_(None)))
+        else:
+            q = q.filter(models.Scan.user_id == user_id)
+
     # Check if query is an integer scan ID
     if clean_q.isdigit():
         q = q.filter(models.Scan.id == int(clean_q))
@@ -74,11 +86,13 @@ def tool_find_previous_scan(db: Session, query: str, limit: int = 5) -> List[Dic
         for s in scans
     ]
 
-def tool_get_scan_status(db: Session, scan_id: int) -> Dict[str, Any]:
+def tool_get_scan_status(db: Session, scan_id: int, user_id: Optional[str] = None) -> Dict[str, Any]:
     """Retrieves the current execution status of a specific scan."""
     scan = db.query(models.Scan).filter(models.Scan.id == scan_id).first()
     if not scan:
         return {"error": f"Scan #{scan_id} not found."}
+    if user_id and scan.user_id and scan.user_id != user_id:
+        return {"error": f"Scan #{scan_id} not found or access restricted."}
     return {
         "scan_id": scan.id,
         "repository_url": scan.repository_url,
@@ -93,11 +107,13 @@ def tool_get_scan_status(db: Session, scan_id: int) -> Dict[str, Any]:
         "report_url": f"/scans/{scan.id}" if scan.status == "COMPLETED" else None
     }
 
-def tool_get_scan_findings(db: Session, scan_id: int, severity: Optional[str] = None, limit: int = 10) -> Dict[str, Any]:
+def tool_get_scan_findings(db: Session, scan_id: int, severity: Optional[str] = None, limit: int = 10, user_id: Optional[str] = None) -> Dict[str, Any]:
     """Retrieves verified code findings for a completed scan."""
     scan = db.query(models.Scan).filter(models.Scan.id == scan_id).first()
     if not scan:
         return {"error": f"Scan #{scan_id} not found."}
+    if user_id and scan.user_id and scan.user_id != user_id:
+        return {"error": f"Scan #{scan_id} not found or access restricted."}
 
     q = db.query(models.CryptoAsset).filter(models.CryptoAsset.scan_id == scan_id)
     if severity and severity.upper() != "ALL":
@@ -125,11 +141,13 @@ def tool_get_scan_findings(db: Session, scan_id: int, severity: Optional[str] = 
         ]
     }
 
-def tool_summarize_pqc_readiness(db: Session, scan_id: int) -> Dict[str, Any]:
+def tool_summarize_pqc_readiness(db: Session, scan_id: int, user_id: Optional[str] = None) -> Dict[str, Any]:
     """Summarizes quantum exposure and PQC migration readiness from verified scan data."""
     scan = db.query(models.Scan).filter(models.Scan.id == scan_id).first()
     if not scan:
         return {"error": f"Scan #{scan_id} not found."}
+    if user_id and scan.user_id and scan.user_id != user_id:
+        return {"error": f"Scan #{scan_id} not found or access restricted."}
 
     recs = db.query(models.Recommendation).filter(models.Recommendation.scan_id == scan_id).limit(5).all()
 
@@ -156,11 +174,13 @@ def tool_summarize_pqc_readiness(db: Session, scan_id: int) -> Dict[str, Any]:
         "report_url": f"/scans/{scan.id}#quantum"
     }
 
-def tool_get_scan_report(db: Session, scan_id: int) -> Dict[str, Any]:
+def tool_get_scan_report(db: Session, scan_id: int, user_id: Optional[str] = None) -> Dict[str, Any]:
     """Fetches the 18-section executive assessment report for a scan."""
     scan = db.query(models.Scan).filter(models.Scan.id == scan_id).first()
     if not scan:
         return {"error": f"Scan #{scan_id} not found."}
+    if user_id and scan.user_id and scan.user_id != user_id:
+        return {"error": f"Scan #{scan_id} not found or access restricted."}
     if scan.status != "COMPLETED":
         return {
             "error": f"Report unavailable because scan #{scan_id} is in status '{scan.status}'.",
@@ -383,17 +403,17 @@ AGENT_TOOL_DEFINITIONS = [
 def execute_agent_tool(tool_name: str, arguments: Dict[str, Any], db: Session, user_id: str = "dev_user") -> Dict[str, Any]:
     """Executes an approved tool with argument validation and real database access."""
     if tool_name == "list_recent_scans":
-        return {"result": tool_list_recent_scans(db, limit=int(arguments.get("limit", 5)))}
+        return {"result": tool_list_recent_scans(db, limit=int(arguments.get("limit", 5)), user_id=user_id)}
     elif tool_name == "find_previous_scan":
-        return {"result": tool_find_previous_scan(db, query=str(arguments.get("query", "")), limit=int(arguments.get("limit", 5)))}
+        return {"result": tool_find_previous_scan(db, query=str(arguments.get("query", "")), limit=int(arguments.get("limit", 5)), user_id=user_id)}
     elif tool_name == "get_scan_status":
-        return {"result": tool_get_scan_status(db, scan_id=int(arguments.get("scan_id", 0)))}
+        return {"result": tool_get_scan_status(db, scan_id=int(arguments.get("scan_id", 0)), user_id=user_id)}
     elif tool_name == "get_scan_findings":
-        return {"result": tool_get_scan_findings(db, scan_id=int(arguments.get("scan_id", 0)), severity=arguments.get("severity"), limit=int(arguments.get("limit", 10)))}
+        return {"result": tool_get_scan_findings(db, scan_id=int(arguments.get("scan_id", 0)), severity=arguments.get("severity"), limit=int(arguments.get("limit", 10)), user_id=user_id)}
     elif tool_name == "summarize_pqc_readiness":
-        return {"result": tool_summarize_pqc_readiness(db, scan_id=int(arguments.get("scan_id", 0)))}
+        return {"result": tool_summarize_pqc_readiness(db, scan_id=int(arguments.get("scan_id", 0)), user_id=user_id)}
     elif tool_name == "get_scan_report":
-        return {"result": tool_get_scan_report(db, scan_id=int(arguments.get("scan_id", 0)))}
+        return {"result": tool_get_scan_report(db, scan_id=int(arguments.get("scan_id", 0)), user_id=user_id)}
     elif tool_name == "start_cryptographic_scan":
         return {"result": tool_start_cryptographic_scan(db, target_repo=str(arguments.get("target_repo", "")), branch=arguments.get("branch"), user_id=user_id)}
     elif tool_name == "list_agent_tasks":

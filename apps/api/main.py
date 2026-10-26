@@ -2,7 +2,7 @@ import os
 import json
 import uuid
 import datetime
-from fastapi import FastAPI, BackgroundTasks, Depends, HTTPException, Query
+from fastapi import FastAPI, BackgroundTasks, Depends, HTTPException, Query, status
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from sqlalchemy import func
@@ -10,18 +10,26 @@ from typing import List, Optional
 
 from . import models, schemas, database, scanner, parser, report
 from .engines import risk, quantum, mosca, pqc, compliance, migration, scoring
+from .auth import get_current_user, get_user_scan, get_optional_current_user
+from .auth_routes import router as auth_router
+from .migrations import run_migrations
 
-models.Base.metadata.create_all(bind=database.engine)
+# Run safe additive database migrations at startup
+run_migrations()
 
 app = FastAPI(title="ECDAT API")
 
+# Configure CORS with credentials support
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origin_regex=r"^https?://.*",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Register Authentication Router (/api/auth/signup, /api/auth/login, etc.)
+app.include_router(auth_router)
 
 def get_db():
     db = database.SessionLocal()
@@ -99,98 +107,111 @@ def scan_pipeline(scan_id: int, target: str, branch: str, db: Session):
         scan.raw_scan_output = json.dumps(raw_out)
         scan.files_scanned = raw_out.get("filesScanned", 0)
         scan.lines_scanned = raw_out.get("linesScanned", 0)
-        scan.scan_duration_ms = raw_out.get("scanDuration", 0) // 1_000_000  # nanoseconds to ms
+        scan.scan_duration_ms = raw_out.get("scanDurationMs", 0)
         
-        scan.status = "ANALYZING"
-        db.commit()
+        raw_assets = parser.parse_cryptoscan_output(raw_out)
         
-        assets = parser.parse_cryptoscan_output(scan_id, raw_out)
-        db.add_all(assets)
-        db.flush()
-        
-        scan.status = "ASSESSING"
-        db.commit()
-        
-        for a in assets:
-            quantum.assess_quantum_risk(a)
-            mosca.assess_mosca_risk(a)
-            score, level, comps = risk.calculate_asset_risk(a)
-            a.risk_score = score
-            a.risk_level = level
+        db_assets = []
+        for a_dict in raw_assets:
+            asset = models.CryptoAsset(scan_id=scan.id, **a_dict)
+            
+            # Engines evaluation
+            asset.quantum_status, asset.quantum_security_level = quantum.evaluate_quantum_status(asset.algorithm, asset.key_size)
+            asset.migration_status = migration.determine_migration_status(asset.algorithm, asset.quantum_status)
+            asset.severity = pqc.determine_severity(asset.algorithm, asset.key_size, asset.quantum_status)
+            asset.risk_score, asset.risk_level, comps = risk.calculate_asset_risk(asset)
+            mosca.assess_mosca_risk(asset)
+            
+            db.add(asset)
+            db_assets.append(asset)
             
         db.commit()
         
-        ov_score, ov_level = risk.calculate_overall_risk(assets)
-        scan.overall_risk_score = ov_score
-        scan.overall_risk_level = ov_level
+        # Refresh to get IDs
+        for a in db_assets: db.refresh(a)
         
-        p_score, p_level = pqc.calculate_pqc_readiness(assets)
-        scan.pqc_readiness_score = p_score
-        scan.pqc_readiness_level = p_level
+        # Compliance Evaluation
+        compliance.evaluate_all_compliance(scan.id, db_assets, db)
         
-        comp_results = compliance.evaluate_compliance(scan_id, assets)
-        db.add_all(comp_results)
+        # Recommendations
+        recs = migration.generate_migration_plan(scan.id, db_assets)
+        for r_dict in recs:
+            r = models.Recommendation(scan_id=scan.id, **r_dict)
+            db.add(r)
+            
+        # Summary counts
+        scan.total_findings = len(db_assets)
+        scan.critical_count = sum(1 for a in db_assets if a.severity == "CRITICAL")
+        scan.high_count = sum(1 for a in db_assets if a.severity == "HIGH")
+        scan.medium_count = sum(1 for a in db_assets if a.severity == "MEDIUM")
+        scan.low_count = sum(1 for a in db_assets if a.severity == "LOW")
+        scan.info_count = sum(1 for a in db_assets if a.severity == "INFO")
         
-        pqc_recs = pqc.generate_pqc_recommendations(scan_id, assets)
-        mig_plan = migration.generate_migration_plan(scan_id, assets, pqc_recs)
-        db.add_all(mig_plan)
+        scan.quantum_vulnerable_count = sum(1 for a in db_assets if a.quantum_status == "VULNERABLE")
+        scan.quantum_safe_count = sum(1 for a in db_assets if a.quantum_status == "SAFE")
+        scan.quantum_partial_count = sum(1 for a in db_assets if a.quantum_status == "PARTIALLY_SAFE")
         
-        scan.total_findings = len(assets)
-        scan.critical_count = sum(1 for a in assets if a.severity == "CRITICAL")
-        scan.high_count = sum(1 for a in assets if a.severity == "HIGH")
-        scan.medium_count = sum(1 for a in assets if a.severity == "MEDIUM")
-        scan.low_count = sum(1 for a in assets if a.severity == "LOW")
-        scan.info_count = sum(1 for a in assets if a.severity == "INFO")
+        scan.pqc_count = sum(1 for a in db_assets if a.quantum_status == "SAFE")
+        scan.hybrid_count = sum(1 for a in db_assets if "HYBRID" in (a.algorithm or ""))
         
-        scan.quantum_vulnerable_count = sum(1 for a in assets if a.quantum_status == "VULNERABLE")
-        scan.quantum_safe_count = sum(1 for a in assets if a.quantum_status == "SAFE")
-        scan.quantum_partial_count = sum(1 for a in assets if a.quantum_status == "PARTIAL")
-        
-        scan.status = "GENERATING_REPORT"
-        db.commit()
+        # Overall Scores
+        scan.overall_risk_score, scan.overall_risk_level = risk.calculate_scan_overall_risk(db_assets)
+        scan.pqc_readiness_score, scan.pqc_readiness_level = pqc.calculate_pqc_readiness(db_assets)
+        scan.migration_readiness_score, scan.migration_readiness_level = migration.calculate_migration_readiness(db_assets)
         
         scan.status = "COMPLETED"
         scan.completed_at = datetime.datetime.utcnow()
         db.commit()
         
     except Exception as e:
-        db.rollback()
         scan.status = "FAILED"
         scan.error_message = str(e)
         db.commit()
     finally:
         if is_remote and os.path.exists(work_dir):
-            try:
-                shutil.rmtree(work_dir, ignore_errors=True)
-            except Exception:
-                pass
+            import shutil
+            shutil.rmtree(work_dir, ignore_errors=True)
+        db.close()
 
+# Public Health Check Endpoints (no authentication required)
 @app.get("/health")
-def health():
+def health_root():
     return {"status": "ok"}
 
+@app.get("/api/health")
+def health_api():
+    return {"status": "ok"}
+
+# Projects Endpoints (User-Scoped)
 @app.post("/api/projects", response_model=schemas.Project)
-def create_project(proj: schemas.ProjectCreate, db: Session = Depends(get_db)):
-    db_proj = models.Project(**proj.dict())
+def create_project(proj: schemas.ProjectCreate, current_user: models.User = Depends(get_current_user), db: Session = Depends(get_db)):
+    db_proj = models.Project(**proj.dict(), user_id=current_user.id)
     db.add(db_proj)
     db.commit()
     db.refresh(db_proj)
     return db_proj
 
 @app.get("/api/projects")
-def list_projects(db: Session = Depends(get_db)):
-    return db.query(models.Project).all()
+def list_projects(current_user: models.User = Depends(get_current_user), db: Session = Depends(get_db)):
+    return db.query(models.Project).filter(models.Project.user_id == current_user.id).all()
 
 @app.get("/api/projects/{id}")
-def get_project(id: int, db: Session = Depends(get_db)):
-    p = db.query(models.Project).filter(models.Project.id == id).first()
+def get_project(id: int, current_user: models.User = Depends(get_current_user), db: Session = Depends(get_db)):
+    p = db.query(models.Project).filter(models.Project.id == id, models.Project.user_id == current_user.id).first()
     if not p: raise HTTPException(404)
     return p
 
+# Scans Endpoints (Strict Multi-User Isolation)
 @app.post("/api/scans")
-def create_scan(scan_in: schemas.ScanCreate, bg_tasks: BackgroundTasks, db: Session = Depends(get_db)):
+def create_scan(scan_in: schemas.ScanCreate, bg_tasks: BackgroundTasks, current_user: models.User = Depends(get_current_user), db: Session = Depends(get_db)):
     target = (scan_in.repository_url or scan_in.target_path or scan_in.path or scan_in.url or "").strip()
-    scan = models.Scan(project_id=scan_in.project_id, repository_url=target, branch=scan_in.branch, status="QUEUED")
+    scan = models.Scan(
+        user_id=current_user.id,
+        project_id=scan_in.project_id,
+        repository_url=target,
+        branch=scan_in.branch,
+        status="QUEUED"
+    )
     db.add(scan)
     db.commit()
     db.refresh(scan)
@@ -198,23 +219,27 @@ def create_scan(scan_in: schemas.ScanCreate, bg_tasks: BackgroundTasks, db: Sess
     return {"scan_id": scan.id}
 
 @app.get("/api/scans")
-def list_scans(db: Session = Depends(get_db)):
-    return db.query(models.Scan).all()
+def list_scans(current_user: models.User = Depends(get_current_user), db: Session = Depends(get_db)):
+    """Returns only the authenticated user's private scans."""
+    return (
+        db.query(models.Scan)
+        .filter(models.Scan.user_id == current_user.id)
+        .order_by(models.Scan.id.desc())
+        .all()
+    )
 
 @app.get("/api/scans/{id}")
-def get_scan(id: int, db: Session = Depends(get_db)):
-    s = db.query(models.Scan).filter(models.Scan.id == id).first()
-    if not s: raise HTTPException(404)
-    return s
+def get_scan(id: int, current_user: models.User = Depends(get_current_user), db: Session = Depends(get_db)):
+    return get_user_scan(id, current_user, db)
 
 @app.get("/api/scans/{id}/status")
-def get_scan_status(id: int, db: Session = Depends(get_db)):
-    s = get_scan(id, db)
+def get_scan_status(id: int, current_user: models.User = Depends(get_current_user), db: Session = Depends(get_db)):
+    s = get_user_scan(id, current_user, db)
     return {"status": s.status, "error_message": s.error_message}
 
 @app.get("/api/scans/{id}/summary")
-def get_scan_summary(id: int, db: Session = Depends(get_db)):
-    s = get_scan(id, db)
+def get_scan_summary(id: int, current_user: models.User = Depends(get_current_user), db: Session = Depends(get_db)):
+    s = get_user_scan(id, current_user, db)
     return {
         "overall_risk_score": s.overall_risk_score,
         "overall_risk_level": s.overall_risk_level,
@@ -223,9 +248,10 @@ def get_scan_summary(id: int, db: Session = Depends(get_db)):
     }
 
 @app.get("/api/scans/{id}/assets")
-def get_scan_assets(id: int, db: Session = Depends(get_db),
+def get_scan_assets(id: int, current_user: models.User = Depends(get_current_user), db: Session = Depends(get_db),
     severity: Optional[str] = None, quantum_status: Optional[str] = None, asset_type: Optional[str] = None,
     search: Optional[str] = None, limit: Optional[int] = None, offset: int = 0):
+    get_user_scan(id, current_user, db)
     q = db.query(models.CryptoAsset).filter(models.CryptoAsset.scan_id == id)
     if severity and severity != "ALL": q = q.filter(models.CryptoAsset.severity == severity)
     if quantum_status and quantum_status != "ALL": q = q.filter(models.CryptoAsset.quantum_status == quantum_status)
@@ -242,23 +268,25 @@ def get_scan_assets(id: int, db: Session = Depends(get_db),
     return q.all()
 
 @app.get("/api/scans/{id}/assets/{asset_id}")
-def get_asset(id: int, asset_id: int, db: Session = Depends(get_db)):
+def get_asset(id: int, asset_id: int, current_user: models.User = Depends(get_current_user), db: Session = Depends(get_db)):
+    get_user_scan(id, current_user, db)
     a = db.query(models.CryptoAsset).filter(models.CryptoAsset.id == asset_id, models.CryptoAsset.scan_id == id).first()
     if not a: raise HTTPException(404)
     return a
 
 @app.get("/api/scans/{id}/findings")
-def get_findings(id: int, db: Session = Depends(get_db),
+def get_findings(id: int, current_user: models.User = Depends(get_current_user), db: Session = Depends(get_db),
     severity: Optional[str] = None, search: Optional[str] = None, limit: Optional[int] = 100, offset: int = 0):
-    return get_scan_assets(id, db, severity=severity, search=search, limit=limit, offset=offset)
+    return get_scan_assets(id, current_user, db, severity=severity, search=search, limit=limit, offset=offset)
 
 @app.get("/api/scans/{id}/inventory")
-def get_inventory(id: int, db: Session = Depends(get_db),
+def get_inventory(id: int, current_user: models.User = Depends(get_current_user), db: Session = Depends(get_db),
     asset_type: Optional[str] = None, quantum_status: Optional[str] = None, search: Optional[str] = None, limit: Optional[int] = 100, offset: int = 0):
-    return get_scan_assets(id, db, asset_type=asset_type, quantum_status=quantum_status, search=search, limit=limit, offset=offset)
+    return get_scan_assets(id, current_user, db, asset_type=asset_type, quantum_status=quantum_status, search=search, limit=limit, offset=offset)
 
 @app.get("/api/scans/{id}/algorithms")
-def get_algorithms(id: int, db: Session = Depends(get_db)):
+def get_algorithms(id: int, current_user: models.User = Depends(get_current_user), db: Session = Depends(get_db)):
+    get_user_scan(id, current_user, db)
     results = db.query(
         models.CryptoAsset.algorithm,
         func.count(models.CryptoAsset.id)
@@ -266,13 +294,13 @@ def get_algorithms(id: int, db: Session = Depends(get_db)):
     return {algo or "UNKNOWN": count for algo, count in results}
 
 @app.get("/api/scans/{id}/risk")
-def get_risk(id: int, db: Session = Depends(get_db)):
-    s = get_scan(id, db)
+def get_risk(id: int, current_user: models.User = Depends(get_current_user), db: Session = Depends(get_db)):
+    s = get_user_scan(id, current_user, db)
     return {"score": s.overall_risk_score, "level": s.overall_risk_level}
 
 @app.get("/api/scans/{id}/quantum")
-def get_quantum(id: int, db: Session = Depends(get_db)):
-    s = get_scan(id, db)
+def get_quantum(id: int, current_user: models.User = Depends(get_current_user), db: Session = Depends(get_db)):
+    s = get_user_scan(id, current_user, db)
     return {
         "vulnerable": s.quantum_vulnerable_count,
         "safe": s.quantum_safe_count,
@@ -280,7 +308,8 @@ def get_quantum(id: int, db: Session = Depends(get_db)):
     }
 
 @app.get("/api/scans/{id}/mosca")
-def get_mosca(id: int, db: Session = Depends(get_db)):
+def get_mosca(id: int, current_user: models.User = Depends(get_current_user), db: Session = Depends(get_db)):
+    get_user_scan(id, current_user, db)
     results = db.query(
         models.CryptoAsset.mosca_risk,
         func.count(models.CryptoAsset.id)
@@ -288,33 +317,36 @@ def get_mosca(id: int, db: Session = Depends(get_db)):
     return {r or "UNKNOWN": count for r, count in results}
 
 @app.get("/api/scans/{id}/pqc")
-def get_scan_pqc(id: int, db: Session = Depends(get_db)):
-    s = get_scan(id, db)
+def get_scan_pqc(id: int, current_user: models.User = Depends(get_current_user), db: Session = Depends(get_db)):
+    s = get_user_scan(id, current_user, db)
     return {"score": s.pqc_readiness_score, "level": s.pqc_readiness_level}
 
 @app.get("/api/scans/{id}/compliance")
-def get_scan_compliance(id: int, db: Session = Depends(get_db)):
+def get_scan_compliance(id: int, current_user: models.User = Depends(get_current_user), db: Session = Depends(get_db)):
+    get_user_scan(id, current_user, db)
     return db.query(models.ComplianceResult).filter(models.ComplianceResult.scan_id == id).all()
 
 @app.get("/api/scans/{id}/recommendations")
-def get_recommendations(id: int, db: Session = Depends(get_db)):
+def get_recommendations(id: int, current_user: models.User = Depends(get_current_user), db: Session = Depends(get_db)):
+    get_user_scan(id, current_user, db)
     return db.query(models.Recommendation).filter(models.Recommendation.scan_id == id).all()
 
 @app.get("/api/scans/{id}/migration")
-def get_migration(id: int, db: Session = Depends(get_db)):
-    return get_recommendations(id, db)
+def get_migration(id: int, current_user: models.User = Depends(get_current_user), db: Session = Depends(get_db)):
+    return get_recommendations(id, current_user, db)
 
 @app.get("/api/scans/{id}/report")
-def get_report(id: int, db: Session = Depends(get_db)):
-    s = get_scan(id, db)
+def get_report(id: int, current_user: models.User = Depends(get_current_user), db: Session = Depends(get_db)):
+    s = get_user_scan(id, current_user, db)
     assets = db.query(models.CryptoAsset).filter(models.CryptoAsset.scan_id == id).limit(500).all()
-    comp = get_scan_compliance(id, db)
-    recs = get_recommendations(id, db)
+    comp = db.query(models.ComplianceResult).filter(models.ComplianceResult.scan_id == id).all()
+    recs = db.query(models.Recommendation).filter(models.Recommendation.scan_id == id).all()
     scs = scoring.calculate_category_scores(assets)
     return report.generate_report(s, assets, comp, recs, scs)
 
 @app.get("/api/scans/{id}/cbom")
-def get_cbom(id: int, db: Session = Depends(get_db)):
+def get_cbom(id: int, current_user: models.User = Depends(get_current_user), db: Session = Depends(get_db)):
+    get_user_scan(id, current_user, db)
     results = db.query(
         models.CryptoAsset.algorithm,
         func.count(models.CryptoAsset.id)
@@ -322,7 +354,8 @@ def get_cbom(id: int, db: Session = Depends(get_db)):
     return {"bomFormat": "CycloneDX", "components": [{"name": algo, "count": count} for algo, count in results if algo]}
 
 @app.get("/api/scans/{id}/scores")
-def get_scores(id: int, db: Session = Depends(get_db)):
+def get_scores(id: int, current_user: models.User = Depends(get_current_user), db: Session = Depends(get_db)):
+    get_user_scan(id, current_user, db)
     assets = db.query(
         models.CryptoAsset.id,
         models.CryptoAsset.severity,
@@ -337,14 +370,18 @@ def get_scores(id: int, db: Session = Depends(get_db)):
     return scoring.calculate_category_scores(assets)
 
 @app.get("/api/scans/{id}/evidence")
-def get_evidence(id: int, db: Session = Depends(get_db), limit: int = 50):
+def get_evidence(id: int, current_user: models.User = Depends(get_current_user), db: Session = Depends(get_db), limit: int = 50):
+    get_user_scan(id, current_user, db)
     assets = db.query(models.CryptoAsset).filter(models.CryptoAsset.scan_id == id).limit(limit).all()
     return [{"asset_id": a.id, "evidence": a.evidence, "context": a.context} for a in assets]
 
 @app.patch("/api/assets/{id}")
-def update_asset(id: int, update: schemas.AssetUpdate, db: Session = Depends(get_db)):
+def update_asset(id: int, update: schemas.AssetUpdate, current_user: models.User = Depends(get_current_user), db: Session = Depends(get_db)):
     a = db.query(models.CryptoAsset).filter(models.CryptoAsset.id == id).first()
     if not a: raise HTTPException(404)
+    # Strict ownership check on parent scan
+    get_user_scan(a.scan_id, current_user, db)
+
     update_data = update.dict(exclude_unset=True)
     for key, value in update_data.items():
         setattr(a, key, value)
@@ -359,9 +396,9 @@ def update_asset(id: int, update: schemas.AssetUpdate, db: Session = Depends(get
     return a
 
 @app.get("/api/history/compare")
-def compare_scans(current: int, previous: int, db: Session = Depends(get_db)):
-    curr = get_scan(current, db)
-    prev = get_scan(previous, db)
+def compare_scans(current: int, previous: int, current_user: models.User = Depends(get_current_user), db: Session = Depends(get_db)):
+    curr = get_user_scan(current, current_user, db)
+    prev = get_user_scan(previous, current_user, db)
     return {
         "current_id": current,
         "previous_id": previous,
@@ -370,7 +407,7 @@ def compare_scans(current: int, previous: int, db: Session = Depends(get_db)):
     }
 
 # =========================================================================
-# AI AGENT & DURABLE TASK CONTINUITY ROUTES (HINDSIGHT MEMORY + ECDAT DB)
+# AI AGENT & DURABLE TASK CONTINUITY ROUTES (USER-SCOPED)
 # =========================================================================
 from .agent_service import agent_service
 from .hindsight_service import hindsight_service
@@ -382,19 +419,23 @@ def on_startup():
     task_worker.startup_recover_interrupted_tasks()
 
 @app.post("/api/agent/chat", response_model=schemas.AgentChatResponse)
-def agent_chat(req: schemas.AgentChatRequest, db: Session = Depends(get_db)):
-    user_id = req.user_id or "dev_user"
+def agent_chat(req: schemas.AgentChatRequest, current_user: models.User = Depends(get_current_user), db: Session = Depends(get_db)):
+    """
+    Derives user identity exclusively from verified session authentication.
+    Prevents cross-user memory leakage and scan inspection.
+    """
+    user_id = current_user.id
     result = agent_service.process_chat(
         message=req.message,
         db=db,
         user_id=user_id,
-        session_id=req.session_id or "default_session"
+        session_id=req.session_id or f"session_{user_id}"
     )
 
     return schemas.AgentChatResponse(
         response=result.get("content", ""),
         user_id=user_id,
-        session_id=result.get("session_id", "default_session"),
+        session_id=result.get("session_id", f"session_{user_id}"),
         task_id=result.get("task_id"),
         scan_id=result.get("scan_id"),
         recalled_memories=result.get("recalled_memories", []),
@@ -404,24 +445,32 @@ def agent_chat(req: schemas.AgentChatRequest, db: Session = Depends(get_db)):
     )
 
 @app.get("/api/agent/tasks")
-def list_agent_tasks(user_id: str = "dev_user", limit: int = 10, db: Session = Depends(get_db)):
-    return tool_list_agent_tasks(db, user_id=user_id, limit=limit)
+def list_agent_tasks(limit: int = 10, current_user: models.User = Depends(get_current_user), db: Session = Depends(get_db)):
+    """Returns only tasks owned by the authenticated user."""
+    return tool_list_agent_tasks(db, user_id=current_user.id, limit=limit)
 
 @app.get("/api/agent/tasks/{task_id}")
-def get_agent_task(task_id: str, db: Session = Depends(get_db)):
+def get_agent_task(task_id: str, current_user: models.User = Depends(get_current_user), db: Session = Depends(get_db)):
     t = db.query(models.AgentTask).filter(models.AgentTask.task_id == task_id).first()
     if not t:
         raise HTTPException(404, "Task not found")
+    if t.user_id and t.user_id != current_user.id:
+        raise HTTPException(403, "Forbidden: Task belongs to another user")
     return t
 
 @app.post("/api/agent/tasks/{task_id}/recover")
-def recover_agent_task(task_id: str, bg_tasks: BackgroundTasks, db: Session = Depends(get_db)):
+def recover_agent_task(task_id: str, bg_tasks: BackgroundTasks, current_user: models.User = Depends(get_current_user), db: Session = Depends(get_db)):
+    t = db.query(models.AgentTask).filter(models.AgentTask.task_id == task_id).first()
+    if not t:
+        raise HTTPException(404, "Task not found")
+    if t.user_id and t.user_id != current_user.id:
+        raise HTTPException(403, "Forbidden: Task belongs to another user")
     return task_worker.recover_agent_task(task_id, bg_tasks=bg_tasks)
 
 @app.get("/api/agent/memories")
-def get_user_memories(user_id: str = "dev_user"):
+def get_user_memories(current_user: models.User = Depends(get_current_user)):
+    """Retrieves memories strictly scoped to the authenticated user's ID."""
     return {
-        "user_id": user_id,
-        "memories": hindsight_service.retrieve_conversation_context(user_id=user_id)
+        "user_id": current_user.id,
+        "memories": hindsight_service.retrieve_conversation_context(user_id=current_user.id)
     }
-

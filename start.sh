@@ -65,9 +65,8 @@ echo "[2/4] Initializing database tables (additive & non-destructive)..."
 "$PYTHON_BIN" -c "
 import sys
 sys.path.insert(0, '$SCRIPT_DIR')
-from apps.api.database import engine, Base
-from apps.api import models
-Base.metadata.create_all(bind=engine, checkfirst=True)
+from apps.api.migrations import run_migrations
+run_migrations()
 print('[PASS] Database schema checked and updated.')
 "
 

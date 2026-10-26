@@ -11,6 +11,7 @@ jinja2
 python-multipart
 python-jose[cryptography]
 passlib[bcrypt]
+argon2-cffi
 httpx
 hindsight-client
 python-dotenv

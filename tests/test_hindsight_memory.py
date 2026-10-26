@@ -22,8 +22,9 @@ def test_user_memory_isolation():
     # Bob must NOT receive Alice's payment-gateway memories
     assert not any("payment-gateway" in m for m in bob_memories)
 
-def test_hindsight_graceful_outage_fallback():
+def test_hindsight_graceful_outage_fallback(monkeypatch):
     """Verifies that when external Hindsight credentials are not set, service operates gracefully."""
+    monkeypatch.setenv("HINDSIGHT_API_KEY", "")
     service = HindsightMemoryService()
     assert service.is_configured is False
 

@@ -102,13 +102,14 @@ class AgentWorkflowService:
         # 1. Post-Quantum Cryptography / Risk Breakdown
         if any(w in lower for w in ["quantum", "pqc", "shor", "grover", "readiness", "kyber", "dilithium"]):
             scan_id = extracted_scan_id or 23
-            data = tool_summarize_pqc_readiness(db, scan_id=scan_id)
-            if data.get("status") == "error":
+            data = tool_summarize_pqc_readiness(db, scan_id=scan_id, user_id=user_id)
+            if data.get("status") == "error" or "error" in data:
                 # Fall back to latest scan
-                scans = tool_list_recent_scans(db, limit=1).get("result", [])
-                if scans:
-                    scan_id = scans[0]["scan_id"]
-                    data = tool_summarize_pqc_readiness(db, scan_id=scan_id)
+                scans = tool_list_recent_scans(db, limit=1, user_id=user_id)
+                scans_list = scans if isinstance(scans, list) else scans.get("result", [])
+                if scans_list:
+                    scan_id = scans_list[0]["scan_id"]
+                    data = tool_summarize_pqc_readiness(db, scan_id=scan_id, user_id=user_id)
 
             return {
                 "type": "pqc_summary",
@@ -121,7 +122,7 @@ class AgentWorkflowService:
         # 2. Detailed Findings & Cryptographic Inventory
         if any(w in lower for w in ["finding", "inventory", "vulnerab", "rsa", "md5", "sha", "des", "weakness"]):
             scan_id = extracted_scan_id or 23
-            data = tool_get_scan_findings(db, scan_id=scan_id, limit=5)
+            data = tool_get_scan_findings(db, scan_id=scan_id, limit=5, user_id=user_id)
             return {
                 "type": "findings",
                 "scan_id": scan_id,
@@ -133,7 +134,7 @@ class AgentWorkflowService:
         # 3. 18-Section Assessment Report
         if any(w in lower for w in ["report", "executive", "technical report", "assessment report", "pdf", "cbom"]):
             scan_id = extracted_scan_id or 23
-            data = tool_get_scan_report(db, scan_id=scan_id)
+            data = tool_get_scan_report(db, scan_id=scan_id, user_id=user_id)
             return {
                 "type": "report",
                 "scan_id": scan_id,
@@ -167,7 +168,7 @@ class AgentWorkflowService:
             }
 
         # 5. Default / Scan List / Overview
-        scans_raw = tool_list_recent_scans(db, limit=5)
+        scans_raw = tool_list_recent_scans(db, limit=5, user_id=user_id)
         scans_list = scans_raw if isinstance(scans_raw, list) else scans_raw.get("result", [])
         links = []
         for s in scans_list:

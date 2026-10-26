@@ -11,15 +11,18 @@ import {
   ArrowRightLeft,
   FileText,
   FolderGit2,
-  Bot
+  Bot,
+  LogOut
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Logo } from "@/components/shared/logo";
+import { useAuth } from "@/lib/auth-context";
 
 export function Sidebar({ currentScanId }: { currentScanId?: string | number }) {
   const pathname = usePathname();
   const params = useParams();
   const activeScanId = currentScanId || (params?.id as string) || "8";
+  const { user, logout } = useAuth();
 
   const navItems = [
     { name: "Overview", href: `/scans/${activeScanId}`, icon: LayoutDashboard },
@@ -91,15 +94,40 @@ export function Sidebar({ currentScanId }: { currentScanId?: string | number }) 
         </div>
       </div>
 
-      {/* Footer System Status */}
-      <div className="p-5 border-t border-zinc-800/80 text-[11px] font-mono text-zinc-500 space-y-2">
-        <Link href="/scans" className="flex items-center gap-2 hover:text-zinc-200 transition-colors">
-          <FolderGit2 className="w-3.5 h-3.5" />
-          <span>All Audits</span>
-        </Link>
-        <div className="pt-2 text-[10px] text-zinc-600">
-          Scan #{activeScanId}
+      {/* Footer System Status & User Profile */}
+      <div className="p-4 border-t border-zinc-800/80 space-y-3 font-mono">
+        <div className="flex items-center justify-between text-[11px] text-zinc-500">
+          <Link href="/scans" className="flex items-center gap-2 hover:text-zinc-200 transition-colors">
+            <FolderGit2 className="w-3.5 h-3.5" />
+            <span>All Audits</span>
+          </Link>
+          <span className="text-[10px] text-zinc-600">Scan #{activeScanId}</span>
         </div>
+
+        {user && (
+          <div className="pt-2 border-t border-zinc-800/60 flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2 min-w-0">
+              <div className="w-7 h-7 rounded-lg bg-zinc-800 text-zinc-200 flex items-center justify-center font-bold text-xs shrink-0">
+                {user.name ? user.name.charAt(0).toUpperCase() : user.email.charAt(0).toUpperCase()}
+              </div>
+              <div className="min-w-0">
+                <div className="text-xs font-medium text-zinc-200 truncate">
+                  {user.name || "Operator"}
+                </div>
+                <div className="text-[10px] text-zinc-500 truncate font-mono">
+                  {user.email}
+                </div>
+              </div>
+            </div>
+            <button
+              onClick={() => logout()}
+              title="Sign Out"
+              className="p-1.5 rounded-lg text-zinc-400 hover:text-rose-400 hover:bg-rose-950/30 transition-colors shrink-0"
+            >
+              <LogOut className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        )}
       </div>
     </aside>
   );

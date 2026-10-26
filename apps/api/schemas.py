@@ -71,3 +71,27 @@ class AgentChatResponse(BaseModel):
     links: List[Dict[str, str]] = []
     status: str = "success"
 
+class UserSignupRequest(BaseModel):
+    name: str
+    email: str
+    password: str
+    confirm_password: str
+
+class UserLoginRequest(BaseModel):
+    email: str
+    password: str
+
+class UserResponse(BaseModel):
+    id: str
+    name: str
+    email: str
+    created_at: Optional[datetime] = None
+
+    class Config:
+        from_attributes = True
+
+class AuthResponse(BaseModel):
+    user: UserResponse
+    status: str = "success"
+    message: Optional[str] = None
+

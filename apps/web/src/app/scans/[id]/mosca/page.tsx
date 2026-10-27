@@ -23,13 +23,13 @@ export default function MoscaPage() {
     <div className="p-8 max-w-[1600px] mx-auto space-y-8 select-none">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-zinc-800/80 pb-6">
         <div>
-          <div className="text-[10px] font-mono uppercase tracking-widest text-zinc-500">
+          <div className="text-[10px] font-mono uppercase tracking-widest text-yellow-500 dark:text-yellow-400 font-bold">
             Quantum Threat Modeling & Temporal Inequality
           </div>
-          <h1 className="text-3xl font-bold tracking-tight text-white font-mono mt-1">
+          <h1 className="text-3xl font-bold tracking-tight text-black dark:text-white font-mono mt-1">
             Mosca's Inequality Simulator
           </h1>
-          <p className="text-xs font-mono text-zinc-400 mt-1">
+          <p className="text-xs font-mono text-black dark:text-white mt-1">
             Evaluating the mathematical window for Harvest Now, Decrypt Later (HNDL) data exposure: X + Y &gt; Z.
           </p>
         </div>
@@ -42,7 +42,7 @@ export default function MoscaPage() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         {/* Left: Interactive Controls */}
         <div className="lg:col-span-6 p-8 rounded-3xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-[#121215] space-y-6">
-          <div className="text-xs font-mono uppercase tracking-widest text-zinc-500 dark:text-zinc-400 font-semibold">
+          <div className="text-xs font-mono uppercase tracking-widest text-black dark:text-white font-semibold">
             Adjust Threat & Architecture Parameters
           </div>
 
@@ -50,8 +50,8 @@ export default function MoscaPage() {
             {/* Slider X */}
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <span className="text-zinc-600 dark:text-zinc-300">Data Shelf-Life (X)</span>
-                <span className="text-zinc-900 dark:text-white font-bold">{dataLifetimeX} Years</span>
+                <span className="text-black dark:text-white">Data Shelf-Life (X)</span>
+                <span className="text-black dark:text-white font-bold">{dataLifetimeX} Years</span>
               </div>
               <input
                 type="range"
@@ -61,7 +61,7 @@ export default function MoscaPage() {
                 onChange={(e) => setDataLifetimeX(Number(e.target.value))}
                 className="w-full accent-amber-500 dark:accent-white bg-zinc-200 dark:bg-zinc-800 h-2 rounded-lg cursor-pointer"
               />
-              <p className="text-[10px] text-zinc-500">
+              <p className="text-[10px] text-black dark:text-white">
                 How long proprietary data, health records, or secrets must remain confidential.
               </p>
             </div>
@@ -69,8 +69,8 @@ export default function MoscaPage() {
             {/* Slider Y */}
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <span className="text-zinc-600 dark:text-zinc-300">Migration & Transition Time (Y)</span>
-                <span className="text-zinc-900 dark:text-white font-bold">{migrationTimeY} Years</span>
+                <span className="text-black dark:text-white">Migration & Transition Time (Y)</span>
+                <span className="text-black dark:text-white font-bold">{migrationTimeY} Years</span>
               </div>
               <input
                 type="range"
@@ -80,7 +80,7 @@ export default function MoscaPage() {
                 onChange={(e) => setMigrationTimeY(Number(e.target.value))}
                 className="w-full accent-amber-500 dark:accent-white bg-zinc-200 dark:bg-zinc-800 h-2 rounded-lg cursor-pointer"
               />
-              <p className="text-[10px] text-zinc-500">
+              <p className="text-[10px] text-black dark:text-white">
                 Time required to re-architect, re-encrypt, and deploy PQC across enterprise nodes.
               </p>
             </div>
@@ -88,8 +88,8 @@ export default function MoscaPage() {
             {/* Slider Z */}
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <span className="text-zinc-600 dark:text-zinc-300">CRQC Arrival Horizon (Z)</span>
-                <span className="text-zinc-900 dark:text-white font-bold">~{crqcHorizonZ} Years</span>
+                <span className="text-black dark:text-white">CRQC Arrival Horizon (Z)</span>
+                <span className="text-black dark:text-white font-bold">~{crqcHorizonZ} Years</span>
               </div>
               <input
                 type="range"
@@ -99,7 +99,7 @@ export default function MoscaPage() {
                 onChange={(e) => setCrqcHorizonZ(Number(e.target.value))}
                 className="w-full accent-amber-500 dark:accent-white bg-zinc-200 dark:bg-zinc-800 h-2 rounded-lg cursor-pointer"
               />
-              <p className="text-[10px] text-zinc-500">
+              <p className="text-[10px] text-black dark:text-white">
                 Assumed timeframe until an adversary achieves fault-tolerant quantum cryptanalysis.
               </p>
             </div>
@@ -108,34 +108,34 @@ export default function MoscaPage() {
 
         {/* Right: Real-Time Equation Evaluation */}
         <div className="lg:col-span-6 p-8 rounded-3xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-[#121215] space-y-6">
-          <div className="text-xs font-mono uppercase tracking-widest text-zinc-500 dark:text-zinc-400 font-semibold">
+          <div className="text-xs font-mono uppercase tracking-widest text-black dark:text-white font-semibold">
             Mathematical Result
           </div>
 
           <div className="p-6 rounded-2xl bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 text-center space-y-3 font-mono">
-            <div className="text-sm text-zinc-500">
-              {dataLifetimeX} yrs (X) + {migrationTimeY} yrs (Y) = <strong className="text-zinc-900 dark:text-white text-base">{totalExposure} Years</strong>
+            <div className="text-sm text-black dark:text-white">
+              {dataLifetimeX} yrs (X) + {migrationTimeY} yrs (Y) = <strong className="text-black dark:text-white text-base">{totalExposure} Years</strong>
             </div>
 
-            <div className="text-3xl font-bold font-mono text-zinc-900 dark:text-white">
+            <div className="text-3xl font-bold font-mono text-black dark:text-white">
               {totalExposure} {isVulnerable ? ">" : "≤"} {crqcHorizonZ}
             </div>
 
             <div className="pt-2">
               {isVulnerable ? (
-                <div className="p-3 rounded-xl bg-zinc-900 text-white dark:bg-white dark:text-zinc-950 font-bold text-xs uppercase">
+                <div className="p-3 rounded-xl bg-zinc-900 text-white dark:bg-white dark:text-black font-bold text-xs uppercase">
                   Data Compromised ({exposureDelta} Years Exposure Deficit)
                 </div>
               ) : (
-                <div className="p-3 rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 text-zinc-800 dark:text-zinc-200 font-bold text-xs uppercase">
+                <div className="p-3 rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 text-black dark:text-white font-bold text-xs uppercase">
                   Data Secure (Zero Exposure Deficit)
                 </div>
               )}
             </div>
           </div>
 
-          <p className="text-xs font-mono text-zinc-400 leading-relaxed">
-            <strong className="text-white">Note on Threat Horizon:</strong> Quantum computing arrival timelines are probabilistic intelligence scenarios rather than fixed deterministic dates. National cybersecurity agencies (e.g. NIST, NSA CNSA 2.0, BSI) mandate immediate initiation of migration programs to prevent retrospective decryption of intercepted data.
+          <p className="text-xs font-mono text-black dark:text-white leading-relaxed">
+            <strong className="text-black dark:text-white">Note on Threat Horizon:</strong> Quantum computing arrival timelines are probabilistic intelligence scenarios rather than fixed deterministic dates. National cybersecurity agencies (e.g. NIST, NSA CNSA 2.0, BSI) mandate immediate initiation of migration programs to prevent retrospective decryption of intercepted data.
           </p>
         </div>
       </div>

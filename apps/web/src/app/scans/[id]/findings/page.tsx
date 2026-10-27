@@ -57,13 +57,13 @@ export default function FindingsPage() {
       {/* 1. Header */}
       <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-4 border-b border-zinc-800 pb-6">
         <div>
-          <div className="text-[10px] font-mono uppercase tracking-widest text-zinc-500">
+          <div className="text-[10px] font-mono uppercase tracking-widest text-yellow-500 dark:text-yellow-400 font-bold">
             Security & Vulnerabilities
           </div>
-          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white font-mono mt-1">
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-black dark:text-white font-mono mt-1">
             FINDINGS
           </h1>
-          <p className="text-xs font-mono text-zinc-400 mt-1">
+          <p className="text-xs font-mono text-black dark:text-white mt-1">
             Showing {filteredFindings.length} of {findings.length} total findings
           </p>
         </div>
@@ -72,7 +72,7 @@ export default function FindingsPage() {
       {/* 2. Small Filter Row & Search */}
       <div className="flex flex-col sm:flex-row items-center gap-3">
         <div className="relative flex-1 w-full">
-          <Search className="w-4 h-4 text-zinc-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
+          <Search className="w-4 h-4 text-black dark:text-white absolute left-3.5 top-1/2 -translate-y-1/2" />
           <input
             type="text"
             placeholder="Search findings by algorithm, file, or pattern..."
@@ -81,7 +81,7 @@ export default function FindingsPage() {
               setSearchQuery(e.target.value);
               setPage(1);
             }}
-            className="w-full h-10 pl-10 pr-4 rounded-xl border border-zinc-800 bg-[#121214] text-xs font-mono text-white placeholder:text-zinc-600 focus:outline-none focus:border-zinc-500 transition-all"
+            className="w-full h-10 pl-10 pr-4 rounded-xl border border-zinc-800 bg-[#121214] text-xs font-mono text-black dark:text-white placeholder:text-black/50 dark:placeholder:text-white/50 focus:outline-none focus:border-zinc-500 transition-all"
           />
         </div>
 
@@ -95,8 +95,8 @@ export default function FindingsPage() {
               }}
               className={`px-3 py-1.5 rounded-lg border transition-all text-xs ${
                 selectedSeverity === sev
-                  ? "bg-white text-zinc-950 border-white font-bold"
-                  : "bg-[#121214] border-zinc-800 text-zinc-400 hover:text-white"
+                  ? "bg-white text-black border-white font-bold"
+                  : "bg-[#121214] border-zinc-800 text-white hover:text-yellow-400"
               }`}
             >
               {sev}
@@ -129,19 +129,19 @@ export default function FindingsPage() {
               </Badge>
 
               <div className="truncate">
-                <div className="font-semibold text-white truncate">
+                <div className="font-semibold text-black dark:text-white truncate">
                   {finding.algorithm || finding.finding_type}
                 </div>
-                <div className="text-[11px] text-zinc-500 truncate mt-0.5">
+                <div className="text-[11px] text-black dark:text-white truncate mt-0.5">
                   {finding.file_path}:{finding.line_start || 1}
                 </div>
               </div>
             </div>
 
             <div className="flex items-center gap-6 shrink-0 justify-between sm:justify-end">
-              <div className="text-zinc-400 text-[11px]">
+              <div className="text-black dark:text-white text-[11px]">
                 {finding.quantum_status === "VULNERABLE" ? (
-                  <span className="text-zinc-300 font-semibold">Quantum Vuln</span>
+                  <span className="text-yellow-500 dark:text-yellow-400 font-semibold">Quantum Vuln</span>
                 ) : (
                   <span>Risk {finding.risk_score ? Number(finding.risk_score).toFixed(0) : "25"}</span>
                 )}
@@ -157,14 +157,14 @@ export default function FindingsPage() {
         ))}
 
         {paginatedFindings.length === 0 && (
-          <div className="p-12 text-center text-zinc-500 font-mono text-xs">
+          <div className="p-12 text-center text-black dark:text-white font-mono text-xs">
             No findings match the selected criteria.
           </div>
         )}
       </div>
 
       {/* Pagination */}
-      <div className="flex items-center justify-between p-2 text-xs font-mono text-zinc-500">
+      <div className="flex items-center justify-between p-2 text-xs font-mono text-black dark:text-white">
         <div>
           Page {page} of {totalPages}
         </div>

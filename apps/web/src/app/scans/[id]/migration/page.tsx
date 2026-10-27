@@ -24,8 +24,8 @@ export default function MigrationPage() {
   if (loading) {
     return (
       <div className="p-16 flex flex-col items-center justify-center min-h-[70vh] space-y-4">
-        <Loader2 className="w-6 h-6 animate-spin text-zinc-500" />
-        <div className="text-xs font-mono text-zinc-500 uppercase tracking-widest">
+        <Loader2 className="w-6 h-6 animate-spin text-yellow-500 dark:text-yellow-400" />
+        <div className="text-xs font-mono text-black dark:text-white uppercase tracking-widest">
           Loading Migration Roadmap...
         </div>
       </div>
@@ -36,13 +36,13 @@ export default function MigrationPage() {
     <div className="p-10 max-w-5xl mx-auto space-y-8 select-none font-mono">
       {/* Header */}
       <div className="border-b border-zinc-200 dark:border-zinc-800 pb-6">
-        <div className="text-[10px] uppercase tracking-widest text-amber-800 dark:text-yellow-400 font-bold">
+        <div className="text-[10px] uppercase tracking-widest text-yellow-500 dark:text-yellow-400 font-bold">
           Remediation & Planning
         </div>
-        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-zinc-950 dark:text-white mt-1">
+        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-black dark:text-white mt-1">
           PQC MIGRATION ROADMAP
         </h1>
-        <p className="text-xs text-zinc-600 dark:text-zinc-400 mt-1 font-medium">
+        <p className="text-xs text-black dark:text-white mt-1 font-medium">
           {recommendations.length} prioritized algorithm transitions
         </p>
       </div>
@@ -68,17 +68,17 @@ export default function MigrationPage() {
                 >
                   {rec.priority || "P1"}
                 </Badge>
-                <span className="font-semibold text-zinc-950 dark:text-white truncate">{rec.title}</span>
+                <span className="font-semibold text-black dark:text-white truncate">{rec.title}</span>
               </div>
-              <div className="text-zinc-600 dark:text-zinc-400 flex items-center gap-2 pt-1">
-                <span className="text-zinc-800 dark:text-zinc-300 font-medium">{rec.current_algorithm || "Classical"}</span>
-                <span className="text-amber-700 dark:text-yellow-500 font-bold">→</span>
-                <span className="text-amber-800 dark:text-yellow-400 font-bold">{rec.recommended_algorithm || "ML-KEM-768"}</span>
+              <div className="text-black dark:text-white flex items-center gap-2 pt-1">
+                <span className="text-black dark:text-white font-medium">{rec.current_algorithm || "Classical"}</span>
+                <span className="text-yellow-500 dark:text-yellow-400 font-bold">→</span>
+                <span className="text-yellow-500 dark:text-yellow-400 font-bold font-mono">{rec.recommended_algorithm || "ML-KEM-768"}</span>
               </div>
             </div>
 
             <div className="flex items-center gap-4 shrink-0 sm:text-right">
-              <div className="text-zinc-600 dark:text-zinc-400 text-[11px] font-medium">
+              <div className="text-black dark:text-white text-[11px] font-medium">
                 {rec.finding_count || 1} occurrences
               </div>
               <Badge variant="outline" className="text-[10px]">
@@ -89,7 +89,7 @@ export default function MigrationPage() {
         ))}
 
         {recommendations.length === 0 && (
-          <div className="p-12 text-center text-zinc-600 dark:text-zinc-400 text-xs">
+          <div className="p-12 text-center text-black dark:text-white text-xs">
             No migration items queued.
           </div>
         )}

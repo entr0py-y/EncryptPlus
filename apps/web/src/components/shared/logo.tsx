@@ -6,7 +6,7 @@ interface LogoProps extends React.SVGProps<SVGSVGElement> {
   className?: string;
 }
 
-export function Logo({ className = "w-6 h-6 text-zinc-950 dark:text-white", ...props }: LogoProps) {
+export function Logo({ className = "w-6 h-6 text-black dark:text-white", ...props }: LogoProps) {
   const uniqueId = useId();
   const maskId = `ep-logo-mask-${uniqueId.replace(/:/g, "")}`;
 

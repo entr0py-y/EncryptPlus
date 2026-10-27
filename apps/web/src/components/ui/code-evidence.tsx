@@ -81,7 +81,7 @@ export function CodeEvidence({
     <div className={cn("rounded-xl border border-zinc-200/80 dark:border-zinc-800/70 bg-white dark:bg-zinc-950/40 backdrop-blur-sm overflow-hidden font-mono", className)}>
       {/* File Header Bar */}
       <div className="flex items-center justify-between px-4 py-2.5 bg-zinc-100 dark:bg-zinc-900/60 border-b border-zinc-200 dark:border-zinc-800/70 text-xs">
-        <div className="flex items-center gap-2 text-zinc-700 dark:text-zinc-300 truncate">
+        <div className="flex items-center gap-2 text-black dark:text-white truncate">
           <FileCode className="w-3.5 h-3.5 text-yellow-500 shrink-0" />
           <span className="truncate">{filePath || "unknown_source_file"}</span>
           {lineNumber && (
@@ -92,9 +92,9 @@ export function CodeEvidence({
         </div>
         <button
           onClick={handleCopy}
-          className="flex items-center gap-1.5 text-[11px] text-zinc-700 dark:text-zinc-300 hover:text-zinc-950 dark:hover:text-white px-2.5 py-1 rounded-lg bg-zinc-200/80 dark:bg-zinc-800/50 border border-zinc-300 dark:border-zinc-700/60 hover:border-zinc-400 dark:hover:border-zinc-500 transition-colors shrink-0 font-medium"
+          className="flex items-center gap-1.5 text-[11px] text-black dark:text-white hover:text-yellow-500 dark:hover:text-yellow-400 px-2.5 py-1 rounded-lg bg-zinc-200/80 dark:bg-zinc-800/50 border border-zinc-300 dark:border-zinc-700/60 hover:border-zinc-400 dark:hover:border-zinc-500 transition-colors shrink-0 font-medium"
         >
-          {copied ? <Check className="w-3 h-3 text-amber-700 dark:text-yellow-400" /> : <Copy className="w-3 h-3" />}
+          {copied ? <Check className="w-3 h-3 text-yellow-500 dark:text-yellow-400" /> : <Copy className="w-3 h-3" />}
           <span>{copied ? "Copied" : "Copy"}</span>
         </button>
       </div>
@@ -109,17 +109,17 @@ export function CodeEvidence({
               key={i}
               className={cn(
                 "flex items-start gap-4 px-2 py-0.5 rounded transition-colors",
-                l.isMatch ? "bg-amber-500/10 dark:bg-yellow-500/10 border-l-2 border-amber-500 dark:border-yellow-500 text-zinc-950 dark:text-white font-semibold" : "text-zinc-800 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-900/40"
+                l.isMatch ? "bg-amber-500/10 dark:bg-yellow-500/10 border-l-2 border-yellow-500 text-black dark:text-white font-semibold" : "text-black dark:text-white hover:bg-zinc-100 dark:hover:bg-zinc-900/40"
               )}
             >
-              <span className="w-8 text-right text-zinc-500 dark:text-zinc-600 select-none shrink-0 font-mono text-[11px]">
+              <span className="w-8 text-right text-black dark:text-white select-none shrink-0 font-mono text-[11px]">
                 {l.num}
               </span>
               <span className="whitespace-pre flex-1 font-mono">
                 {hasMatch ? (
                   <span>
                     {l.text.substring(0, l.text.indexOf(matchText))}
-                    <span className="bg-yellow-500 text-zinc-950 px-1 py-0.5 rounded font-bold shadow-[0_0_10px_rgba(234,179,8,0.4)]">
+                    <span className="bg-yellow-500 text-black px-1 py-0.5 rounded font-bold shadow-[0_0_10px_rgba(234,179,8,0.4)]">
                       {matchText}
                     </span>
                     {l.text.substring(l.text.indexOf(matchText) + matchText.length)}

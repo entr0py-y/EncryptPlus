@@ -47,13 +47,13 @@ export default function HistoryComparisonPage() {
     <div className="p-8 max-w-[1600px] mx-auto space-y-8 select-none">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-zinc-800/80 pb-6">
         <div>
-          <div className="text-[10px] font-mono uppercase tracking-widest text-zinc-500">
+          <div className="text-[10px] font-mono uppercase tracking-widest text-yellow-500 dark:text-yellow-400 font-bold">
             Cryptographic Drift & Regression Tracking
           </div>
-          <h1 className="text-3xl font-bold tracking-tight text-white font-mono mt-1">
+          <h1 className="text-3xl font-bold tracking-tight text-black dark:text-white font-mono mt-1">
             Historical Scan Comparison
           </h1>
-          <p className="text-xs font-mono text-zinc-400 mt-1">
+          <p className="text-xs font-mono text-black dark:text-white mt-1">
             Comparing cryptographic posture delta, newly introduced primitives, and resolved vulnerabilities.
           </p>
         </div>
@@ -61,11 +61,11 @@ export default function HistoryComparisonPage() {
 
       {/* Comparison Selector */}
       <div className="flex items-center gap-4 bg-white dark:bg-[#121215] p-4 rounded-2xl border border-zinc-200 dark:border-zinc-800 text-xs font-mono">
-        <span className="text-zinc-500 dark:text-zinc-400">Comparing Current Scan #{id} against:</span>
+        <span className="text-black dark:text-white font-medium">Comparing Current Scan #{id} against:</span>
         <select
           value={prevScanId}
           onChange={(e) => handleCompare(e.target.value)}
-          className="h-9 px-3 rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 text-zinc-900 dark:text-white font-mono focus:outline-none"
+          className="h-9 px-3 rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 text-black dark:text-white font-mono focus:outline-none"
         >
           {scans
             .filter((s) => String(s.id) !== String(id))
@@ -80,43 +80,43 @@ export default function HistoryComparisonPage() {
       {/* Delta Metrics Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Card className="p-6 space-y-2">
-          <div className="text-[10px] font-mono uppercase tracking-wider text-zinc-500">
+          <div className="text-[10px] font-mono uppercase tracking-wider text-black dark:text-white">
             Risk Score Delta
           </div>
-          <div className="text-4xl font-bold font-mono text-white">
+          <div className="text-4xl font-bold font-mono text-black dark:text-white">
             {comparison?.risk_change !== undefined
               ? `${comparison.risk_change > 0 ? "+" : ""}${Number(comparison.risk_change).toFixed(1)}`
               : "0.0"}
           </div>
-          <div className="text-xs font-mono text-zinc-400">
+          <div className="text-xs font-mono text-black dark:text-white">
             {currentScan?.overall_risk_score} vs {previousScan?.overall_risk_score}
           </div>
         </Card>
 
         <Card className="p-6 space-y-2">
-          <div className="text-[10px] font-mono uppercase tracking-wider text-zinc-500">
+          <div className="text-[10px] font-mono uppercase tracking-wider text-black dark:text-white">
             Occurrences Delta
           </div>
-          <div className="text-4xl font-bold font-mono text-white">
+          <div className="text-4xl font-bold font-mono text-black dark:text-white">
             {comparison?.new_findings !== undefined
               ? `${comparison.new_findings > 0 ? "+" : ""}${comparison.new_findings}`
               : "0"}
           </div>
-          <div className="text-xs font-mono text-zinc-400">
+          <div className="text-xs font-mono text-black dark:text-white">
             {currentScan?.total_findings} vs {previousScan?.total_findings}
           </div>
         </Card>
 
         <Card className="p-6 space-y-2">
-          <div className="text-[10px] font-mono uppercase tracking-wider text-zinc-500">
+          <div className="text-[10px] font-mono uppercase tracking-wider text-black dark:text-white">
             PQC Readiness Delta
           </div>
-          <div className="text-4xl font-bold font-mono text-white">
+          <div className="text-4xl font-bold font-mono text-black dark:text-white">
             {currentScan?.pqc_readiness_score !== null && previousScan?.pqc_readiness_score !== null
               ? `${(Number(currentScan?.pqc_readiness_score || 0) - Number(previousScan?.pqc_readiness_score || 0)).toFixed(1)}%`
               : "0.0%"}
           </div>
-          <div className="text-xs font-mono text-zinc-400">
+          <div className="text-xs font-mono text-black dark:text-white">
             Progression across audit cycle
           </div>
         </Card>

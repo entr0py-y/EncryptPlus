@@ -71,23 +71,23 @@ export default function InventoryPage() {
         <div>
           <Link
             href={`/scans/${id}`}
-            className="inline-flex items-center gap-1.5 text-xs font-mono text-zinc-600 dark:text-zinc-400 hover:text-amber-800 dark:hover:text-yellow-400 transition-colors mb-2 font-medium"
+            className="inline-flex items-center gap-1.5 text-xs font-mono text-black dark:text-white hover:text-yellow-500 dark:hover:text-yellow-400 transition-colors mb-2 font-medium"
           >
             <ChevronLeft className="w-3.5 h-3.5" />
             <span>Back to Scan #{id} Assessment</span>
           </Link>
-          <div className="text-[10px] font-mono uppercase tracking-widest text-amber-800 dark:text-yellow-400 font-bold">
+          <div className="text-[10px] font-mono uppercase tracking-widest text-yellow-500 dark:text-yellow-400 font-bold">
             Cryptographic Bill of Materials (CBOM)
           </div>
-          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-zinc-950 dark:text-white font-mono mt-1">
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-black dark:text-white font-mono mt-1">
             CRYPTOGRAPHIC INVENTORY
           </h1>
-          <div className="text-xs font-mono text-zinc-600 dark:text-zinc-400 mt-1 flex items-center gap-2">
-            <span><strong className="text-zinc-950 dark:text-white font-bold">{assets.length}</strong> Total Assets</span>
+          <div className="text-xs font-mono text-black dark:text-white mt-1 flex items-center gap-2">
+            <span><strong className="text-black dark:text-white font-bold">{assets.length}</strong> Total Assets</span>
             <span>•</span>
-            <span><strong className="text-amber-800 dark:text-yellow-400 font-bold">{distinctAlgos}</strong> Algorithms</span>
+            <span><strong className="text-yellow-500 dark:text-yellow-400 font-bold">{distinctAlgos}</strong> Algorithms</span>
             <span>•</span>
-            <span><strong className="text-rose-700 dark:text-rose-400 font-bold">{quantumVulnCount}</strong> Quantum Vulnerable</span>
+            <span><strong className="text-yellow-500 dark:text-yellow-400 font-bold">{quantumVulnCount}</strong> Quantum Vulnerable</span>
           </div>
         </div>
       </div>
@@ -95,7 +95,7 @@ export default function InventoryPage() {
       {/* 2. Clean Search & Type Filter */}
       <div className="flex flex-col sm:flex-row items-center gap-3">
         <div className="relative flex-1 w-full">
-          <Search className="w-4 h-4 text-zinc-500 dark:text-zinc-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+          <Search className="w-4 h-4 text-black dark:text-white absolute left-3.5 top-1/2 -translate-y-1/2" />
           <input
             type="text"
             placeholder="Filter assets by algorithm, category, or file path..."
@@ -104,7 +104,7 @@ export default function InventoryPage() {
               setSearchQuery(e.target.value);
               setPage(1);
             }}
-            className="w-full h-11 pl-10 pr-4 rounded-xl border border-zinc-200/80 dark:border-zinc-800/70 bg-white dark:bg-zinc-900/20 text-xs font-mono text-zinc-900 dark:text-white placeholder:text-zinc-400 dark:placeholder:text-zinc-600 focus:outline-none focus:ring-1 focus:ring-amber-500/50 transition-all"
+            className="w-full h-11 pl-10 pr-4 rounded-xl border border-zinc-200/80 dark:border-zinc-800/70 bg-white dark:bg-zinc-900/20 text-xs font-mono text-black dark:text-white placeholder:text-black/50 dark:placeholder:text-white/50 focus:outline-none focus:ring-1 focus:ring-amber-500/50 transition-all"
           />
         </div>
 
@@ -118,8 +118,8 @@ export default function InventoryPage() {
               }}
               className={`px-3.5 py-2 rounded-xl border transition-all text-xs font-mono ${
                 selectedType === t
-                  ? "bg-yellow-500 text-zinc-950 border-yellow-500 font-bold shadow-none dark:shadow-[0_0_15px_rgba(234,179,8,0.3)]"
-                  : "bg-white dark:bg-zinc-900/20 border-zinc-200 dark:border-zinc-800/70 text-zinc-700 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:border-zinc-400 dark:hover:border-zinc-700 font-medium"
+                  ? "bg-yellow-500 text-black border-yellow-500 font-bold shadow-none dark:shadow-[0_0_15px_rgba(234,179,8,0.3)]"
+                  : "bg-white dark:bg-zinc-900/20 border-zinc-200 dark:border-zinc-800/70 text-black dark:text-white hover:text-yellow-500 dark:hover:text-yellow-400 hover:border-zinc-400 dark:hover:border-zinc-700 font-medium"
               }`}
             >
               {t}
@@ -132,7 +132,7 @@ export default function InventoryPage() {
       <div className="border border-zinc-200/80 dark:border-zinc-800/70 rounded-2xl bg-white dark:bg-transparent overflow-hidden shadow-xl">
         <div className="overflow-x-auto">
           <table className="w-full text-xs font-mono text-left">
-            <thead className="bg-zinc-50 dark:bg-zinc-900/40 border-b border-zinc-200/80 dark:border-zinc-800/60 text-zinc-700 dark:text-zinc-400 uppercase text-[10px] tracking-wider font-bold">
+            <thead className="bg-zinc-50 dark:bg-zinc-900/40 border-b border-zinc-200/80 dark:border-zinc-800/60 text-black dark:text-white uppercase text-[10px] tracking-wider font-bold">
               <tr>
                 <th className="p-4 font-semibold">Asset / Mechanism</th>
                 <th className="p-4 font-semibold">Type</th>
@@ -148,19 +148,19 @@ export default function InventoryPage() {
                   onClick={() => setInspectedAsset(asset)}
                   className="hover:bg-zinc-50 dark:hover:bg-zinc-900/20 transition-colors cursor-pointer"
                 >
-                  <td className="p-4 font-semibold text-zinc-950 dark:text-white max-w-[240px] truncate" title={asset.algorithm || ""}>
+                  <td className="p-4 font-semibold text-black dark:text-white max-w-[240px] truncate" title={asset.algorithm || ""}>
                     <div className="truncate font-mono">{asset.algorithm || "Undetermined"}</div>
                     {asset.category && (
-                      <div className="text-[10px] text-amber-800 dark:text-yellow-500/80 font-mono mt-0.5 font-medium">{asset.category}</div>
+                      <div className="text-[10px] text-yellow-500 dark:text-yellow-400 font-mono mt-0.5 font-medium">{asset.category}</div>
                     )}
                   </td>
-                  <td className="p-4 text-zinc-700 dark:text-zinc-300">
-                    <Badge variant="outline" className="border-zinc-200 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-900/30 text-[10px] font-mono text-zinc-800 dark:text-zinc-300 font-medium">
+                  <td className="p-4 text-black dark:text-white">
+                    <Badge variant="outline" className="border-zinc-200 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-900/30 text-[10px] font-mono text-black dark:text-white font-medium">
                       {asset.asset_type || "UNKNOWN"}
                     </Badge>
                   </td>
-                  <td className="p-4 text-zinc-700 dark:text-zinc-300 max-w-[220px] truncate font-mono text-xs" title={asset.file_path || ""}>
-                    <div className="truncate text-zinc-800 dark:text-zinc-300">
+                  <td className="p-4 text-black dark:text-white max-w-[220px] truncate font-mono text-xs" title={asset.file_path || ""}>
+                    <div className="truncate text-black dark:text-white">
                       {cleanFilePath(asset.file_path)}:{asset.line_start || 1}
                     </div>
                   </td>
@@ -186,7 +186,7 @@ export default function InventoryPage() {
                         e.stopPropagation();
                         setInspectedAsset(asset);
                       }}
-                      className="h-7 text-[11px] gap-1 font-mono border-zinc-200 dark:border-zinc-800 bg-white dark:bg-transparent text-zinc-900 dark:text-white hover:bg-zinc-100 dark:hover:bg-zinc-900/40"
+                      className="h-7 text-[11px] gap-1 font-mono border-zinc-200 dark:border-zinc-800 bg-white dark:bg-transparent text-black dark:text-white hover:bg-zinc-100 dark:hover:bg-zinc-900/40"
                     >
                       <span>Inspect</span>
                       <ArrowRight className="w-3 h-3" />
@@ -197,7 +197,7 @@ export default function InventoryPage() {
 
               {paginatedAssets.length === 0 && (
                 <tr>
-                  <td colSpan={5} className="p-12 text-center text-zinc-600 dark:text-zinc-400 font-mono text-xs">
+                  <td colSpan={5} className="p-12 text-center text-black dark:text-white font-mono text-xs">
                     No cryptographic assets match your search.
                   </td>
                 </tr>
@@ -207,7 +207,7 @@ export default function InventoryPage() {
         </div>
 
         {/* Minimal Pagination */}
-        <div className="flex items-center justify-between p-4 border-t border-zinc-200/80 dark:border-zinc-800/60 text-xs font-mono text-zinc-600 dark:text-zinc-400 font-medium">
+        <div className="flex items-center justify-between p-4 border-t border-zinc-200/80 dark:border-zinc-800/60 text-xs font-mono text-black dark:text-white font-medium">
           <div>
             Page {page} of {totalPages}
           </div>
@@ -217,7 +217,7 @@ export default function InventoryPage() {
               size="sm"
               disabled={page <= 1}
               onClick={() => setPage(page - 1)}
-              className="h-8 text-xs font-mono border-zinc-200 dark:border-zinc-800/80 bg-white dark:bg-transparent text-zinc-800 dark:text-zinc-300 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-900/40"
+              className="h-8 text-xs font-mono border-zinc-200 dark:border-zinc-800/80 bg-white dark:bg-transparent text-black dark:text-white rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-900/40"
             >
               Previous
             </Button>
@@ -226,7 +226,7 @@ export default function InventoryPage() {
               size="sm"
               disabled={page >= totalPages}
               onClick={() => setPage(page + 1)}
-              className="h-8 text-xs font-mono border-zinc-200 dark:border-zinc-800/80 bg-white dark:bg-transparent text-zinc-800 dark:text-zinc-300 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-900/40"
+              className="h-8 text-xs font-mono border-zinc-200 dark:border-zinc-800/80 bg-white dark:bg-transparent text-black dark:text-white rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-900/40"
             >
               Next
             </Button>
@@ -245,25 +245,25 @@ export default function InventoryPage() {
           <div className="space-y-6 text-xs font-mono">
             <div className="grid grid-cols-2 gap-3 p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/20">
               <div>
-                <span className="text-zinc-500 uppercase text-[10px]">Type</span>
-                <div className="font-semibold text-zinc-950 dark:text-white mt-0.5">{inspectedAsset.asset_type}</div>
+                <span className="text-black dark:text-white uppercase text-[10px]">Type</span>
+                <div className="font-semibold text-black dark:text-white mt-0.5">{inspectedAsset.asset_type}</div>
               </div>
               <div>
-                <span className="text-zinc-500 uppercase text-[10px]">Quantum Posture</span>
-                <div className="font-semibold text-zinc-950 dark:text-white mt-0.5">{inspectedAsset.quantum_status || "Undetermined"}</div>
+                <span className="text-black dark:text-white uppercase text-[10px]">Quantum Posture</span>
+                <div className="font-semibold text-black dark:text-white mt-0.5">{inspectedAsset.quantum_status || "Undetermined"}</div>
               </div>
               <div>
-                <span className="text-zinc-500 uppercase text-[10px]">Key Parameter</span>
-                <div className="font-semibold text-zinc-950 dark:text-white mt-0.5">{inspectedAsset.key_size ? `${inspectedAsset.key_size}-bit` : "Not Specified"}</div>
+                <span className="text-black dark:text-white uppercase text-[10px]">Key Parameter</span>
+                <div className="font-semibold text-black dark:text-white mt-0.5">{inspectedAsset.key_size ? `${inspectedAsset.key_size}-bit` : "Not Specified"}</div>
               </div>
               <div>
-                <span className="text-zinc-500 uppercase text-[10px]">Severity</span>
-                <div className="font-semibold text-zinc-950 dark:text-white mt-0.5">{inspectedAsset.severity || "INFO"}</div>
+                <span className="text-black dark:text-white uppercase text-[10px]">Severity</span>
+                <div className="font-semibold text-black dark:text-white mt-0.5">{inspectedAsset.severity || "INFO"}</div>
               </div>
             </div>
 
             <div className="space-y-2">
-              <div className="text-[10px] uppercase tracking-wider text-amber-800 dark:text-yellow-500 font-semibold">
+              <div className="text-[10px] uppercase tracking-wider text-yellow-500 dark:text-yellow-400 font-semibold">
                 Code Evidence
               </div>
               <CodeEvidence
@@ -277,10 +277,10 @@ export default function InventoryPage() {
 
             {inspectedAsset.remediation && (
               <div className="p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/20 space-y-1">
-                <div className="text-[10px] uppercase tracking-wider text-amber-800 dark:text-yellow-500 font-semibold">
+                <div className="text-[10px] uppercase tracking-wider text-yellow-500 dark:text-yellow-400 font-semibold">
                   Migration Guidance
                 </div>
-                <p className="text-zinc-800 dark:text-zinc-300 leading-relaxed">
+                <p className="text-black dark:text-white leading-relaxed">
                   {inspectedAsset.remediation}
                 </p>
               </div>

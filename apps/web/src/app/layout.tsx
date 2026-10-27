@@ -39,7 +39,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="font-sans antialiased overflow-x-hidden bg-white dark:bg-[#0B0D10] text-zinc-900 dark:text-[#f4f4f5] transition-colors duration-200">
+      <body className="font-sans antialiased overflow-x-hidden bg-white dark:bg-[#0B0D10] text-black dark:text-white transition-colors duration-200">
         <ThemeProvider>
           <AuthProvider>
             <AppShell>{children}</AppShell>

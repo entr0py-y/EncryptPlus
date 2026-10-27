@@ -23,8 +23,8 @@ export default function FullReportPage() {
   if (loading) {
     return (
       <div className="p-16 flex flex-col items-center justify-center min-h-[70vh] space-y-4 font-mono">
-        <Loader2 className="w-6 h-6 animate-spin text-zinc-500" />
-        <div className="text-xs text-zinc-500 uppercase tracking-widest">
+        <Loader2 className="w-6 h-6 animate-spin text-yellow-500" />
+        <div className="text-xs text-black dark:text-white uppercase tracking-widest">
           Assembling 18-Section Assessment Document...
         </div>
       </div>
@@ -33,7 +33,7 @@ export default function FullReportPage() {
 
   if (!report) {
     return (
-      <div className="p-16 text-center text-xs font-mono text-zinc-500">
+      <div className="p-16 text-center text-xs font-mono text-black dark:text-white">
         Assessment report data could not be generated.
       </div>
     );
@@ -46,13 +46,13 @@ export default function FullReportPage() {
       {/* Editorial Header */}
       <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-4 border-b border-zinc-200 dark:border-zinc-800 pb-6">
         <div>
-          <div className="text-[10px] uppercase tracking-widest text-amber-800 dark:text-yellow-400 font-bold">
+          <div className="text-[10px] uppercase tracking-widest text-yellow-500 dark:text-yellow-400 font-bold">
             Official Technical Assessment Document
           </div>
-          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-zinc-950 dark:text-white mt-1">
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-black dark:text-white mt-1">
             CRYPTOGRAPHIC AUDIT REPORT
           </h1>
-          <p className="text-xs text-zinc-600 dark:text-zinc-400 mt-1 font-medium">
+          <p className="text-xs text-black dark:text-white mt-1 font-medium">
             ENCRYPT PLUS • Scan #{id} • 18 Structured Sections
           </p>
         </div>
@@ -61,9 +61,9 @@ export default function FullReportPage() {
           variant="outline"
           size="sm"
           onClick={() => window.print()}
-          className="font-mono text-xs gap-2 shrink-0 border-zinc-200 dark:border-zinc-800 bg-white dark:bg-transparent text-zinc-900 dark:text-white hover:bg-zinc-100 dark:hover:bg-zinc-900/30 rounded-xl"
+          className="font-mono text-xs gap-2 shrink-0 border-zinc-200 dark:border-zinc-800 bg-white dark:bg-transparent text-black dark:text-white hover:bg-zinc-100 dark:hover:bg-zinc-900/30 rounded-xl"
         >
-          <Printer className="w-3.5 h-3.5 text-amber-700 dark:text-yellow-500" />
+          <Printer className="w-3.5 h-3.5 text-yellow-500 dark:text-yellow-400" />
           <span>Print Document</span>
         </Button>
       </div>
@@ -77,15 +77,15 @@ export default function FullReportPage() {
             className="space-y-3 pb-8 border-b border-zinc-200 dark:border-zinc-800/60"
           >
             <div className="flex items-baseline justify-between">
-              <h2 className="text-base font-bold text-zinc-950 dark:text-white tracking-tight">
+              <h2 className="text-base font-bold text-black dark:text-white tracking-tight">
                 {section.title}
               </h2>
-              <span className="text-[10px] text-amber-800 dark:text-yellow-500/80 font-bold">
+              <span className="text-[10px] text-yellow-500 dark:text-yellow-400 font-bold">
                 {String(section.id).padStart(2, "0")} / 18
               </span>
             </div>
 
-            <div className="text-xs text-zinc-800 dark:text-zinc-300 leading-relaxed whitespace-pre-line">
+            <div className="text-xs text-black dark:text-white leading-relaxed whitespace-pre-line">
               {section.content}
             </div>
           </article>

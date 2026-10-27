@@ -36,11 +36,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     content = <main className="min-h-screen flex flex-col">{children}</main>;
   } else if (loading) {
     content = (
-      <div className="min-h-screen flex flex-col items-center justify-center text-zinc-900 dark:text-zinc-100 font-sans select-none">
+      <div className="min-h-screen flex flex-col items-center justify-center text-black dark:text-white font-sans select-none">
         <div className="flex flex-col items-center gap-4">
-          <Logo className="w-10 h-10 text-zinc-900 dark:text-white animate-pulse" />
-          <div className="flex items-center gap-2 text-xs font-mono text-zinc-500">
-            <Loader2 className="w-3.5 h-3.5 animate-spin" />
+          <Logo className="w-10 h-10 text-black dark:text-white animate-pulse" />
+          <div className="flex items-center gap-2 text-xs font-mono text-black dark:text-white">
+            <Loader2 className="w-3.5 h-3.5 animate-spin text-yellow-500" />
             <span>Verifying session security...</span>
           </div>
         </div>
@@ -48,16 +48,16 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     );
   } else if (!user && !isPublicRoute) {
     content = (
-      <div className="min-h-screen flex flex-col items-center justify-center text-zinc-900 dark:text-zinc-100 font-sans select-none">
-        <div className="flex items-center gap-2 text-xs font-mono text-zinc-500">
-          <Loader2 className="w-3.5 h-3.5 animate-spin" />
+      <div className="min-h-screen flex flex-col items-center justify-center text-black dark:text-white font-sans select-none">
+        <div className="flex items-center gap-2 text-xs font-mono text-black dark:text-white">
+          <Loader2 className="w-3.5 h-3.5 animate-spin text-yellow-500" />
           <span>Redirecting to authentication...</span>
         </div>
       </div>
     );
   } else {
     content = (
-      <div className="min-h-screen flex flex-col text-zinc-900 dark:text-[#f4f4f5] transition-colors duration-200">
+      <div className="min-h-screen flex flex-col text-black dark:text-white transition-colors duration-200">
         <Topbar />
         <main className="flex-1 w-full">{children}</main>
         <Footer />
@@ -66,7 +66,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <div className="relative w-full min-h-screen bg-white dark:bg-[#0B0D10] text-zinc-900 dark:text-[#f4f4f5] transition-colors duration-200">
+    <div className="relative w-full min-h-screen bg-white dark:bg-[#0B0D10] text-black dark:text-white transition-colors duration-200">
       {/* Background CursorGrid across whole site */}
       <div className="fixed inset-0 pointer-events-none z-0">
         <CursorGrid

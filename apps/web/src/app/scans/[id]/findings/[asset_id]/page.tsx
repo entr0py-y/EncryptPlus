@@ -29,8 +29,8 @@ export default function FindingDetailPage() {
   if (loading) {
     return (
       <div className="p-16 flex flex-col items-center justify-center min-h-[70vh] space-y-4">
-        <Loader2 className="w-6 h-6 animate-spin text-zinc-500" />
-        <div className="text-xs font-mono text-zinc-500 uppercase tracking-widest">
+        <Loader2 className="w-6 h-6 animate-spin text-yellow-500 dark:text-yellow-400" />
+        <div className="text-xs font-mono text-black dark:text-white uppercase tracking-widest">
           Loading Finding...
         </div>
       </div>
@@ -39,7 +39,7 @@ export default function FindingDetailPage() {
 
   if (!asset) {
     return (
-      <div className="p-16 text-center text-xs font-mono text-zinc-500 space-y-4">
+      <div className="p-16 text-center text-xs font-mono text-black dark:text-white space-y-4">
         <div>Finding #{assetId} not found.</div>
         <Link href={`/scans/${id}/findings`}>
           <Button variant="outline" size="sm">Back to Findings</Button>
@@ -67,7 +67,7 @@ export default function FindingDetailPage() {
       <div>
         <Link
           href={`/scans/${id}/findings`}
-          className="inline-flex items-center gap-2 text-xs text-zinc-500 hover:text-white transition-colors"
+          className="inline-flex items-center gap-2 text-xs text-black dark:text-white hover:text-yellow-500 dark:hover:text-yellow-400 transition-colors"
         >
           <ArrowLeft className="w-3.5 h-3.5" />
           <span>Back to Findings</span>
@@ -78,10 +78,10 @@ export default function FindingDetailPage() {
       <div className="p-6 rounded-2xl border border-zinc-800/80 bg-[#121214] space-y-6">
         <div className="flex items-start justify-between gap-4">
           <div className="space-y-1">
-            <div className="text-[10px] text-zinc-500 uppercase tracking-widest">
+            <div className="text-[10px] text-yellow-500 dark:text-yellow-400 font-bold uppercase tracking-widest">
               Finding Specification
             </div>
-            <h1 className="text-2xl font-bold text-white tracking-tight">
+            <h1 className="text-2xl font-bold text-black dark:text-white tracking-tight">
               {asset.algorithm || asset.finding_type || "Cryptographic Mechanism"}
             </h1>
           </div>
@@ -101,22 +101,22 @@ export default function FindingDetailPage() {
         {/* 4-Item Metadata Row */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-4 border-t border-zinc-800/80 text-xs">
           <div>
-            <div className="text-zinc-500 text-[10px]">Usage</div>
-            <div className="font-semibold text-white mt-0.5">{asset.category || "General"}</div>
+            <div className="text-black dark:text-white text-[10px]">Usage</div>
+            <div className="font-semibold text-black dark:text-white mt-0.5">{asset.category || "General"}</div>
           </div>
           <div>
-            <div className="text-zinc-500 text-[10px]">Location</div>
-            <div className="font-semibold text-white mt-0.5 truncate" title={asset.file_path || ""}>
+            <div className="text-black dark:text-white text-[10px]">Location</div>
+            <div className="font-semibold text-black dark:text-white mt-0.5 truncate" title={asset.file_path || ""}>
               {asset.file_path ? asset.file_path.split("/").pop() : "—"}:{asset.line_start || 1}
             </div>
           </div>
           <div>
-            <div className="text-zinc-500 text-[10px]">Quantum Posture</div>
-            <div className="font-semibold text-white mt-0.5">{asset.quantum_status || "UNKNOWN"}</div>
+            <div className="text-black dark:text-white text-[10px]">Quantum Posture</div>
+            <div className="font-semibold text-black dark:text-white mt-0.5">{asset.quantum_status || "UNKNOWN"}</div>
           </div>
           <div>
-            <div className="text-zinc-500 text-[10px]">Risk Score</div>
-            <div className="font-semibold text-white mt-0.5">
+            <div className="text-black dark:text-white text-[10px]">Risk Score</div>
+            <div className="font-semibold text-black dark:text-white mt-0.5">
               {asset.risk_score ? Number(asset.risk_score).toFixed(0) : "25"} / 100
             </div>
           </div>
@@ -125,7 +125,7 @@ export default function FindingDetailPage() {
 
       {/* 2. Code Evidence */}
       <div className="space-y-2">
-        <div className="text-[10px] uppercase tracking-widest text-zinc-500">
+        <div className="text-[10px] uppercase tracking-widest text-yellow-500 dark:text-yellow-400 font-bold">
           Code Evidence
         </div>
         <CodeEvidence
@@ -140,24 +140,24 @@ export default function FindingDetailPage() {
       {/* 3. Assessment & Recommendation */}
       <div className="p-6 rounded-2xl border border-zinc-800/80 bg-[#121214] space-y-6 text-xs leading-relaxed">
         <div className="space-y-2">
-          <div className="text-[10px] uppercase tracking-widest text-zinc-500">
+          <div className="text-[10px] uppercase tracking-widest text-yellow-500 dark:text-yellow-400 font-bold">
             Why It Matters
           </div>
-          <p className="text-zinc-300">
+          <p className="text-black dark:text-white">
             {asset.description || "Identified classical cryptographic primitive that is susceptible to cryptanalysis or post-quantum Shor/Grover algorithms."}
           </p>
         </div>
 
         <div className="space-y-2 pt-4 border-t border-zinc-800/80">
-          <div className="text-[10px] uppercase tracking-widest text-zinc-500">
+          <div className="text-[10px] uppercase tracking-widest text-yellow-500 dark:text-yellow-400 font-bold">
             Recommendation & Migration Target
           </div>
-          <div className="flex items-center gap-3 py-2 text-sm font-semibold text-white">
+          <div className="flex items-center gap-3 py-2 text-sm font-semibold text-black dark:text-white">
             <span>{asset.algorithm || "Current"}</span>
-            <span className="text-zinc-600">→</span>
-            <span className="text-zinc-200">{targetAlgo}</span>
+            <span className="text-yellow-500 dark:text-yellow-400 font-bold">→</span>
+            <span className="text-yellow-500 dark:text-yellow-400 font-mono font-bold">{targetAlgo}</span>
           </div>
-          <p className="text-zinc-400">
+          <p className="text-black dark:text-white">
             {asset.remediation || "Replace deprecated or quantum-vulnerable primitive with NIST-standardized post-quantum lattice algorithms (FIPS 203/204)."}
           </p>
         </div>

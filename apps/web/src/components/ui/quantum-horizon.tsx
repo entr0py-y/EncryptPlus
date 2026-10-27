@@ -33,7 +33,7 @@ export function QuantumHorizon({
       percent: vulnPercent,
       densityBar: "bg-white",
       borderTone: "border-white",
-      badgeTone: "bg-white text-zinc-950 font-bold",
+      badgeTone: "bg-white text-black font-bold",
     },
     {
       label: "Quantum Weakened",
@@ -42,7 +42,7 @@ export function QuantumHorizon({
       percent: partialPercent,
       densityBar: "bg-zinc-400",
       borderTone: "border-zinc-500",
-      badgeTone: "bg-zinc-800 text-zinc-200",
+      badgeTone: "bg-zinc-800 text-white",
     },
     {
       label: "Post-Quantum Ready",
@@ -51,7 +51,7 @@ export function QuantumHorizon({
       percent: safePercent,
       densityBar: "bg-zinc-600",
       borderTone: "border-zinc-700",
-      badgeTone: "bg-zinc-900 text-zinc-400",
+      badgeTone: "bg-zinc-900 text-white",
     },
   ];
 
@@ -60,8 +60,8 @@ export function QuantumHorizon({
       {/* Horizon Stacked Density Bar */}
       <div className="space-y-2">
         <div className="flex items-center justify-between text-xs font-mono">
-          <span className="text-zinc-400 uppercase tracking-wider">Quantum Exposure Spectrum</span>
-          <span className="text-zinc-500 font-semibold">{total.toLocaleString()} Total Evaluated</span>
+          <span className="text-black dark:text-white uppercase tracking-wider">Quantum Exposure Spectrum</span>
+          <span className="text-black dark:text-white font-semibold">{total.toLocaleString()} Total Evaluated</span>
         </div>
         <div className="h-3 w-full rounded-full bg-zinc-900 overflow-hidden flex border border-zinc-800 p-0.5">
           {vulnerableCount > 0 && (
@@ -105,12 +105,12 @@ export function QuantumHorizon({
             <div className="flex items-center gap-3">
               <div className={cn("w-2.5 h-2.5 rounded-full border", cat.densityBar, cat.borderTone)} />
               <div>
-                <div className="text-xs font-semibold text-zinc-100">{cat.label}</div>
-                <div className="text-[11px] font-mono text-zinc-500">{cat.sublabel}</div>
+                <div className="text-xs font-semibold text-black dark:text-white">{cat.label}</div>
+                <div className="text-[11px] font-mono text-black dark:text-white">{cat.sublabel}</div>
               </div>
             </div>
             <div className="text-right flex items-center gap-3">
-              <span className="text-sm font-bold font-mono text-zinc-200">{cat.count}</span>
+              <span className="text-sm font-bold font-mono text-black dark:text-white">{cat.count}</span>
               <span className={cn("text-[10px] font-mono px-2 py-0.5 rounded-md", cat.badgeTone)}>
                 {cat.percent}%
               </span>

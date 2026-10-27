@@ -31,51 +31,51 @@ export default function CertificatesPage() {
     <div className="p-8 max-w-[1600px] mx-auto space-y-8 select-none">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-zinc-800/80 pb-6">
         <div>
-          <div className="text-[10px] font-mono uppercase tracking-widest text-zinc-500">
+          <div className="text-[10px] font-mono uppercase tracking-widest text-yellow-500 dark:text-yellow-400 font-bold">
             Public Key Infrastructure (PKI)
           </div>
-          <h1 className="text-3xl font-bold tracking-tight text-white font-mono mt-1">
+          <h1 className="text-3xl font-bold tracking-tight text-black dark:text-white font-mono mt-1">
             X.509 Certificates & Trust Anchors
           </h1>
-          <p className="text-xs font-mono text-zinc-400 mt-1">
+          <p className="text-xs font-mono text-black dark:text-white mt-1">
             Auditing certificate lifecycles, expiration checks, signature suites, trust chains, and key usage extensions.
           </p>
         </div>
-        <div className="text-xs font-mono text-zinc-400">
-          <strong className="text-zinc-900 dark:text-white">{certAssets.length}</strong> Certificate Operations Catalogued
+        <div className="text-xs font-mono text-black dark:text-white">
+          <strong className="text-black dark:text-white">{certAssets.length}</strong> Certificate Operations Catalogued
         </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs font-mono">
         <div className="p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-[#121215] space-y-1">
-          <div className="text-[10px] text-zinc-500 uppercase">Expiration Checks</div>
-          <div className="text-3xl font-bold text-zinc-900 dark:text-white font-mono">
+          <div className="text-[10px] text-black dark:text-white uppercase">Expiration Checks</div>
+          <div className="text-3xl font-bold text-black dark:text-white font-mono">
             {certAssets.filter((c) => (c.algorithm || "").includes("Expiration")).length}
           </div>
-          <div className="text-zinc-500 dark:text-zinc-400 text-[11px]">Validity Audits</div>
+          <div className="text-black dark:text-white text-[11px]">Validity Audits</div>
         </div>
 
         <div className="p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-[#121215] space-y-1">
-          <div className="text-[10px] text-zinc-500 uppercase">Signature Algorithms</div>
-          <div className="text-3xl font-bold text-zinc-900 dark:text-white font-mono">
+          <div className="text-[10px] text-black dark:text-white uppercase">Signature Algorithms</div>
+          <div className="text-3xl font-bold text-black dark:text-white font-mono">
             {certAssets.filter((c) => (c.algorithm || "").includes("Signature")).length}
           </div>
-          <div className="text-zinc-500 dark:text-zinc-400 text-[11px]">RSA & ECDSA Signatures</div>
+          <div className="text-black dark:text-white text-[11px]">RSA & ECDSA Signatures</div>
         </div>
 
         <div className="p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-[#121215] space-y-1">
-          <div className="text-[10px] text-zinc-500 uppercase">Pinning & Chains</div>
-          <div className="text-3xl font-bold text-zinc-900 dark:text-white font-mono">
+          <div className="text-[10px] text-black dark:text-white uppercase">Pinning & Chains</div>
+          <div className="text-3xl font-bold text-black dark:text-white font-mono">
             {certAssets.filter((c) => (c.algorithm || "").includes("Pinning") || (c.algorithm || "").includes("Chain")).length}
           </div>
-          <div className="text-zinc-500 dark:text-zinc-400 text-[11px]">Trust Anchor Validations</div>
+          <div className="text-black dark:text-white text-[11px]">Trust Anchor Validations</div>
         </div>
       </div>
 
       <Card className="overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-xs font-mono text-left">
-            <thead className="bg-zinc-900/80 border-b border-zinc-800 text-zinc-400 uppercase text-[10px] tracking-wider">
+            <thead className="bg-zinc-900/80 border-b border-zinc-800 text-black dark:text-white uppercase text-[10px] tracking-wider">
               <tr>
                 <th className="p-4">Certificate Mechanism</th>
                 <th className="p-4">Location</th>
@@ -87,17 +87,17 @@ export default function CertificatesPage() {
             <tbody className="divide-y divide-zinc-800/60">
               {certAssets.slice(0, 100).map((c) => (
                 <tr key={c.id} className="hover:bg-zinc-900/40 transition-colors">
-                  <td className="p-4 font-semibold text-white">
+                  <td className="p-4 font-semibold text-black dark:text-white">
                     <div className="flex items-center gap-2">
-                      <Award className="w-4 h-4 text-zinc-400 shrink-0" />
+                      <Award className="w-4 h-4 text-yellow-500 dark:text-yellow-400 shrink-0" />
                       <span>{c.algorithm || c.finding_type || "X.509 Certificate Asset"}</span>
                     </div>
                   </td>
-                  <td className="p-4 text-zinc-400 truncate max-w-[200px]" title={c.file_path || ""}>
+                  <td className="p-4 text-black dark:text-white truncate max-w-[200px]" title={c.file_path || ""}>
                     {c.file_path ? c.file_path.split("/").pop() : "—"}:{c.line_start || 1}
                   </td>
-                  <td className="p-4 font-mono text-zinc-300">
-                    <span className="bg-zinc-900 px-2 py-0.5 rounded border border-zinc-800">
+                  <td className="p-4 font-mono text-black dark:text-white">
+                    <span className="bg-zinc-900 px-2 py-0.5 rounded border border-zinc-800 text-white">
                       {c.match_text || "N/A"}
                     </span>
                   </td>

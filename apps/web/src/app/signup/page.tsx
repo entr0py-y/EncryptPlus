@@ -67,12 +67,12 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="min-h-screen text-zinc-100 flex flex-col justify-between p-4 sm:p-6 md:p-8 select-none font-sans">
+    <div className="min-h-screen text-black dark:text-white flex flex-col justify-between p-4 sm:p-6 md:p-8 select-none font-sans">
       {/* Top Header */}
       <header className="w-full flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2.5 group cursor-pointer">
-          <Logo className="w-6 h-6 text-white shrink-0 group-hover:scale-105 transition-all" />
-          <span className="text-sm font-semibold tracking-tight text-white">
+          <Logo className="w-6 h-6 text-black dark:text-white shrink-0 group-hover:scale-105 transition-all" />
+          <span className="text-sm font-semibold tracking-tight text-black dark:text-white">
             ENCRYPT PLUS
           </span>
         </Link>
@@ -85,19 +85,19 @@ export default function SignupPage() {
       <main className="w-full max-w-md mx-auto my-auto px-4 py-8">
         <div className="bg-[#121214]/90 backdrop-blur-sm border border-zinc-800/80 rounded-2xl p-6 sm:p-8 shadow-lg">
           <div className="text-center space-y-2 mb-6">
-            <div className="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-zinc-800/80 text-white mb-2">
-              <UserPlus className="w-5 h-5" />
+            <div className="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-zinc-800/80 text-black dark:text-white mb-2">
+              <UserPlus className="w-5 h-5 text-yellow-500 dark:text-yellow-400" />
             </div>
-            <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-white">
+            <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-black dark:text-white">
               Create Your Account
             </h1>
-            <p className="text-xs text-zinc-400">
+            <p className="text-xs text-black dark:text-white">
               Start auditing cryptographic posture and quantum risk
             </p>
           </div>
 
           {errorMsg && (
-            <div className="mb-5 p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-xs flex items-center gap-2">
+            <div className="mb-5 p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-yellow-500 dark:text-yellow-400 text-xs flex items-center gap-2">
               <AlertCircle className="w-4 h-4 shrink-0" />
               <span>{errorMsg}</span>
             </div>
@@ -105,7 +105,7 @@ export default function SignupPage() {
 
           <form onSubmit={handleSubmit} className="space-y-3.5">
             <div>
-              <label className="block text-xs font-mono font-medium text-zinc-300 mb-1">
+              <label className="block text-xs font-mono font-medium text-black dark:text-white mb-1">
                 Full Name
               </label>
               <input
@@ -114,13 +114,13 @@ export default function SignupPage() {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Dr. Jane Doe"
-                className="w-full px-3.5 py-2.5 rounded-xl border border-zinc-800 bg-[#09090b] text-white text-xs font-mono placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500/30 transition-all"
+                className="w-full px-3.5 py-2.5 rounded-xl border border-zinc-800 bg-[#09090b] text-black dark:text-white text-xs font-mono placeholder:text-black/50 dark:placeholder:text-white/50 focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500/30 transition-all"
                 disabled={isSubmitting}
               />
             </div>
 
             <div>
-              <label className="block text-xs font-mono font-medium text-zinc-300 mb-1">
+              <label className="block text-xs font-mono font-medium text-black dark:text-white mb-1">
                 Work Email
               </label>
               <input
@@ -129,13 +129,13 @@ export default function SignupPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="jane@organization.com"
-                className="w-full px-3.5 py-2.5 rounded-xl border border-zinc-800 bg-[#09090b] text-white text-xs font-mono placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500/30 transition-all"
+                className="w-full px-3.5 py-2.5 rounded-xl border border-zinc-800 bg-[#09090b] text-black dark:text-white text-xs font-mono placeholder:text-black/50 dark:placeholder:text-white/50 focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500/30 transition-all"
                 disabled={isSubmitting}
               />
             </div>
 
             <div>
-              <label className="block text-xs font-mono font-medium text-zinc-300 mb-1">
+              <label className="block text-xs font-mono font-medium text-black dark:text-white mb-1">
                 Password
               </label>
               <input
@@ -144,13 +144,13 @@ export default function SignupPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="At least 8 characters"
-                className="w-full px-3.5 py-2.5 rounded-xl border border-zinc-800 bg-[#09090b] text-white text-xs font-mono placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500/30 transition-all"
+                className="w-full px-3.5 py-2.5 rounded-xl border border-zinc-800 bg-[#09090b] text-black dark:text-white text-xs font-mono placeholder:text-black/50 dark:placeholder:text-white/50 focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500/30 transition-all"
                 disabled={isSubmitting}
               />
             </div>
 
             <div>
-              <label className="block text-xs font-mono font-medium text-zinc-300 mb-1">
+              <label className="block text-xs font-mono font-medium text-black dark:text-white mb-1">
                 Confirm Password
               </label>
               <input
@@ -159,7 +159,7 @@ export default function SignupPage() {
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 placeholder="Re-type password"
-                className="w-full px-3.5 py-2.5 rounded-xl border border-zinc-800 bg-[#09090b] text-white text-xs font-mono placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500/30 transition-all"
+                className="w-full px-3.5 py-2.5 rounded-xl border border-zinc-800 bg-[#09090b] text-black dark:text-white text-xs font-mono placeholder:text-black/50 dark:placeholder:text-white/50 focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500/30 transition-all"
                 disabled={isSubmitting}
               />
             </div>
@@ -167,7 +167,7 @@ export default function SignupPage() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full mt-3 py-2.5 px-4 rounded-xl bg-amber-500 text-zinc-950 font-medium text-xs hover:bg-amber-400 transition-all flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer shadow-sm"
+              className="w-full mt-3 py-2.5 px-4 rounded-xl bg-amber-500 text-black font-semibold text-xs hover:bg-amber-400 transition-all flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer shadow-sm"
             >
               {isSubmitting ? (
                 <>
@@ -183,11 +183,11 @@ export default function SignupPage() {
             </button>
           </form>
 
-          <div className="mt-6 pt-5 border-t border-zinc-800/80 text-center text-xs text-zinc-400">
+          <div className="mt-6 pt-5 border-t border-zinc-800/80 text-center text-xs text-black dark:text-white">
             Already have an account?{" "}
             <Link
               href="/login"
-              className="font-medium text-amber-400 hover:text-amber-300 hover:underline transition-colors"
+              className="font-medium text-yellow-500 dark:text-yellow-400 hover:underline transition-colors"
             >
               Sign In
             </Link>
@@ -196,7 +196,7 @@ export default function SignupPage() {
       </main>
 
       {/* Footer */}
-      <footer className="w-full text-center py-4 text-[10px] font-mono text-zinc-600">
+      <footer className="w-full text-center py-4 text-[10px] font-mono text-black dark:text-white">
         ENCRYPT PLUS • Enterprise Cryptographic Discovery &amp; Analysis
       </footer>
     </div>

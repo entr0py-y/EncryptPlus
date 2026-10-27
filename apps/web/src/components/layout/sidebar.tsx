@@ -39,12 +39,12 @@ export function Sidebar({ currentScanId }: { currentScanId?: string | number }) 
         {/* Brand Header */}
         <div className="p-6 border-b border-zinc-200 dark:border-zinc-800/80">
           <Link href="/" className="flex items-center gap-2.5">
-            <Logo className="w-6 h-6 text-zinc-950 dark:text-white shrink-0" />
+            <Logo className="w-6 h-6 text-black dark:text-white shrink-0" />
             <div>
-              <div className="text-sm font-bold tracking-tight text-zinc-950 dark:text-white font-mono leading-none">
+              <div className="text-sm font-bold tracking-tight text-black dark:text-white font-mono leading-none">
                 ENCRYPT PLUS
               </div>
-              <div className="text-[9px] font-mono text-zinc-600 dark:text-zinc-500 tracking-wider mt-1 uppercase font-semibold">
+              <div className="text-[9px] font-mono text-black dark:text-white tracking-wider mt-1 uppercase font-semibold">
                 Cryptographic Intel
               </div>
             </div>
@@ -63,11 +63,11 @@ export function Sidebar({ currentScanId }: { currentScanId?: string | number }) 
                 className={cn(
                   "flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-mono transition-all",
                   isActive
-                    ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-950 font-bold shadow-sm"
-                    : "text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-900"
+                    ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-black font-bold shadow-sm"
+                    : "text-black dark:text-white hover:text-yellow-500 dark:hover:text-yellow-400 hover:bg-zinc-100 dark:hover:bg-zinc-900"
                 )}
               >
-                <Icon className={cn("w-4 h-4 shrink-0", isActive ? "text-white dark:text-zinc-950" : "text-zinc-500")} />
+                <Icon className={cn("w-4 h-4 shrink-0", isActive ? "text-white dark:text-black" : "text-black dark:text-white")} />
                 <span>{item.name}</span>
               </Link>
             );
@@ -80,13 +80,13 @@ export function Sidebar({ currentScanId }: { currentScanId?: string | number }) 
                   window.dispatchEvent(new CustomEvent("open-agent-drawer"));
                 }
               }}
-              className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-mono transition-all text-amber-800 dark:text-yellow-400 hover:text-amber-900 dark:hover:text-yellow-200 hover:bg-amber-50 dark:hover:bg-yellow-950/30 border border-amber-300 dark:border-yellow-500/20 font-bold"
+              className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-mono transition-all text-yellow-500 dark:text-yellow-400 hover:text-yellow-600 dark:hover:text-yellow-300 hover:bg-amber-50 dark:hover:bg-yellow-950/30 border border-amber-300 dark:border-yellow-500/20 font-bold"
             >
               <div className="flex items-center gap-3">
-                <Bot className="w-4 h-4 text-amber-700 dark:text-yellow-400 shrink-0" />
+                <Bot className="w-4 h-4 text-yellow-500 dark:text-yellow-400 shrink-0" />
                 <span>AI Assistant</span>
               </div>
-              <span className="text-[9px] px-1.5 py-0.5 rounded bg-amber-100 dark:bg-yellow-500/20 text-amber-800 dark:text-yellow-300 uppercase tracking-wider font-bold">
+              <span className="text-[9px] px-1.5 py-0.5 rounded bg-amber-100 dark:bg-yellow-500/20 text-yellow-500 dark:text-yellow-400 uppercase tracking-wider font-bold">
                 MEMORY
               </span>
             </button>
@@ -96,25 +96,25 @@ export function Sidebar({ currentScanId }: { currentScanId?: string | number }) 
 
       {/* Footer System Status & User Profile */}
       <div className="p-4 border-t border-zinc-200 dark:border-zinc-800/80 space-y-3 font-mono">
-        <div className="flex items-center justify-between text-[11px] text-zinc-600 dark:text-zinc-500">
-          <Link href="/scans" className="flex items-center gap-2 hover:text-zinc-950 dark:hover:text-zinc-200 transition-colors">
+        <div className="flex items-center justify-between text-[11px] text-black dark:text-white">
+          <Link href="/scans" className="flex items-center gap-2 hover:text-yellow-500 dark:hover:text-yellow-400 transition-colors">
             <FolderGit2 className="w-3.5 h-3.5" />
             <span>All Audits</span>
           </Link>
-          <span className="text-[10px] text-zinc-500">Scan #{activeScanId}</span>
+          <span className="text-[10px] text-black dark:text-white">Scan #{activeScanId}</span>
         </div>
 
         {user && (
           <div className="pt-2 border-t border-zinc-200 dark:border-zinc-800/60 flex items-center justify-between gap-2">
             <div className="flex items-center gap-2 min-w-0">
-              <div className="w-7 h-7 rounded-lg bg-zinc-200 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-200 flex items-center justify-center font-bold text-xs shrink-0">
+              <div className="w-7 h-7 rounded-lg bg-zinc-200 dark:bg-zinc-800 text-black dark:text-white flex items-center justify-center font-bold text-xs shrink-0">
                 {user.name ? user.name.charAt(0).toUpperCase() : user.email.charAt(0).toUpperCase()}
               </div>
               <div className="min-w-0">
-                <div className="text-xs font-medium text-zinc-900 dark:text-zinc-200 truncate">
+                <div className="text-xs font-medium text-black dark:text-white truncate">
                   {user.name || "Operator"}
                 </div>
-                <div className="text-[10px] text-zinc-600 dark:text-zinc-500 truncate font-mono">
+                <div className="text-[10px] text-black dark:text-white truncate font-mono">
                   {user.email}
                 </div>
               </div>
@@ -122,7 +122,7 @@ export function Sidebar({ currentScanId }: { currentScanId?: string | number }) 
             <button
               onClick={() => logout()}
               title="Sign Out"
-              className="p-1.5 rounded-lg text-zinc-500 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors shrink-0"
+              className="p-1.5 rounded-lg text-black dark:text-white hover:text-yellow-500 dark:hover:text-yellow-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors shrink-0"
             >
               <LogOut className="w-3.5 h-3.5" />
             </button>

@@ -169,8 +169,8 @@ export function RadialScrollNav({ className }: { className?: string }) {
                   className={cn(
                     "px-2.5 py-1 rounded-lg text-xs font-mono transition-all duration-200 whitespace-nowrap shadow-md border flex items-center gap-1.5",
                     isActive
-                      ? "bg-white text-zinc-950 font-bold border-white scale-105"
-                      : "bg-[#121214]/90 text-zinc-400 border-zinc-800 hover:text-zinc-100 hover:border-zinc-600"
+                      ? "bg-white text-black font-bold border-white scale-105"
+                      : "bg-[#121214]/90 text-white border-zinc-800 hover:text-yellow-400 hover:border-zinc-600"
                   )}
                 >
                   <span className="opacity-50 text-[10px]">{sec.number}</span>
@@ -184,7 +184,7 @@ export function RadialScrollNav({ className }: { className?: string }) {
 
       {/* 2. Mobile Floating Sticky Chapter Header */}
       <div className="xl:hidden sticky top-14 z-30 w-full bg-[#09090b]/95 backdrop-blur-md border-b border-zinc-800/80 px-4 py-2 flex items-center justify-between overflow-x-auto gap-2 select-none text-xs">
-        <div className="flex items-center gap-1.5 shrink-0 text-zinc-500 font-mono text-[10px] uppercase tracking-wider">
+        <div className="flex items-center gap-1.5 shrink-0 text-black dark:text-white font-mono text-[10px] uppercase tracking-wider">
           <span>Chapter:</span>
         </div>
         <div className="flex items-center gap-1.5 overflow-x-auto font-sans">
@@ -197,8 +197,8 @@ export function RadialScrollNav({ className }: { className?: string }) {
                 className={cn(
                   "px-2.5 py-1 rounded-lg transition-all shrink-0 text-xs",
                   isActive
-                    ? "bg-white text-zinc-950 font-bold"
-                    : "text-zinc-400 hover:text-white bg-zinc-900 border border-zinc-800"
+                    ? "bg-white text-black font-bold"
+                    : "text-white hover:text-yellow-400 bg-zinc-900 border border-zinc-800"
                 )}
               >
                 <span className="font-mono text-[10px] mr-1">{sec.number}</span>

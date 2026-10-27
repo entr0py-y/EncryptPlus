@@ -42,7 +42,7 @@ export function RadialPostureMap({
             stroke="currentColor"
             strokeWidth="1"
             strokeDasharray="2 8"
-            className="text-zinc-300 dark:text-zinc-700 opacity-60"
+            className="text-black/20 dark:text-white/20"
           />
 
           {/* Inner Amber Guide Ring */}
@@ -54,7 +54,7 @@ export function RadialPostureMap({
             stroke="currentColor"
             strokeWidth="1"
             strokeDasharray="4 12"
-            className="text-amber-500/30 dark:text-yellow-500/20"
+            className="text-yellow-500/30 dark:text-yellow-500/20"
           />
 
           {/* Subtle Background Track */}
@@ -67,7 +67,7 @@ export function RadialPostureMap({
             strokeWidth="8"
             strokeDasharray={`${arcLength} ${circumference}`}
             strokeLinecap="round"
-            className="text-zinc-200 dark:text-zinc-800"
+            className="text-black/10 dark:text-white/10"
           />
 
           {/* Active Risk Gauge Arc */}
@@ -87,17 +87,17 @@ export function RadialPostureMap({
 
         {/* Calm Central Typographic Hierarchy */}
         <div className="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none font-mono">
-          <div className="text-[10px] uppercase tracking-widest text-zinc-600 dark:text-zinc-400 mb-1 font-semibold">
+          <div className="text-[10px] uppercase tracking-widest text-black dark:text-white mb-1 font-semibold">
             Overall Posture Risk
           </div>
-          <div className="text-6xl font-bold tracking-tight text-zinc-950 dark:text-white leading-none">
+          <div className="text-6xl font-bold tracking-tight text-black dark:text-white leading-none">
             {riskNum.toFixed(1)}
           </div>
-          <div className="text-[11px] text-amber-700 dark:text-yellow-400 uppercase tracking-widest mt-2 font-bold">
+          <div className="text-[11px] text-yellow-500 dark:text-yellow-400 uppercase tracking-widest mt-2 font-bold">
             {overallRiskLevel} EXPOSURE
           </div>
-          <div className="mt-3 text-[11px] text-zinc-600 dark:text-zinc-400 font-medium">
-            PQC Readiness: <span className="text-amber-700 dark:text-yellow-400 font-bold">{Number(pqcReadiness || 0).toFixed(1)}%</span>
+          <div className="mt-3 text-[11px] text-black dark:text-white font-medium">
+            PQC Readiness: <span className="text-yellow-500 dark:text-yellow-400 font-bold">{Number(pqcReadiness || 0).toFixed(1)}%</span>
           </div>
         </div>
       </div>

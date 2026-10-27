@@ -32,51 +32,51 @@ export default function DependenciesPage() {
     <div className="p-8 max-w-[1600px] mx-auto space-y-8 select-none">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-zinc-800/80 pb-6">
         <div>
-          <div className="text-[10px] font-mono uppercase tracking-widest text-zinc-500">
+          <div className="text-[10px] font-mono uppercase tracking-widest text-yellow-500 dark:text-yellow-400 font-bold">
             Cryptographic Packages & Dependencies
           </div>
-          <h1 className="text-3xl font-bold tracking-tight text-white font-mono mt-1">
+          <h1 className="text-3xl font-bold tracking-tight text-black dark:text-white font-mono mt-1">
             Library & Provider Dependencies
           </h1>
-          <p className="text-xs font-mono text-zinc-400 mt-1">
+          <p className="text-xs font-mono text-black dark:text-white mt-1">
             Tracking JCA/JCE Security Providers, OpenSSL native bindings, and Python Cryptography packages.
           </p>
         </div>
-        <div className="text-xs font-mono text-zinc-400">
-          <strong className="text-zinc-900 dark:text-white">{depAssets.length}</strong> Package Imports Detected
+        <div className="text-xs font-mono text-black dark:text-white">
+          <strong className="text-black dark:text-white">{depAssets.length}</strong> Package Imports Detected
         </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs font-mono">
         <div className="p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-[#121215] space-y-1">
-          <div className="text-[10px] text-zinc-500 uppercase">Java Cryptography SPI</div>
-          <div className="text-3xl font-bold text-zinc-900 dark:text-white font-mono">
+          <div className="text-[10px] text-black dark:text-white uppercase">Java Cryptography SPI</div>
+          <div className="text-3xl font-bold text-black dark:text-white font-mono">
             {depAssets.filter((d) => (d.algorithm || "").includes("Java")).length}
           </div>
-          <div className="text-zinc-500 dark:text-zinc-400 text-[11px]">javax.crypto & java.security</div>
+          <div className="text-black dark:text-white text-[11px]">javax.crypto & java.security</div>
         </div>
 
         <div className="p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-[#121215] space-y-1">
-          <div className="text-[10px] text-zinc-500 uppercase">Native OpenSSL Bindings</div>
-          <div className="text-3xl font-bold text-zinc-900 dark:text-white font-mono">
+          <div className="text-[10px] text-black dark:text-white uppercase">Native OpenSSL Bindings</div>
+          <div className="text-3xl font-bold text-black dark:text-white font-mono">
             {depAssets.filter((d) => (d.algorithm || "").includes("OpenSSL")).length}
           </div>
-          <div className="text-zinc-500 dark:text-zinc-400 text-[11px]">C/C++ Native Calls</div>
+          <div className="text-black dark:text-white text-[11px]">C/C++ Native Calls</div>
         </div>
 
         <div className="p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-[#121215] space-y-1">
-          <div className="text-[10px] text-zinc-500 uppercase">Python Cryptography</div>
-          <div className="text-3xl font-bold text-zinc-900 dark:text-white font-mono">
+          <div className="text-[10px] text-black dark:text-white uppercase">Python Cryptography</div>
+          <div className="text-3xl font-bold text-black dark:text-white font-mono">
             {depAssets.filter((d) => (d.algorithm || "").includes("Python")).length}
           </div>
-          <div className="text-zinc-500 dark:text-zinc-400 text-[11px]">hashlib / cryptography</div>
+          <div className="text-black dark:text-white text-[11px]">hashlib / cryptography</div>
         </div>
       </div>
 
       <Card className="overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-xs font-mono text-left">
-            <thead className="bg-zinc-900/80 border-b border-zinc-800 text-zinc-400 uppercase text-[10px] tracking-wider">
+            <thead className="bg-zinc-900/80 border-b border-zinc-800 text-black dark:text-white uppercase text-[10px] tracking-wider">
               <tr>
                 <th className="p-4">Cryptographic Provider / Library</th>
                 <th className="p-4">Source File</th>
@@ -87,17 +87,17 @@ export default function DependenciesPage() {
             <tbody className="divide-y divide-zinc-800/60">
               {depAssets.map((d) => (
                 <tr key={d.id} className="hover:bg-zinc-900/40 transition-colors">
-                  <td className="p-4 font-semibold text-white">
+                  <td className="p-4 font-semibold text-black dark:text-white">
                     <div className="flex items-center gap-2">
-                      <Package className="w-4 h-4 text-zinc-400 shrink-0" />
+                      <Package className="w-4 h-4 text-yellow-500 dark:text-yellow-400 shrink-0" />
                       <span>{d.algorithm || d.finding_type || "Crypto Library Import"}</span>
                     </div>
                   </td>
-                  <td className="p-4 text-zinc-400 truncate max-w-[240px]" title={d.file_path || ""}>
+                  <td className="p-4 text-black dark:text-white truncate max-w-[240px]" title={d.file_path || ""}>
                     {d.file_path ? d.file_path.split("/").pop() : "—"}:{d.line_start || 1}
                   </td>
-                  <td className="p-4 font-mono text-zinc-300">
-                    <span className="bg-zinc-900 px-2 py-0.5 rounded border border-zinc-800">
+                  <td className="p-4 font-mono text-black dark:text-white">
+                    <span className="bg-zinc-900 px-2 py-0.5 rounded border border-zinc-800 text-white">
                       {d.match_text || "import java.security.*"}
                     </span>
                   </td>

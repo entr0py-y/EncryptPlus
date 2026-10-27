@@ -8,33 +8,33 @@ const badgeVariants = cva(
     variants: {
       variant: {
         default:
-          "border border-zinc-200 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-900 text-zinc-900 dark:text-zinc-200",
+          "border border-zinc-200 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-900 text-black dark:text-white",
         yellow:
-          "border border-amber-300 dark:border-yellow-400/30 bg-amber-50 dark:bg-yellow-500/10 text-amber-800 dark:text-yellow-400 font-semibold",
+          "border border-amber-300 dark:border-yellow-400/30 bg-amber-50 dark:bg-yellow-500/10 text-yellow-500 dark:text-yellow-400 font-semibold",
         secondary:
-          "border border-zinc-200 dark:border-zinc-800/60 bg-zinc-100 dark:bg-zinc-950 text-zinc-700 dark:text-zinc-400",
+          "border border-zinc-200 dark:border-zinc-800/60 bg-zinc-100 dark:bg-zinc-950 text-black dark:text-white",
         outline:
-          "border border-zinc-300 dark:border-zinc-700 bg-zinc-50/50 dark:bg-transparent text-zinc-800 dark:text-zinc-300",
+          "border border-zinc-300 dark:border-zinc-700 bg-zinc-50/50 dark:bg-transparent text-black dark:text-white",
         solid:
-          "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-950 font-semibold border border-transparent",
+          "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-black font-semibold border border-transparent",
         muted:
-          "border border-zinc-200 dark:border-zinc-900 bg-zinc-100 dark:bg-zinc-900/40 text-zinc-600 dark:text-zinc-500",
+          "border border-zinc-200 dark:border-zinc-900 bg-zinc-100 dark:bg-zinc-900/40 text-black dark:text-white",
         critical:
-          "border border-rose-300 dark:border-rose-500/40 bg-rose-50 dark:bg-rose-500/15 text-rose-700 dark:text-rose-400 font-bold",
+          "border border-rose-300 dark:border-rose-500/40 bg-rose-50 dark:bg-rose-500/15 text-black dark:text-white font-bold",
         high:
-          "border border-orange-300 dark:border-orange-500/40 bg-orange-50 dark:bg-orange-500/15 text-orange-700 dark:text-orange-400 font-semibold",
+          "border border-orange-300 dark:border-orange-500/40 bg-orange-50 dark:bg-orange-500/15 text-black dark:text-white font-semibold",
         medium:
-          "border border-amber-300 dark:border-yellow-500/40 bg-amber-50 dark:bg-yellow-500/15 text-amber-800 dark:text-yellow-400 font-medium",
+          "border border-amber-300 dark:border-yellow-500/40 bg-amber-50 dark:bg-yellow-500/15 text-yellow-500 dark:text-yellow-400 font-medium",
         low:
-          "border border-zinc-200 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-900/60 text-zinc-700 dark:text-zinc-400",
+          "border border-zinc-200 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-900/60 text-black dark:text-white",
         info:
-          "border border-zinc-200 dark:border-zinc-800/80 bg-zinc-100 dark:bg-zinc-950/60 text-zinc-700 dark:text-zinc-400",
+          "border border-zinc-200 dark:border-zinc-800/80 bg-zinc-100 dark:bg-zinc-950/60 text-black dark:text-white",
         vulnerable:
-          "border border-rose-300 dark:border-rose-500/40 bg-rose-50 dark:bg-rose-500/15 text-rose-700 dark:text-rose-400 font-bold",
+          "border border-rose-300 dark:border-rose-500/40 bg-rose-50 dark:bg-rose-500/15 text-black dark:text-white font-bold",
         partial:
-          "border border-amber-300 dark:border-yellow-500/40 bg-amber-50 dark:bg-yellow-500/15 text-amber-800 dark:text-yellow-400 font-semibold",
+          "border border-amber-300 dark:border-yellow-500/40 bg-amber-50 dark:bg-yellow-500/15 text-yellow-500 dark:text-yellow-400 font-semibold",
         safe:
-          "border border-emerald-300 dark:border-emerald-500/40 bg-emerald-50 dark:bg-emerald-500/15 text-emerald-800 dark:text-emerald-400 font-semibold",
+          "border border-emerald-300 dark:border-emerald-500/40 bg-emerald-50 dark:bg-emerald-500/15 text-black dark:text-white font-semibold",
       },
     },
     defaultVariants: {

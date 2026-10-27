@@ -48,7 +48,7 @@ export default function DependenciesPage() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs font-mono">
-        <div className="p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-[#121215] space-y-1">
+        <div className="p-5 rounded-2xl border border-yellow-500/30 dark:border-yellow-500/25 bg-yellow-500/[0.06] dark:bg-yellow-500/[0.08] space-y-1">
           <div className="text-[10px] text-zinc-500 uppercase">Java Cryptography SPI</div>
           <div className="text-3xl font-bold text-zinc-900 dark:text-white font-mono">
             {depAssets.filter((d) => (d.algorithm || "").includes("Java")).length}
@@ -56,7 +56,7 @@ export default function DependenciesPage() {
           <div className="text-zinc-500 dark:text-zinc-400 text-[11px]">javax.crypto & java.security</div>
         </div>
 
-        <div className="p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-[#121215] space-y-1">
+        <div className="p-5 rounded-2xl border border-yellow-500/30 dark:border-yellow-500/25 bg-yellow-500/[0.06] dark:bg-yellow-500/[0.08] space-y-1">
           <div className="text-[10px] text-zinc-500 uppercase">Native OpenSSL Bindings</div>
           <div className="text-3xl font-bold text-zinc-900 dark:text-white font-mono">
             {depAssets.filter((d) => (d.algorithm || "").includes("OpenSSL")).length}
@@ -64,7 +64,7 @@ export default function DependenciesPage() {
           <div className="text-zinc-500 dark:text-zinc-400 text-[11px]">C/C++ Native Calls</div>
         </div>
 
-        <div className="p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-[#121215] space-y-1">
+        <div className="p-5 rounded-2xl border border-yellow-500/30 dark:border-yellow-500/25 bg-yellow-500/[0.06] dark:bg-yellow-500/[0.08] space-y-1">
           <div className="text-[10px] text-zinc-500 uppercase">Python Cryptography</div>
           <div className="text-3xl font-bold text-zinc-900 dark:text-white font-mono">
             {depAssets.filter((d) => (d.algorithm || "").includes("Python")).length}

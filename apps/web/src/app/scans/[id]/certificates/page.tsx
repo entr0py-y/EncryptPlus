@@ -47,7 +47,7 @@ export default function CertificatesPage() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs font-mono">
-        <div className="p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-[#121215] space-y-1">
+        <div className="p-5 rounded-2xl border border-yellow-500/30 dark:border-yellow-500/25 bg-yellow-500/[0.06] dark:bg-yellow-500/[0.08] space-y-1">
           <div className="text-[10px] text-zinc-500 uppercase">Expiration Checks</div>
           <div className="text-3xl font-bold text-zinc-900 dark:text-white font-mono">
             {certAssets.filter((c) => (c.algorithm || "").includes("Expiration")).length}
@@ -55,7 +55,7 @@ export default function CertificatesPage() {
           <div className="text-zinc-500 dark:text-zinc-400 text-[11px]">Validity Audits</div>
         </div>
 
-        <div className="p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-[#121215] space-y-1">
+        <div className="p-5 rounded-2xl border border-yellow-500/30 dark:border-yellow-500/25 bg-yellow-500/[0.06] dark:bg-yellow-500/[0.08] space-y-1">
           <div className="text-[10px] text-zinc-500 uppercase">Signature Algorithms</div>
           <div className="text-3xl font-bold text-zinc-900 dark:text-white font-mono">
             {certAssets.filter((c) => (c.algorithm || "").includes("Signature")).length}
@@ -63,7 +63,7 @@ export default function CertificatesPage() {
           <div className="text-zinc-500 dark:text-zinc-400 text-[11px]">RSA & ECDSA Signatures</div>
         </div>
 
-        <div className="p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-[#121215] space-y-1">
+        <div className="p-5 rounded-2xl border border-yellow-500/30 dark:border-yellow-500/25 bg-yellow-500/[0.06] dark:bg-yellow-500/[0.08] space-y-1">
           <div className="text-[10px] text-zinc-500 uppercase">Pinning & Chains</div>
           <div className="text-3xl font-bold text-zinc-900 dark:text-white font-mono">
             {certAssets.filter((c) => (c.algorithm || "").includes("Pinning") || (c.algorithm || "").includes("Chain")).length}

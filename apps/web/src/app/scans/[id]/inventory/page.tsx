@@ -104,7 +104,7 @@ export default function InventoryPage() {
               setSearchQuery(e.target.value);
               setPage(1);
             }}
-            className="w-full h-11 pl-10 pr-4 rounded-xl border border-zinc-200/80 dark:border-zinc-800/70 bg-transparent dark:bg-zinc-900/20 text-xs font-mono text-white placeholder:text-zinc-600 focus:outline-none focus:ring-1 focus:ring-amber-500/50 transition-all"
+            className="w-full h-11 pl-10 pr-4 rounded-xl border border-zinc-200/80 dark:border-zinc-800/70 bg-white dark:bg-zinc-900/20 text-xs font-mono text-zinc-900 dark:text-white placeholder:text-zinc-400 dark:placeholder:text-zinc-600 focus:outline-none focus:ring-1 focus:ring-amber-500/50 transition-all"
           />
         </div>
 
@@ -119,7 +119,7 @@ export default function InventoryPage() {
               className={`px-3.5 py-2 rounded-xl border transition-all text-xs font-mono ${
                 selectedType === t
                   ? "bg-yellow-500 text-zinc-950 border-yellow-500 font-bold shadow-none dark:shadow-[0_0_15px_rgba(234,179,8,0.3)]"
-                  : "bg-transparent dark:bg-zinc-900/20 border-zinc-800/70 text-zinc-400 hover:text-white hover:border-zinc-700"
+                  : "bg-white dark:bg-zinc-900/20 border-zinc-200 dark:border-zinc-800/70 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:border-zinc-400 dark:hover:border-zinc-700"
               }`}
             >
               {t}
@@ -129,10 +129,10 @@ export default function InventoryPage() {
       </div>
 
       {/* 3. ONE Clean Table */}
-      <div className="border border-zinc-200/80 dark:border-zinc-800/70 rounded-2xl bg-transparent dark:bg-transparent overflow-hidden shadow-xl">
+      <div className="border border-zinc-200/80 dark:border-zinc-800/70 rounded-2xl bg-white dark:bg-transparent overflow-hidden shadow-xl">
         <div className="overflow-x-auto">
           <table className="w-full text-xs font-mono text-left">
-            <thead className="bg-transparent dark:bg-zinc-900/20 border-b border-zinc-200/80 dark:border-zinc-800/60 text-zinc-500 dark:text-zinc-400 uppercase text-[10px] tracking-wider">
+            <thead className="bg-zinc-50 dark:bg-zinc-900/20 border-b border-zinc-200/80 dark:border-zinc-800/60 text-zinc-500 dark:text-zinc-400 uppercase text-[10px] tracking-wider">
               <tr>
                 <th className="p-4 font-semibold">Asset / Mechanism</th>
                 <th className="p-4 font-semibold">Type</th>
@@ -146,16 +146,16 @@ export default function InventoryPage() {
                 <tr
                   key={asset.id}
                   onClick={() => setInspectedAsset(asset)}
-                  className="hover:bg-zinc-50/20 dark:hover:bg-zinc-900/20 transition-colors cursor-pointer"
+                  className="hover:bg-zinc-50 dark:hover:bg-zinc-900/20 transition-colors cursor-pointer"
                 >
-                  <td className="p-4 font-medium text-white max-w-[240px] truncate" title={asset.algorithm || ""}>
+                  <td className="p-4 font-semibold text-zinc-950 dark:text-white max-w-[240px] truncate" title={asset.algorithm || ""}>
                     <div className="truncate font-mono">{asset.algorithm || "Undetermined"}</div>
                     {asset.category && (
-                      <div className="text-[10px] text-yellow-500/80 font-mono mt-0.5">{asset.category}</div>
+                      <div className="text-[10px] text-yellow-600 dark:text-yellow-500/80 font-mono mt-0.5">{asset.category}</div>
                     )}
                   </td>
-                  <td className="p-4 text-zinc-400">
-                    <Badge variant="outline" className="border-zinc-800 bg-zinc-900/30 text-[10px] font-mono">
+                  <td className="p-4 text-zinc-600 dark:text-zinc-400">
+                    <Badge variant="outline" className="border-zinc-200 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-900/30 text-[10px] font-mono text-zinc-700 dark:text-zinc-300">
                       {asset.asset_type || "UNKNOWN"}
                     </Badge>
                   </td>
@@ -207,7 +207,7 @@ export default function InventoryPage() {
         </div>
 
         {/* Minimal Pagination */}
-        <div className="flex items-center justify-between p-4 border-t border-zinc-800 text-xs font-mono text-zinc-500">
+        <div className="flex items-center justify-between p-4 border-t border-zinc-200 dark:border-zinc-800 text-xs font-mono text-zinc-500">
           <div>
             Page {page} of {totalPages}
           </div>
@@ -217,7 +217,7 @@ export default function InventoryPage() {
               size="sm"
               disabled={page <= 1}
               onClick={() => setPage(page - 1)}
-              className="h-8 text-xs font-mono"
+              className="h-8 text-xs font-mono border-zinc-200 dark:border-zinc-800/80 bg-white dark:bg-transparent text-zinc-700 dark:text-zinc-300 rounded-xl"
             >
               Previous
             </Button>
@@ -226,7 +226,7 @@ export default function InventoryPage() {
               size="sm"
               disabled={page >= totalPages}
               onClick={() => setPage(page + 1)}
-              className="h-8 text-xs font-mono"
+              className="h-8 text-xs font-mono border-zinc-200 dark:border-zinc-800/80 bg-white dark:bg-transparent text-zinc-700 dark:text-zinc-300 rounded-xl"
             >
               Next
             </Button>
@@ -243,10 +243,10 @@ export default function InventoryPage() {
       >
         {inspectedAsset && (
           <div className="space-y-6 text-xs font-mono">
-            <div className="grid grid-cols-2 gap-3 p-4 rounded-xl border border-zinc-800 bg-[#121214]">
+            <div className="grid grid-cols-2 gap-3 p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-[#121214]">
               <div>
                 <span className="text-zinc-500 uppercase text-[10px]">Type</span>
-                <div className="font-semibold text-white mt-0.5">{inspectedAsset.asset_type}</div>
+                <div className="font-semibold text-zinc-950 dark:text-white mt-0.5">{inspectedAsset.asset_type}</div>
               </div>
               <div>
                 <span className="text-zinc-500 uppercase text-[10px]">Quantum Posture</span>

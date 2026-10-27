@@ -12,7 +12,7 @@ export function Footer() {
 
   return (
     <>
-      <footer className="w-full border-t border-zinc-200/80 dark:border-zinc-800/60 bg-transparent dark:bg-transparent backdrop-blur-[2px] py-6 px-4 sm:px-8 mt-auto select-none font-sans text-xs transition-colors duration-200">
+      <footer className="w-full border-t border-zinc-200/80 dark:border-zinc-800/60 bg-white dark:bg-transparent backdrop-blur-[2px] py-6 px-4 sm:px-8 mt-auto select-none font-sans text-xs transition-colors duration-200">
         <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-center gap-x-5 sm:gap-x-7 gap-y-3 text-zinc-500 dark:text-zinc-400">
           {/* Copyright */}
           <Link

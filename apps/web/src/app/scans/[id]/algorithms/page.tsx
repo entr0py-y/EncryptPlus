@@ -34,19 +34,19 @@ export default function AlgorithmsPage() {
 
   return (
     <div className="p-8 max-w-[1600px] mx-auto space-y-8 select-none">
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-zinc-800/80 pb-6">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-zinc-200 dark:border-zinc-800/80 pb-6">
         <div>
           <div className="text-[10px] font-mono uppercase tracking-widest text-zinc-500">
             Cryptographic Primitives & Health
           </div>
-          <h1 className="text-3xl font-bold tracking-tight text-white font-mono mt-1">
+          <h1 className="text-3xl font-bold tracking-tight text-zinc-950 dark:text-white font-mono mt-1">
             Algorithms Explorer
           </h1>
-          <p className="text-xs font-mono text-zinc-400 mt-1">
+          <p className="text-xs font-mono text-zinc-600 dark:text-zinc-400 mt-1">
             Breakdown of cryptographic algorithms, signature schemes, key encapsulation, and symmetric primitives.
           </p>
         </div>
-        <div className="text-xs font-mono text-zinc-400">
+        <div className="text-xs font-mono text-zinc-600 dark:text-zinc-400">
           <strong className="text-zinc-900 dark:text-white">{algoEntries.length}</strong> Distinct Mechanisms Catalogued
         </div>
       </div>
@@ -71,18 +71,18 @@ export default function AlgorithmsPage() {
           const isPartial = sample?.quantum_status === "PARTIAL";
 
           return (
-            <Card key={algoName} className="p-5 space-y-4 hover:border-zinc-700 transition-colors">
+            <Card key={algoName} className="p-5 space-y-4 hover:border-zinc-400 dark:hover:border-zinc-700 transition-colors">
               <div className="flex items-start justify-between gap-2">
                 <div className="space-y-1">
                   <div className="flex items-center gap-2">
-                    <Cpu className="w-4 h-4 text-zinc-400" />
-                    <span className="font-bold text-white text-sm font-mono tracking-tight">{algoName}</span>
+                    <Cpu className="w-4 h-4 text-zinc-500" />
+                    <span className="font-bold text-zinc-950 dark:text-white text-sm font-mono tracking-tight">{algoName}</span>
                   </div>
                   <div className="text-[10px] text-zinc-500 font-mono">
                     Primitive: {sample?.primitive || "Standard"}
                   </div>
                 </div>
-                <div className="text-xl font-bold font-mono text-white">{count}</div>
+                <div className="text-xl font-bold font-mono text-zinc-950 dark:text-white">{count}</div>
               </div>
 
               <div className="flex items-center justify-between pt-3 border-t border-zinc-800/80 text-xs font-mono">

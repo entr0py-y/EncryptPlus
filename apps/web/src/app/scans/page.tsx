@@ -84,7 +84,7 @@ export default function ScansPage() {
       </div>
 
       {/* Scan Initiation Workspace */}
-      <Card className="p-7 sm:p-9 border border-zinc-200/80 dark:border-zinc-800/70 bg-transparent dark:bg-transparent shadow-xl">
+      <Card className="p-7 sm:p-9 border border-zinc-200/80 dark:border-zinc-800/70 bg-white dark:bg-transparent shadow-xl">
         <form onSubmit={handleLaunchScan} className="space-y-7 sm:space-y-8">
           <div className="flex flex-col md:flex-row items-start md:items-end gap-4">
             <div className="flex-1 space-y-2 w-full">
@@ -98,7 +98,7 @@ export default function ScansPage() {
                 placeholder="https://github.com/apache/kafka.git or demo_repo"
                 value={repoUrl}
                 onChange={(e) => setRepoUrl(e.target.value)}
-                className="w-full h-12 px-4 rounded-xl border border-zinc-200/80 dark:border-zinc-800/70 bg-transparent dark:bg-zinc-900/20 text-sm font-mono text-zinc-900 dark:text-white placeholder:text-zinc-400 dark:placeholder:text-zinc-600 focus:outline-none focus:ring-1 focus:ring-amber-500/50 transition-all"
+                className="w-full h-12 px-4 rounded-xl border border-zinc-200/80 dark:border-zinc-800/70 bg-white dark:bg-zinc-900/20 text-sm font-mono text-zinc-900 dark:text-white placeholder:text-zinc-400 dark:placeholder:text-zinc-600 focus:outline-none focus:ring-1 focus:ring-amber-500/50 transition-all"
               />
             </div>
 
@@ -109,7 +109,7 @@ export default function ScansPage() {
                 placeholder="main or master"
                 value={branch}
                 onChange={(e) => setBranch(e.target.value)}
-                className="w-full h-12 px-4 rounded-xl border border-zinc-200/80 dark:border-zinc-800/70 bg-transparent dark:bg-zinc-900/20 text-sm font-mono text-zinc-900 dark:text-white placeholder:text-zinc-400 dark:placeholder:text-zinc-600 focus:outline-none focus:ring-1 focus:ring-amber-500/50 transition-all"
+                className="w-full h-12 px-4 rounded-xl border border-zinc-200/80 dark:border-zinc-800/70 bg-white dark:bg-zinc-900/20 text-sm font-mono text-zinc-900 dark:text-white placeholder:text-zinc-400 dark:placeholder:text-zinc-600 focus:outline-none focus:ring-1 focus:ring-amber-500/50 transition-all"
               />
             </div>
 
@@ -134,32 +134,32 @@ export default function ScansPage() {
           </div>
 
           {/* Stepper Pipeline Indicator */}
-          <div className="p-5 sm:p-6 rounded-2xl bg-transparent dark:bg-zinc-950/20 border border-zinc-200/80 dark:border-zinc-800/60">
+          <div className="p-5 sm:p-6 rounded-2xl bg-white dark:bg-zinc-950/20 border border-zinc-200/80 dark:border-zinc-800/60">
             <div className="text-xs font-mono text-zinc-500 uppercase tracking-widest mb-3.5 font-semibold">
               Automated Inspection Pipeline Architecture
             </div>
             <div className="grid grid-cols-2 md:grid-cols-5 gap-3.5 font-mono">
-              <div className="p-3.5 sm:p-4 rounded-xl border border-zinc-200/70 dark:border-zinc-800/60 bg-transparent dark:bg-zinc-900/20 hover:border-zinc-700 transition-colors">
+              <div className="p-3.5 sm:p-4 rounded-xl border border-zinc-200/70 dark:border-zinc-800/60 bg-white dark:bg-zinc-900/20 hover:border-zinc-400 dark:hover:border-zinc-700 transition-colors">
                 <div className="text-zinc-500 text-xs font-semibold">STAGE 01</div>
                 <div className="text-sm sm:text-[15px] font-bold text-zinc-900 dark:text-zinc-100 mt-1 leading-snug">Repository Clone</div>
                 <div className="text-xs text-yellow-600 dark:text-yellow-400 mt-1.5 font-medium leading-normal">Git fetch & isolation</div>
               </div>
-              <div className="p-3.5 sm:p-4 rounded-xl border border-zinc-200/70 dark:border-zinc-800/60 bg-transparent dark:bg-zinc-900/20 hover:border-zinc-700 transition-colors">
+              <div className="p-3.5 sm:p-4 rounded-xl border border-zinc-200/70 dark:border-zinc-800/60 bg-white dark:bg-zinc-900/20 hover:border-zinc-400 dark:hover:border-zinc-700 transition-colors">
                 <div className="text-zinc-500 text-xs font-semibold">STAGE 02</div>
                 <div className="text-sm sm:text-[15px] font-bold text-zinc-900 dark:text-zinc-100 mt-1 leading-snug">CryptoScan AST</div>
                 <div className="text-xs text-yellow-600 dark:text-yellow-400 mt-1.5 font-medium leading-normal">Pattern & syntax parse</div>
               </div>
-              <div className="p-3.5 sm:p-4 rounded-xl border border-zinc-200/70 dark:border-zinc-800/60 bg-transparent dark:bg-zinc-900/20 hover:border-zinc-700 transition-colors">
+              <div className="p-3.5 sm:p-4 rounded-xl border border-zinc-200/70 dark:border-zinc-800/60 bg-white dark:bg-zinc-900/20 hover:border-zinc-400 dark:hover:border-zinc-700 transition-colors">
                 <div className="text-zinc-500 text-xs font-semibold">STAGE 03</div>
                 <div className="text-sm sm:text-[15px] font-bold text-zinc-900 dark:text-zinc-100 mt-1 leading-snug">CBOM Discovery</div>
                 <div className="text-xs text-yellow-600 dark:text-yellow-400 mt-1.5 font-medium leading-normal">Asset normalization</div>
               </div>
-              <div className="p-3.5 sm:p-4 rounded-xl border border-zinc-200/70 dark:border-zinc-800/60 bg-transparent dark:bg-zinc-900/20 hover:border-zinc-700 transition-colors">
+              <div className="p-3.5 sm:p-4 rounded-xl border border-zinc-200/70 dark:border-zinc-800/60 bg-white dark:bg-zinc-900/20 hover:border-zinc-400 dark:hover:border-zinc-700 transition-colors">
                 <div className="text-zinc-500 text-xs font-semibold">STAGE 04</div>
                 <div className="text-sm sm:text-[15px] font-bold text-zinc-900 dark:text-zinc-100 mt-1 leading-snug">Quantum & Risk</div>
                 <div className="text-xs text-yellow-600 dark:text-yellow-400 mt-1.5 font-medium leading-normal">Shor/Grover & Mosca</div>
               </div>
-              <div className="p-3.5 sm:p-4 rounded-xl border border-zinc-200/70 dark:border-zinc-800/60 bg-transparent dark:bg-zinc-900/20 hover:border-zinc-700 transition-colors">
+              <div className="p-3.5 sm:p-4 rounded-xl border border-zinc-200/70 dark:border-zinc-800/60 bg-white dark:bg-zinc-900/20 hover:border-zinc-400 dark:hover:border-zinc-700 transition-colors">
                 <div className="text-zinc-500 text-xs font-semibold">STAGE 05</div>
                 <div className="text-sm sm:text-[15px] font-bold text-zinc-900 dark:text-zinc-100 mt-1 leading-snug">10-Section Report</div>
                 <div className="text-xs text-yellow-600 dark:text-yellow-400 mt-1.5 font-medium leading-normal">Audit generation</div>
@@ -201,10 +201,10 @@ export default function ScansPage() {
           </div>
         </div>
 
-        <Card className="overflow-hidden border border-zinc-200/80 dark:border-zinc-800/70 bg-transparent dark:bg-transparent">
+        <Card className="overflow-hidden border border-zinc-200/80 dark:border-zinc-800/70 bg-white dark:bg-transparent">
           <div className="overflow-x-auto">
             <table className="w-full text-xs font-mono text-left">
-              <thead className="bg-transparent dark:bg-zinc-900/20 border-b border-zinc-200/80 dark:border-zinc-800/60 text-zinc-500 dark:text-zinc-400 uppercase text-[10px] tracking-wider">
+              <thead className="bg-zinc-50 dark:bg-zinc-900/20 border-b border-zinc-200/80 dark:border-zinc-800/60 text-zinc-500 dark:text-zinc-400 uppercase text-[10px] tracking-wider">
                 <tr>
                   <th className="p-4">Target Repository</th>
                   <th className="p-4">Status</th>
@@ -219,7 +219,7 @@ export default function ScansPage() {
               </thead>
               <tbody className="divide-y divide-zinc-200/60 dark:divide-zinc-800/40">
                 {scans.map((scan) => (
-                  <tr key={scan.id} className="hover:bg-zinc-50/20 dark:hover:bg-zinc-900/20 transition-colors">
+                  <tr key={scan.id} className="hover:bg-zinc-50 dark:hover:bg-zinc-900/20 transition-colors">
                     <td className="p-4 font-semibold text-zinc-950 dark:text-white max-w-[260px] truncate" title={scan.repository_url}>
                       <Link href={`/scans/${scan.id}`} className="flex items-center gap-2 hover:underline">
                         <FolderGit2 className="w-4 h-4 text-zinc-400 shrink-0" />

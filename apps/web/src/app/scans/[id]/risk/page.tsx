@@ -36,10 +36,10 @@ export default function RiskAssessmentPage() {
           <div className="text-[10px] font-mono uppercase tracking-widest text-zinc-500">
             Explainable Risk Scoring & Security Posture
           </div>
-          <h1 className="text-3xl font-bold tracking-tight text-white font-mono mt-1">
+          <h1 className="text-3xl font-bold tracking-tight text-zinc-950 dark:text-white font-mono mt-1">
             Categorical Risk & Health Assessment
           </h1>
-          <p className="text-xs font-mono text-zinc-400 mt-1">
+          <p className="text-xs font-mono text-zinc-600 dark:text-zinc-400 mt-1">
             Deterministic evaluation across 10 independent cryptographic and governance dimensions.
           </p>
         </div>
@@ -56,21 +56,21 @@ export default function RiskAssessmentPage() {
           const isWarning = score >= 50 && score < 80;
 
           return (
-            <Card key={category} className="p-5 space-y-4 hover:border-zinc-700 transition-colors">
+            <Card key={category} className="p-5 space-y-4 hover:border-zinc-400 dark:hover:border-zinc-700 transition-colors">
               <div className="space-y-1">
                 <div className="text-[10px] font-mono uppercase tracking-wider text-zinc-500">
                   {category} Security
                 </div>
-                <div className="text-3xl font-bold font-mono text-white leading-none">
+                <div className="text-3xl font-bold font-mono text-zinc-950 dark:text-white leading-none">
                   {score}/100
                 </div>
               </div>
 
               {/* Progress Track */}
-              <div className="h-2 w-full rounded-full bg-zinc-900 overflow-hidden border border-zinc-800">
+              <div className="h-2 w-full rounded-full bg-zinc-100 dark:bg-zinc-900 overflow-hidden border-0">
                 <div
                   style={{ width: `${score}%` }}
-                  className="h-full bg-white transition-all duration-500"
+                  className="h-full bg-yellow-400 transition-all duration-500"
                 />
               </div>
 

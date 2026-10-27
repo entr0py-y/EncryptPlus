@@ -78,10 +78,10 @@ export function CodeEvidence({
   };
 
   return (
-    <div className={cn("rounded-xl border border-zinc-200/80 dark:border-zinc-800/70 bg-transparent dark:bg-zinc-950/40 backdrop-blur-sm overflow-hidden font-mono", className)}>
+    <div className={cn("rounded-xl border border-zinc-200/80 dark:border-zinc-800/70 bg-white dark:bg-zinc-950/40 backdrop-blur-sm overflow-hidden font-mono", className)}>
       {/* File Header Bar */}
-      <div className="flex items-center justify-between px-4 py-2.5 bg-zinc-900/60 border-b border-zinc-800/70 text-xs">
-        <div className="flex items-center gap-2 text-zinc-300 truncate">
+      <div className="flex items-center justify-between px-4 py-2.5 bg-zinc-100 dark:bg-zinc-900/60 border-b border-zinc-200 dark:border-zinc-800/70 text-xs">
+        <div className="flex items-center gap-2 text-zinc-700 dark:text-zinc-300 truncate">
           <FileCode className="w-3.5 h-3.5 text-yellow-500 shrink-0" />
           <span className="truncate">{filePath || "unknown_source_file"}</span>
           {lineNumber && (

@@ -83,7 +83,7 @@ export function Topbar() {
 
   return (
     <>
-      <header className="h-16 border-b border-zinc-200/80 dark:border-zinc-800/60 bg-transparent dark:bg-transparent backdrop-blur-[2px] sticky top-0 z-30 px-5 sm:px-8 flex items-center justify-between select-none font-sans transition-colors duration-200">
+      <header className="h-16 border-b border-zinc-200/80 dark:border-zinc-800/60 bg-white dark:bg-transparent backdrop-blur-[2px] sticky top-0 z-30 px-5 sm:px-8 flex items-center justify-between select-none font-sans transition-colors duration-200">
         {/* Leftmost: Auth Controls / User Profile (replaced logo) */}
         <div className="flex items-center gap-3 sm:gap-4">
           {!user ? (
@@ -156,7 +156,7 @@ export function Topbar() {
           <div className="relative">
             <button
               onClick={() => setShowScanDropdown(!showScanDropdown)}
-              className="h-9 flex items-center gap-2 px-3 sm:px-3.5 rounded-xl border border-zinc-200/80 dark:border-zinc-800/60 bg-transparent dark:bg-zinc-900/20 hover:bg-zinc-100 dark:hover:bg-zinc-900/40 hover:border-zinc-300 dark:hover:border-zinc-700 transition-all text-xs font-mono text-zinc-700 dark:text-zinc-200"
+              className="h-9 flex items-center gap-2 px-3 sm:px-3.5 rounded-xl border border-zinc-200/80 dark:border-zinc-800/60 bg-white dark:bg-zinc-900/20 hover:bg-zinc-100 dark:hover:bg-zinc-900/40 hover:border-zinc-300 dark:hover:border-zinc-700 transition-all text-xs font-mono text-zinc-700 dark:text-zinc-200"
             >
               <GitBranch className="w-3.5 h-3.5 text-yellow-500 dark:text-yellow-400" />
               <span className="font-semibold text-zinc-900 dark:text-white max-w-[140px] sm:max-w-[200px] truncate font-mono">
@@ -233,7 +233,7 @@ export function Topbar() {
             variant="outline"
             size="sm"
             onClick={() => setShowAgentDrawer(true)}
-            className="h-9 px-3.5 gap-2 shadow-sm text-xs font-medium border-zinc-200/80 dark:border-zinc-800/60 hover:border-zinc-400 dark:hover:border-zinc-600 bg-transparent dark:bg-zinc-900/20 text-zinc-900 dark:text-zinc-100"
+            className="h-9 px-3.5 gap-2 shadow-sm text-xs font-medium border-zinc-200/80 dark:border-zinc-800/60 hover:border-zinc-400 dark:hover:border-zinc-600 bg-white dark:bg-zinc-900/20 text-zinc-900 dark:text-zinc-100"
           >
             <Bot className="w-4 h-4 text-yellow-600 dark:text-yellow-400" />
             <span>AI Agent</span>

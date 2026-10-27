@@ -92,9 +92,9 @@ export function CodeEvidence({
         </div>
         <button
           onClick={handleCopy}
-          className="flex items-center gap-1.5 text-[11px] text-zinc-400 hover:text-white px-2 py-1 rounded-lg bg-zinc-800/50 border border-zinc-700/60 hover:border-zinc-500 transition-colors shrink-0"
+          className="flex items-center gap-1.5 text-[11px] text-zinc-700 dark:text-zinc-300 hover:text-zinc-950 dark:hover:text-white px-2.5 py-1 rounded-lg bg-zinc-200/80 dark:bg-zinc-800/50 border border-zinc-300 dark:border-zinc-700/60 hover:border-zinc-400 dark:hover:border-zinc-500 transition-colors shrink-0 font-medium"
         >
-          {copied ? <Check className="w-3 h-3 text-yellow-400" /> : <Copy className="w-3 h-3" />}
+          {copied ? <Check className="w-3 h-3 text-amber-700 dark:text-yellow-400" /> : <Copy className="w-3 h-3" />}
           <span>{copied ? "Copied" : "Copy"}</span>
         </button>
       </div>
@@ -109,10 +109,10 @@ export function CodeEvidence({
               key={i}
               className={cn(
                 "flex items-start gap-4 px-2 py-0.5 rounded transition-colors",
-                l.isMatch ? "bg-yellow-500/10 border-l-2 border-yellow-500 text-white font-medium" : "text-zinc-400 hover:bg-zinc-900/40"
+                l.isMatch ? "bg-amber-500/10 dark:bg-yellow-500/10 border-l-2 border-amber-500 dark:border-yellow-500 text-zinc-950 dark:text-white font-semibold" : "text-zinc-800 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-900/40"
               )}
             >
-              <span className="w-8 text-right text-zinc-600 select-none shrink-0 font-mono text-[11px]">
+              <span className="w-8 text-right text-zinc-500 dark:text-zinc-600 select-none shrink-0 font-mono text-[11px]">
                 {l.num}
               </span>
               <span className="whitespace-pre flex-1 font-mono">

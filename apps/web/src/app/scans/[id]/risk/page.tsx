@@ -31,20 +31,20 @@ export default function RiskAssessmentPage() {
 
   return (
     <div className="p-8 max-w-[1600px] mx-auto space-y-8 select-none">
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-zinc-800/80 pb-6">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-zinc-200 dark:border-zinc-800/80 pb-6">
         <div>
-          <div className="text-[10px] font-mono uppercase tracking-widest text-zinc-500">
+          <div className="text-[10px] font-mono uppercase tracking-widest text-amber-800 dark:text-yellow-400 font-bold">
             Explainable Risk Scoring & Security Posture
           </div>
           <h1 className="text-3xl font-bold tracking-tight text-zinc-950 dark:text-white font-mono mt-1">
             Categorical Risk & Health Assessment
           </h1>
-          <p className="text-xs font-mono text-zinc-600 dark:text-zinc-400 mt-1">
+          <p className="text-xs font-mono text-zinc-600 dark:text-zinc-400 mt-1 font-medium">
             Deterministic evaluation across 10 independent cryptographic and governance dimensions.
           </p>
         </div>
         <div className="text-xs font-mono">
-          <Badge variant="outline" className="text-xs py-1 px-3">
+          <Badge variant="yellow" className="text-xs py-1 px-3 font-bold">
             OVERALL RISK: {riskData?.score !== undefined ? `${Number(riskData.score).toFixed(1)}/100` : "—"} ({riskData?.level || "MODERATE"})
           </Badge>
         </div>
@@ -56,9 +56,9 @@ export default function RiskAssessmentPage() {
           const isWarning = score >= 50 && score < 80;
 
           return (
-            <Card key={category} className="p-5 space-y-4 hover:border-zinc-400 dark:hover:border-zinc-700 transition-colors">
+            <Card key={category} className="p-5 space-y-4 hover:border-zinc-400 dark:hover:border-zinc-700 transition-colors shadow-xl">
               <div className="space-y-1">
-                <div className="text-[10px] font-mono uppercase tracking-wider text-zinc-500">
+                <div className="text-[10px] font-mono uppercase tracking-wider text-zinc-600 dark:text-zinc-400 font-semibold">
                   {category} Security
                 </div>
                 <div className="text-3xl font-bold font-mono text-zinc-950 dark:text-white leading-none">
@@ -74,7 +74,7 @@ export default function RiskAssessmentPage() {
                 />
               </div>
 
-              <div className="text-[10px] font-mono text-zinc-500">
+              <div className="text-[10px] font-mono text-zinc-600 dark:text-zinc-400 font-medium">
                 {score >= 80 ? "Optimal posture" : score >= 50 ? "Moderate exposure" : "Critical remediation required"}
               </div>
             </Card>

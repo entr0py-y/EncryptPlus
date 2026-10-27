@@ -45,61 +45,61 @@ export default function QuantumReadinessPage() {
   return (
     <div className="p-10 max-w-5xl mx-auto space-y-12 select-none font-mono">
       {/* 1. Header */}
-      <div className="border-b border-zinc-800 pb-6">
-        <div className="text-[10px] uppercase tracking-widest text-zinc-500">
+      <div className="border-b border-zinc-200 dark:border-zinc-800 pb-6">
+        <div className="text-[10px] uppercase tracking-widest text-amber-800 dark:text-yellow-400 font-bold">
           Post-Quantum Assessment
         </div>
-        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white mt-1">
+        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-zinc-950 dark:text-white mt-1">
           POST-QUANTUM READINESS
         </h1>
       </div>
 
       {/* 2. Large Readiness Score & 4-Item Breakdown Surface */}
-      <div className="p-8 rounded-2xl border border-zinc-800/80 bg-[#121214] space-y-8">
+      <div className="p-8 rounded-2xl border border-zinc-200 dark:border-zinc-800/80 bg-white dark:bg-[#121214] space-y-8 shadow-xl">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div>
-            <div className="text-[10px] uppercase tracking-widest text-zinc-500">
+            <div className="text-[10px] uppercase tracking-widest text-zinc-600 dark:text-zinc-400 font-semibold">
               QRAMM Readiness Level
             </div>
-            <div className="text-5xl sm:text-6xl font-bold text-white mt-1">
+            <div className="text-5xl sm:text-6xl font-bold text-amber-700 dark:text-yellow-400 mt-1">
               {pqcScore}%
             </div>
-            <div className="text-xs text-zinc-400 mt-1 uppercase">
+            <div className="text-xs text-zinc-600 dark:text-zinc-400 mt-1 uppercase font-semibold">
               STATUS: {scan?.pqc_readiness_level || "EARLY_STAGE"}
             </div>
           </div>
 
-          <div className="text-xs text-zinc-400 max-w-xs leading-relaxed sm:text-right">
+          <div className="text-xs text-zinc-700 dark:text-zinc-300 max-w-xs leading-relaxed sm:text-right">
             Evaluates classical cryptographic reliance versus NIST post-quantum standards.
           </div>
         </div>
 
         {/* 4 Quantitative Buckets */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-6 border-t border-zinc-800/80">
-          <div className="p-4 rounded-xl border border-zinc-800 bg-[#09090b]">
-            <div className="text-[10px] text-zinc-500 uppercase">Vulnerable (Shor)</div>
-            <div className="text-2xl font-bold text-white mt-1">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-6 border-t border-zinc-200 dark:border-zinc-800/80">
+          <div className="p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-[#09090b]">
+            <div className="text-[10px] text-zinc-600 dark:text-zinc-400 font-semibold uppercase">Vulnerable (Shor)</div>
+            <div className="text-2xl font-bold text-rose-700 dark:text-rose-400 mt-1">
               {scan?.quantum_vulnerable_count || 0}
             </div>
           </div>
 
-          <div className="p-4 rounded-xl border border-zinc-800 bg-[#09090b]">
-            <div className="text-[10px] text-zinc-500 uppercase">Weakened (Grover)</div>
-            <div className="text-2xl font-bold text-white mt-1">
+          <div className="p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-[#09090b]">
+            <div className="text-[10px] text-zinc-600 dark:text-zinc-400 font-semibold uppercase">Weakened (Grover)</div>
+            <div className="text-2xl font-bold text-amber-700 dark:text-yellow-400 mt-1">
               {scan?.quantum_partial_count || 0}
             </div>
           </div>
 
-          <div className="p-4 rounded-xl border border-zinc-800 bg-[#09090b]">
-            <div className="text-[10px] text-zinc-500 uppercase">Post-Quantum Safe</div>
-            <div className="text-2xl font-bold text-white mt-1">
+          <div className="p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-[#09090b]">
+            <div className="text-[10px] text-zinc-600 dark:text-zinc-400 font-semibold uppercase">Post-Quantum Safe</div>
+            <div className="text-2xl font-bold text-emerald-700 dark:text-emerald-400 mt-1">
               {scan?.quantum_safe_count || 0}
             </div>
           </div>
 
-          <div className="p-4 rounded-xl border border-zinc-800 bg-[#09090b]">
-            <div className="text-[10px] text-zinc-500 uppercase">Undetermined</div>
-            <div className="text-2xl font-bold text-white mt-1">
+          <div className="p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-[#09090b]">
+            <div className="text-[10px] text-zinc-600 dark:text-zinc-400 font-semibold uppercase">Undetermined</div>
+            <div className="text-2xl font-bold text-zinc-950 dark:text-white mt-1">
               {Math.max(0, (scan?.total_findings || 0) - (scan?.quantum_vulnerable_count || 0) - (scan?.quantum_partial_count || 0) - (scan?.quantum_safe_count || 0))}
             </div>
           </div>
@@ -108,34 +108,34 @@ export default function QuantumReadinessPage() {
 
       {/* 3. One Clean Migration Timeline */}
       <div className="space-y-4">
-        <div className="text-[10px] uppercase tracking-widest text-zinc-500">
+        <div className="text-[10px] uppercase tracking-widest text-amber-800 dark:text-yellow-400 font-bold">
           Strategic Migration Timeline
         </div>
 
-        <div className="border border-zinc-800/80 rounded-2xl bg-[#121214] divide-y divide-zinc-800/60 overflow-hidden text-xs">
+        <div className="border border-zinc-200 dark:border-zinc-800/80 rounded-2xl bg-white dark:bg-[#121214] divide-y divide-zinc-200 dark:divide-zinc-800/60 overflow-hidden text-xs shadow-xl">
           <div className="p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
-              <div className="text-[10px] text-zinc-500 uppercase font-semibold">PHASE 1 • IMMEDIATE</div>
-              <div className="font-semibold text-white mt-0.5">Deprecate Insecure Primitives</div>
-              <p className="text-[11px] text-zinc-400 mt-1">Eliminate RSA &lt; 2048, MD5, and SHA-1 legacy uses.</p>
+              <div className="text-[10px] text-amber-800 dark:text-yellow-500 uppercase font-bold">PHASE 1 • IMMEDIATE</div>
+              <div className="font-semibold text-zinc-950 dark:text-white mt-0.5">Deprecate Insecure Primitives</div>
+              <p className="text-[11px] text-zinc-600 dark:text-zinc-400 mt-1">Eliminate RSA &lt; 2048, MD5, and SHA-1 legacy uses.</p>
             </div>
             <Badge variant="solid" className="shrink-0 w-fit">P0</Badge>
           </div>
 
           <div className="p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
-              <div className="text-[10px] text-zinc-500 uppercase font-semibold">PHASE 2 • 12 MONTHS</div>
-              <div className="font-semibold text-white mt-0.5">Deploy Hybrid Key Encapsulation (KEM)</div>
-              <p className="text-[11px] text-zinc-400 mt-1">Transition TLS and key exchanges to X25519 + ML-KEM-768.</p>
+              <div className="text-[10px] text-amber-800 dark:text-yellow-500 uppercase font-bold">PHASE 2 • 12 MONTHS</div>
+              <div className="font-semibold text-zinc-950 dark:text-white mt-0.5">Deploy Hybrid Key Encapsulation (KEM)</div>
+              <p className="text-[11px] text-zinc-600 dark:text-zinc-400 mt-1">Transition TLS and key exchanges to X25519 + ML-KEM-768.</p>
             </div>
             <Badge variant="outline" className="shrink-0 w-fit">P1</Badge>
           </div>
 
           <div className="p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
-              <div className="text-[10px] text-zinc-500 uppercase font-semibold">PHASE 3 • 3 YEARS</div>
-              <div className="font-semibold text-white mt-0.5">Post-Quantum Digital Signatures</div>
-              <p className="text-[11px] text-zinc-400 mt-1">Adopt NIST FIPS 204 ML-DSA for code signing and PKI.</p>
+              <div className="text-[10px] text-amber-800 dark:text-yellow-500 uppercase font-bold">PHASE 3 • 3 YEARS</div>
+              <div className="font-semibold text-zinc-950 dark:text-white mt-0.5">Post-Quantum Digital Signatures</div>
+              <p className="text-[11px] text-zinc-600 dark:text-zinc-400 mt-1">Adopt NIST FIPS 204 ML-DSA for code signing and PKI.</p>
             </div>
             <Badge variant="outline" className="shrink-0 w-fit">P2</Badge>
           </div>

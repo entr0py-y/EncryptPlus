@@ -10,7 +10,7 @@ const buttonVariants = cva(
         default:
           "bg-zinc-950 text-white hover:bg-zinc-800 dark:bg-white dark:text-zinc-950 dark:hover:bg-zinc-100 active:scale-[0.98] shadow-sm font-semibold",
         yellow:
-          "bg-[linear-gradient(135deg,#eab308_0%,#fde047_50%,#fef08a_100%)] hover:opacity-95 text-zinc-950 font-semibold active:scale-[0.98] shadow-[0_0_25px_rgba(234,179,8,0.45),0_0_10px_rgba(250,204,21,0.55)] dark:shadow-[0_0_20px_rgba(234,179,8,0.4)] hover:shadow-[0_0_30px_rgba(234,179,8,0.6),0_0_15px_rgba(250,204,21,0.7)] dark:hover:shadow-[0_0_25px_rgba(234,179,8,0.55)] border-0",
+          "bg-[linear-gradient(135deg,#eab308_0%,#fde047_50%,#fef08a_100%)] hover:opacity-95 text-zinc-950 font-semibold active:scale-[0.98] shadow-sm dark:shadow-[0_0_20px_rgba(234,179,8,0.4)] hover:shadow-md dark:hover:shadow-[0_0_25px_rgba(234,179,8,0.55)] border-0",
         destructive:
           "bg-red-600 text-white hover:bg-red-700 dark:bg-zinc-900 dark:border dark:border-zinc-700 dark:text-zinc-100 dark:hover:bg-zinc-800",
         outline:

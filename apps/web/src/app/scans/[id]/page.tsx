@@ -559,7 +559,7 @@ export default function LongFormAssessmentPage() {
                 }}
                 className={`px-3.5 py-2 rounded-xl border transition-all text-xs font-mono ${
                   invType === t
-                    ? "bg-yellow-500 text-zinc-950 border-yellow-500 font-bold shadow-[0_0_15px_rgba(234,179,8,0.3)]"
+                    ? "bg-yellow-500 text-zinc-950 border-yellow-500 font-bold shadow-none dark:shadow-[0_0_15px_rgba(234,179,8,0.3)]"
                     : "bg-transparent dark:bg-zinc-900/20 border-zinc-800/70 text-zinc-400 hover:text-white hover:border-zinc-700"
                 }`}
               >
@@ -725,7 +725,7 @@ export default function LongFormAssessmentPage() {
                 }}
                 className={`px-3.5 py-2 rounded-xl border transition-all text-xs font-mono ${
                   findSeverity === sev
-                    ? "bg-yellow-500 text-zinc-950 border-yellow-500 font-bold shadow-[0_0_15px_rgba(234,179,8,0.3)]"
+                    ? "bg-yellow-500 text-zinc-950 border-yellow-500 font-bold shadow-none dark:shadow-[0_0_15px_rgba(234,179,8,0.3)]"
                     : "bg-transparent dark:bg-zinc-900/20 border-zinc-800/70 text-zinc-400 hover:text-white hover:border-zinc-700"
                 }`}
               >

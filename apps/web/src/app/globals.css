@@ -164,8 +164,12 @@
 
 .btn-yellow-hover:not(:disabled):hover {
   color: #09090b !important;
-  box-shadow: 0 0 30px rgba(234, 179, 8, 0.5), 0 0 12px rgba(250, 204, 21, 0.6) !important;
   border-color: transparent !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
+}
+
+.dark .btn-yellow-hover:not(:disabled):hover {
+  box-shadow: 0 0 30px rgba(234, 179, 8, 0.5), 0 0 12px rgba(250, 204, 21, 0.6) !important;
 }
 
 .btn-yellow-hover > * {

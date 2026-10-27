@@ -135,34 +135,34 @@ export default function ScansPage() {
 
           {/* Stepper Pipeline Indicator */}
           <div className="p-5 sm:p-6 rounded-2xl bg-transparent dark:bg-zinc-950/20 border border-zinc-200/80 dark:border-zinc-800/60">
-            <div className="text-[10px] font-mono text-zinc-500 uppercase tracking-widest mb-3.5">
+            <div className="text-xs font-mono text-zinc-500 uppercase tracking-widest mb-3.5 font-semibold">
               Automated Inspection Pipeline Architecture
             </div>
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-3.5 text-xs font-mono">
-              <div className="p-4 rounded-xl border border-zinc-200/70 dark:border-zinc-800/60 bg-transparent dark:bg-zinc-900/20 hover:border-zinc-700 transition-colors">
-                <div className="text-zinc-500 text-[10px]">STAGE 01</div>
-                <div className="font-semibold text-zinc-900 dark:text-zinc-200 mt-1">Repository Clone</div>
-                <div className="text-[10px] text-yellow-500 dark:text-yellow-400 mt-1.5 font-medium">Git fetch & isolation</div>
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-3.5 font-mono">
+              <div className="p-3.5 sm:p-4 rounded-xl border border-zinc-200/70 dark:border-zinc-800/60 bg-transparent dark:bg-zinc-900/20 hover:border-zinc-700 transition-colors">
+                <div className="text-zinc-500 text-xs font-semibold">STAGE 01</div>
+                <div className="text-sm sm:text-[15px] font-bold text-zinc-900 dark:text-zinc-100 mt-1 leading-snug">Repository Clone</div>
+                <div className="text-xs text-yellow-600 dark:text-yellow-400 mt-1.5 font-medium leading-normal">Git fetch & isolation</div>
               </div>
-              <div className="p-4 rounded-xl border border-zinc-200/70 dark:border-zinc-800/60 bg-transparent dark:bg-zinc-900/20 hover:border-zinc-700 transition-colors">
-                <div className="text-zinc-500 text-[10px]">STAGE 02</div>
-                <div className="font-semibold text-zinc-900 dark:text-zinc-200 mt-1">CryptoScan AST</div>
-                <div className="text-[10px] text-yellow-500 dark:text-yellow-400 mt-1.5 font-medium">Pattern & syntax parse</div>
+              <div className="p-3.5 sm:p-4 rounded-xl border border-zinc-200/70 dark:border-zinc-800/60 bg-transparent dark:bg-zinc-900/20 hover:border-zinc-700 transition-colors">
+                <div className="text-zinc-500 text-xs font-semibold">STAGE 02</div>
+                <div className="text-sm sm:text-[15px] font-bold text-zinc-900 dark:text-zinc-100 mt-1 leading-snug">CryptoScan AST</div>
+                <div className="text-xs text-yellow-600 dark:text-yellow-400 mt-1.5 font-medium leading-normal">Pattern & syntax parse</div>
               </div>
-              <div className="p-4 rounded-xl border border-zinc-200/70 dark:border-zinc-800/60 bg-transparent dark:bg-zinc-900/20 hover:border-zinc-700 transition-colors">
-                <div className="text-zinc-500 text-[10px]">STAGE 03</div>
-                <div className="font-semibold text-zinc-900 dark:text-zinc-200 mt-1">CBOM Discovery</div>
-                <div className="text-[10px] text-yellow-500 dark:text-yellow-400 mt-1.5 font-medium">Asset normalization</div>
+              <div className="p-3.5 sm:p-4 rounded-xl border border-zinc-200/70 dark:border-zinc-800/60 bg-transparent dark:bg-zinc-900/20 hover:border-zinc-700 transition-colors">
+                <div className="text-zinc-500 text-xs font-semibold">STAGE 03</div>
+                <div className="text-sm sm:text-[15px] font-bold text-zinc-900 dark:text-zinc-100 mt-1 leading-snug">CBOM Discovery</div>
+                <div className="text-xs text-yellow-600 dark:text-yellow-400 mt-1.5 font-medium leading-normal">Asset normalization</div>
               </div>
-              <div className="p-4 rounded-xl border border-zinc-200/70 dark:border-zinc-800/60 bg-transparent dark:bg-zinc-900/20 hover:border-zinc-700 transition-colors">
-                <div className="text-zinc-500 text-[10px]">STAGE 04</div>
-                <div className="font-semibold text-zinc-900 dark:text-zinc-200 mt-1">Quantum & Risk</div>
-                <div className="text-[10px] text-yellow-500 dark:text-yellow-400 mt-1.5 font-medium">Shor/Grover & Mosca</div>
+              <div className="p-3.5 sm:p-4 rounded-xl border border-zinc-200/70 dark:border-zinc-800/60 bg-transparent dark:bg-zinc-900/20 hover:border-zinc-700 transition-colors">
+                <div className="text-zinc-500 text-xs font-semibold">STAGE 04</div>
+                <div className="text-sm sm:text-[15px] font-bold text-zinc-900 dark:text-zinc-100 mt-1 leading-snug">Quantum & Risk</div>
+                <div className="text-xs text-yellow-600 dark:text-yellow-400 mt-1.5 font-medium leading-normal">Shor/Grover & Mosca</div>
               </div>
-              <div className="p-4 rounded-xl border border-zinc-200/70 dark:border-zinc-800/60 bg-transparent dark:bg-zinc-900/20 hover:border-zinc-700 transition-colors">
-                <div className="text-zinc-500 text-[10px]">STAGE 05</div>
-                <div className="font-semibold text-zinc-900 dark:text-zinc-200 mt-1">18-Section Report</div>
-                <div className="text-[10px] text-yellow-500 dark:text-yellow-400 mt-1.5 font-medium">Audit generation</div>
+              <div className="p-3.5 sm:p-4 rounded-xl border border-zinc-200/70 dark:border-zinc-800/60 bg-transparent dark:bg-zinc-900/20 hover:border-zinc-700 transition-colors">
+                <div className="text-zinc-500 text-xs font-semibold">STAGE 05</div>
+                <div className="text-sm sm:text-[15px] font-bold text-zinc-900 dark:text-zinc-100 mt-1 leading-snug">10-Section Report</div>
+                <div className="text-xs text-yellow-600 dark:text-yellow-400 mt-1.5 font-medium leading-normal">Audit generation</div>
               </div>
             </div>
           </div>
@@ -173,7 +173,7 @@ export default function ScansPage() {
       {!user && (
         <div
           style={{ background: "linear-gradient(135deg, #eab308 0%, #fde047 50%, #fef08a 100%)" }}
-          className="p-4 sm:p-5 rounded-2xl flex items-center gap-3.5 font-mono transition-all shadow-[0_0_35px_rgba(234,179,8,0.45),0_0_15px_rgba(250,204,21,0.55)] dark:shadow-[0_0_25px_rgba(234,179,8,0.4)] border-0"
+          className="p-4 sm:p-5 rounded-2xl flex items-center gap-3.5 font-mono transition-all shadow-none dark:shadow-[0_0_25px_rgba(234,179,8,0.4)] border-0"
         >
           <div className="p-2.5 rounded-xl bg-black/10 text-zinc-950 shrink-0">
             <ShieldAlert className="w-5 h-5 text-zinc-950" />

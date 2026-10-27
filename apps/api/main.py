@@ -15,7 +15,11 @@ from .auth_routes import router as auth_router
 from .migrations import run_migrations
 
 # Run safe additive database migrations at startup
-run_migrations()
+try:
+    run_migrations()
+except Exception as e:
+    import logging
+    logging.getLogger("ecdat.main").error(f"Startup migration warning: {e}", exc_info=True)
 
 app = FastAPI(title="ECDAT API")
 

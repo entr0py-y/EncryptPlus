@@ -164,18 +164,18 @@ export default function InventoryPage() {
                       {cleanFilePath(asset.file_path)}:{asset.line_start || 1}
                     </div>
                   </td>
-                  <td className="p-4">
+                  <td className="p-4 font-mono text-xs font-semibold">
                     {asset.quantum_status === "VULNERABLE" && (
-                      <Badge variant="vulnerable">Quantum Vuln</Badge>
+                      <span className="text-yellow-500 dark:text-yellow-400 font-bold">Quantum Vuln</span>
                     )}
                     {asset.quantum_status === "PARTIAL" && (
-                      <Badge variant="partial">Weakened</Badge>
+                      <span className="text-yellow-500 dark:text-yellow-400 font-medium">Weakened</span>
                     )}
                     {asset.quantum_status === "SAFE" && (
-                      <Badge variant="safe">PQC Ready</Badge>
+                      <span className="text-black dark:text-white font-medium">PQC Ready</span>
                     )}
                     {(!asset.quantum_status || asset.quantum_status === "UNKNOWN") && (
-                      <Badge variant="muted">Undetermined</Badge>
+                      <span className="text-black dark:text-white font-medium">Undetermined</span>
                     )}
                   </td>
                   <td className="p-4 text-right">

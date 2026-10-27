@@ -87,10 +87,10 @@ export default function AlgorithmsPage() {
 
               <div className="flex items-center justify-between pt-3 border-t border-zinc-200 dark:border-zinc-800/80 text-xs font-mono">
                 <span className="text-black dark:text-white font-medium">Quantum Posture:</span>
-                {isVuln && <Badge variant="vulnerable">Quantum Vuln</Badge>}
-                {isSafe && <Badge variant="safe">PQC Ready</Badge>}
-                {isPartial && <Badge variant="partial">Weakened</Badge>}
-                {!isVuln && !isSafe && !isPartial && <Badge variant="muted">Undetermined</Badge>}
+                {isVuln && <span className="text-yellow-500 dark:text-yellow-400 font-bold">Quantum Vuln</span>}
+                {isSafe && <span className="text-black dark:text-white font-medium">PQC Ready</span>}
+                {isPartial && <span className="text-yellow-500 dark:text-yellow-400 font-medium">Weakened</span>}
+                {!isVuln && !isSafe && !isPartial && <span className="text-black dark:text-white font-medium">Undetermined</span>}
               </div>
             </Card>
           );

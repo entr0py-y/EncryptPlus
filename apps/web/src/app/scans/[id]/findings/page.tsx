@@ -113,20 +113,15 @@ export default function FindingsPage() {
             className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-zinc-900/40 transition-colors text-xs font-mono"
           >
             <div className="flex items-center gap-4 min-w-0">
-              <Badge
-                variant={
-                  finding.severity === "CRITICAL"
-                    ? "critical"
-                    : finding.severity === "HIGH"
-                    ? "high"
-                    : finding.severity === "MEDIUM"
-                    ? "medium"
-                    : "low"
-                }
-                className="shrink-0 w-20 text-center justify-center font-bold"
+              <span
+                className={`shrink-0 w-20 text-center font-bold font-mono text-xs uppercase ${
+                  finding.severity === "CRITICAL" || finding.severity === "HIGH"
+                    ? "text-yellow-500 dark:text-yellow-400"
+                    : "text-black dark:text-white"
+                }`}
               >
                 {finding.severity || "INFO"}
-              </Badge>
+              </span>
 
               <div className="truncate">
                 <div className="font-semibold text-black dark:text-white truncate">

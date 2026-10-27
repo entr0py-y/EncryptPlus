@@ -300,9 +300,6 @@ export default function LongFormAssessmentPage() {
             <h1 className="text-3xl font-bold tracking-tight text-black dark:text-white font-mono">
               {repoName}
             </h1>
-            <Badge variant="outline" className="border-amber-300 dark:border-yellow-500/40 bg-amber-50 dark:bg-yellow-500/10 text-yellow-500 dark:text-yellow-400 text-[10px] font-mono font-bold">
-              Scan #{scan.id}
-            </Badge>
           </div>
           <p className="text-xs font-mono text-black dark:text-white mt-1 flex flex-wrap items-center gap-2">
             <span className="text-yellow-500 dark:text-yellow-400 font-semibold">Enterprise Cryptographic Assessment</span>
@@ -497,14 +494,9 @@ export default function LongFormAssessmentPage() {
       {/* 4. CHAPTER 01: EXECUTIVE SUMMARY */}
       {/* ========================================================================= */}
       <div className="p-5 sm:p-6 rounded-2xl bg-white dark:bg-zinc-950/20 border border-zinc-200/80 dark:border-zinc-800/60 font-mono space-y-3 shadow-xl">
-        <div className="flex items-center gap-2.5">
-          <span className="text-[10px] px-2 py-0.5 rounded-md border border-amber-300 dark:border-zinc-800 bg-amber-50 dark:bg-zinc-900/50 text-yellow-500 dark:text-yellow-400 font-mono font-bold">
-            01
-          </span>
-          <h3 className="text-sm font-bold font-mono text-black dark:text-white uppercase tracking-wider">
-            Executive Summary & Scope
-          </h3>
-        </div>
+        <h3 className="text-sm font-bold font-mono text-black dark:text-white uppercase tracking-wider">
+          Executive Summary & Scope
+        </h3>
         <p className="text-xs font-mono text-black dark:text-white leading-relaxed">
           This assessment evaluated <strong className="text-black dark:text-white font-bold">{scan.files_scanned} files</strong> and identified <strong className="text-black dark:text-white font-bold">{scan.total_findings} cryptographic assets</strong> across symmetric ciphers, asymmetric key generation, digital signature routines, and transport security configurations. Long-term confidential data requires phased migration to post-quantum standards (<span className="text-yellow-500 dark:text-yellow-400 font-bold">NIST FIPS 203 ML-KEM</span> and <span className="text-yellow-500 dark:text-yellow-400 font-bold">FIPS 204 ML-DSA</span>).
         </p>
@@ -516,14 +508,9 @@ export default function LongFormAssessmentPage() {
       <section id="inventory" className="space-y-4 pt-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-zinc-200 dark:border-zinc-800/80 pb-4">
           <div>
-            <div className="flex items-center gap-2.5">
-              <span className="text-[10px] px-2 py-0.5 rounded-md border border-amber-300 dark:border-zinc-800 bg-amber-50 dark:bg-zinc-900/50 text-yellow-500 dark:text-yellow-400 font-mono font-bold">
-                02
-              </span>
-              <h2 className="text-xl font-bold font-mono text-black dark:text-white tracking-tight uppercase">
-                Cryptographic Inventory (CBOM)
-              </h2>
-            </div>
+            <h2 className="text-xl font-bold font-mono text-black dark:text-white tracking-tight uppercase">
+              Cryptographic Inventory (CBOM)
+            </h2>
             <p className="text-xs font-mono text-yellow-500 dark:text-yellow-400 mt-1 font-semibold">
               {inventory.length} discovered assets • {distinctAlgos} distinct algorithms • {scan.quantum_vulnerable_count} quantum-vulnerable
             </p>
@@ -605,18 +592,18 @@ export default function LongFormAssessmentPage() {
                         {cleanFilePath(asset.file_path)}:{asset.line_start || 1}
                       </div>
                     </td>
-                    <td className="p-4">
+                    <td className="p-4 font-mono text-xs font-semibold">
                       {asset.quantum_status === "VULNERABLE" && (
-                        <Badge variant="vulnerable">Quantum Vuln</Badge>
+                        <span className="text-yellow-500 dark:text-yellow-400 font-bold">Quantum Vuln</span>
                       )}
                       {asset.quantum_status === "PARTIAL" && (
-                        <Badge variant="partial">Weakened</Badge>
+                        <span className="text-yellow-500 dark:text-yellow-400 font-medium">Weakened</span>
                       )}
                       {asset.quantum_status === "SAFE" && (
-                        <Badge variant="safe">PQC Ready</Badge>
+                        <span className="text-black dark:text-white font-medium">PQC Ready</span>
                       )}
                       {(!asset.quantum_status || asset.quantum_status === "UNKNOWN") && (
-                        <Badge variant="muted">Undetermined</Badge>
+                        <span className="text-black dark:text-white font-medium">Undetermined</span>
                       )}
                     </td>
                     <td className="p-4 text-right">
@@ -682,14 +669,9 @@ export default function LongFormAssessmentPage() {
       <section id="findings" className="space-y-4 pt-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-zinc-200 dark:border-zinc-800/80 pb-4">
           <div>
-            <div className="flex items-center gap-2.5">
-              <span className="text-[10px] px-2 py-0.5 rounded-md border border-amber-300 dark:border-zinc-800 bg-amber-50 dark:bg-zinc-900/50 text-yellow-500 dark:text-yellow-400 font-mono font-bold">
-                03
-              </span>
-              <h2 className="text-xl font-bold font-mono text-black dark:text-white tracking-tight uppercase">
-                Vulnerabilities & Findings
-              </h2>
-            </div>
+            <h2 className="text-xl font-bold font-mono text-black dark:text-white tracking-tight uppercase">
+              Vulnerabilities & Findings
+            </h2>
             <p className="text-xs font-mono text-yellow-500 dark:text-yellow-400 mt-1 font-semibold">
               {findings.length} findings identified across source code AST syntax patterns
             </p>
@@ -744,20 +726,15 @@ export default function LongFormAssessmentPage() {
               className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-zinc-50 dark:hover:bg-zinc-900/20 transition-colors cursor-pointer text-xs font-mono"
             >
               <div className="flex items-center gap-4 min-w-0">
-                <Badge
-                  variant={
-                    finding.severity === "CRITICAL"
-                      ? "critical"
-                      : finding.severity === "HIGH"
-                      ? "high"
-                      : finding.severity === "MEDIUM"
-                      ? "medium"
-                      : "low"
-                  }
-                  className="shrink-0 w-20 text-center justify-center font-bold"
+                <span
+                  className={`shrink-0 w-20 text-center font-bold font-mono text-xs uppercase ${
+                    finding.severity === "CRITICAL" || finding.severity === "HIGH"
+                      ? "text-yellow-500 dark:text-yellow-400"
+                      : "text-black dark:text-white"
+                  }`}
                 >
                   {finding.severity || "INFO"}
-                </Badge>
+                </span>
 
                 <div className="truncate">
                   <div className="font-semibold text-black dark:text-white font-mono text-xs truncate">
@@ -835,14 +812,9 @@ export default function LongFormAssessmentPage() {
       <section id="risk" className="space-y-4 pt-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-zinc-200 dark:border-zinc-800/80 pb-4">
           <div>
-            <div className="flex items-center gap-2.5">
-              <span className="text-[10px] px-2 py-0.5 rounded-md border border-amber-300 dark:border-zinc-800 bg-amber-50 dark:bg-zinc-900/50 text-yellow-500 dark:text-yellow-400 font-mono font-bold">
-                04
-              </span>
-              <h2 className="text-xl font-bold font-mono text-black dark:text-white tracking-tight uppercase">
-                Risk & Security Scores
-              </h2>
-            </div>
+            <h2 className="text-xl font-bold font-mono text-black dark:text-white tracking-tight uppercase">
+              Risk & Security Scores
+            </h2>
             <p className="text-xs font-mono text-yellow-500 dark:text-yellow-400 mt-1 font-semibold">
               Deterministic evaluation across 10 security and compliance dimensions
             </p>
@@ -880,14 +852,9 @@ export default function LongFormAssessmentPage() {
       <section id="quantum" className="space-y-4 pt-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-zinc-200 dark:border-zinc-800/80 pb-4">
           <div>
-            <div className="flex items-center gap-2.5">
-              <span className="text-[10px] px-2 py-0.5 rounded-md border border-amber-300 dark:border-zinc-800 bg-amber-50 dark:bg-zinc-900/50 text-yellow-500 dark:text-yellow-400 font-mono font-bold">
-                05
-              </span>
-              <h2 className="text-xl font-bold font-mono text-black dark:text-white tracking-tight uppercase">
-                Post-Quantum Readiness & Mosca
-              </h2>
-            </div>
+            <h2 className="text-xl font-bold font-mono text-black dark:text-white tracking-tight uppercase">
+              Post-Quantum Readiness & Mosca
+            </h2>
             <p className="text-xs font-mono text-yellow-500 dark:text-yellow-400 mt-1 font-semibold">
               Evaluating Shor's algorithm threat, Grover's margin, and Mosca temporal inequality
             </p>
@@ -962,14 +929,9 @@ export default function LongFormAssessmentPage() {
       <section id="migration" className="space-y-4 pt-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-zinc-200 dark:border-zinc-800/80 pb-4">
           <div>
-            <div className="flex items-center gap-2.5">
-              <span className="text-[10px] px-2 py-0.5 rounded-md border border-amber-300 dark:border-zinc-800 bg-amber-50 dark:bg-zinc-900/50 text-yellow-500 dark:text-yellow-400 font-mono font-bold">
-                06
-              </span>
-              <h2 className="text-xl font-bold font-mono text-black dark:text-white tracking-tight uppercase">
-                Migration Roadmap
-              </h2>
-            </div>
+            <h2 className="text-xl font-bold font-mono text-black dark:text-white tracking-tight uppercase">
+              Migration Roadmap
+            </h2>
             <p className="text-xs font-mono text-yellow-500 dark:text-yellow-400 mt-1 font-semibold">
               {recommendations.length} prioritized algorithm transitions to achieve Post-Quantum Compliance
             </p>
@@ -1032,14 +994,9 @@ export default function LongFormAssessmentPage() {
         <section id="report" className="space-y-4 pt-4">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-zinc-200 dark:border-zinc-800/80 pb-4">
             <div>
-              <div className="flex items-center gap-2.5">
-                <span className="text-[10px] px-2 py-0.5 rounded-md border border-amber-300 dark:border-zinc-800 bg-amber-50 dark:bg-zinc-900/50 text-yellow-500 dark:text-yellow-400 font-mono font-bold">
-                  07
-                </span>
-                <h2 className="text-xl font-bold font-mono text-black dark:text-white tracking-tight uppercase">
-                  Technical Audit Report
-                </h2>
-              </div>
+              <h2 className="text-xl font-bold font-mono text-black dark:text-white tracking-tight uppercase">
+                Technical Audit Report
+              </h2>
               <p className="text-xs font-mono text-yellow-500 dark:text-yellow-400 mt-1 font-semibold">
                 Official 18-Section Cryptographic Security Audit Document
               </p>

@@ -54,33 +54,33 @@ export default function KeySecurityPage() {
           </p>
         </div>
         <div className="text-xs font-mono text-zinc-400">
-          <strong className="text-white">{keyAssets.length}</strong> Key Material Records Detected
+          <strong className="text-zinc-900 dark:text-white">{keyAssets.length}</strong> Key Material Records Detected
         </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs font-mono">
-        <div className="p-5 rounded-2xl border border-zinc-800 bg-[#121215] space-y-1">
+        <div className="p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-[#121215] space-y-1">
           <div className="text-[10px] text-zinc-500 uppercase">Private Keys in Source</div>
-          <div className="text-3xl font-bold text-white font-mono">
+          <div className="text-3xl font-bold text-zinc-900 dark:text-white font-mono">
             {keyAssets.filter((k) => (k.algorithm || "").includes("Private Key")).length}
           </div>
-          <div className="text-zinc-400 text-[11px]">Potential Exposure</div>
+          <div className="text-zinc-500 dark:text-zinc-400 text-[11px]">Potential Exposure</div>
         </div>
 
-        <div className="p-5 rounded-2xl border border-zinc-800 bg-[#121215] space-y-1">
+        <div className="p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-[#121215] space-y-1">
           <div className="text-[10px] text-zinc-500 uppercase">Weak Key Bit Lengths</div>
-          <div className="text-3xl font-bold text-white font-mono">
+          <div className="text-3xl font-bold text-zinc-900 dark:text-white font-mono">
             {keyAssets.filter((k) => k.key_size && k.key_size < 2048).length}
           </div>
-          <div className="text-zinc-400 text-[11px]">&lt; 2048-bit RSA/DH</div>
+          <div className="text-zinc-500 dark:text-zinc-400 text-[11px]">&lt; 2048-bit RSA/DH</div>
         </div>
 
-        <div className="p-5 rounded-2xl border border-zinc-800 bg-[#121215] space-y-1">
+        <div className="p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-[#121215] space-y-1">
           <div className="text-[10px] text-zinc-500 uppercase">Quantum-Vulnerable Keys</div>
-          <div className="text-3xl font-bold text-white font-mono">
+          <div className="text-3xl font-bold text-zinc-900 dark:text-white font-mono">
             {keyAssets.filter((k) => k.quantum_status === "VULNERABLE").length}
           </div>
-          <div className="text-zinc-400 text-[11px]">Shor's Susceptible</div>
+          <div className="text-zinc-500 dark:text-zinc-400 text-[11px]">Shor's Susceptible</div>
         </div>
       </div>
 

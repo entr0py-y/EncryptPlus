@@ -47,31 +47,31 @@ export default function ProtocolsPage() {
           </p>
         </div>
         <div className="text-xs font-mono text-zinc-400">
-          <strong className="text-white">{protoAssets.length}</strong> Protocol Artefacts Discovered
+          <strong className="text-zinc-900 dark:text-white">{protoAssets.length}</strong> Protocol Artefacts Discovered
         </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs font-mono">
-        <div className="p-5 rounded-2xl border border-zinc-800 bg-[#121215] space-y-1">
+        <div className="p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-[#121215] space-y-1">
           <div className="text-[10px] text-zinc-500 uppercase">Deprecated TLS 1.0/1.1</div>
-          <div className="text-3xl font-bold text-white font-mono">{deprecatedProtos.length}</div>
-          <div className="text-zinc-400 text-[11px]">Requires Minimum TLS 1.3</div>
+          <div className="text-3xl font-bold text-zinc-900 dark:text-white font-mono">{deprecatedProtos.length}</div>
+          <div className="text-zinc-500 dark:text-zinc-400 text-[11px]">Requires Minimum TLS 1.3</div>
         </div>
 
-        <div className="p-5 rounded-2xl border border-zinc-800 bg-[#121215] space-y-1">
+        <div className="p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-[#121215] space-y-1">
           <div className="text-[10px] text-zinc-500 uppercase">Mutual TLS (mTLS)</div>
-          <div className="text-3xl font-bold text-white font-mono">
+          <div className="text-3xl font-bold text-zinc-900 dark:text-white font-mono">
             {protoAssets.filter((p) => (p.algorithm || "").includes("mTLS") || (p.algorithm || "").includes("Mutual")).length}
           </div>
-          <div className="text-zinc-400 text-[11px]">Client Auth Enforcements</div>
+          <div className="text-zinc-500 dark:text-zinc-400 text-[11px]">Client Auth Enforcements</div>
         </div>
 
-        <div className="p-5 rounded-2xl border border-zinc-800 bg-[#121215] space-y-1">
+        <div className="p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-[#121215] space-y-1">
           <div className="text-[10px] text-zinc-500 uppercase">Modern TLS 1.3 / 1.2</div>
-          <div className="text-3xl font-bold text-white font-mono">
+          <div className="text-3xl font-bold text-zinc-900 dark:text-white font-mono">
             {protoAssets.filter((p) => (p.algorithm || "").includes("1.3") || (p.algorithm || "").includes("1.2")).length}
           </div>
-          <div className="text-zinc-400 text-[11px]">Compliant Transport</div>
+          <div className="text-zinc-500 dark:text-zinc-400 text-[11px]">Compliant Transport</div>
         </div>
       </div>
 

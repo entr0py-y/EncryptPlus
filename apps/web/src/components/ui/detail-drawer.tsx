@@ -26,21 +26,21 @@ export function DetailDrawer({
   return (
     <div className="fixed inset-0 z-50 flex justify-end bg-black/70 backdrop-blur-sm transition-all duration-300 animate-in fade-in font-mono">
       <div
-        className="w-full max-w-2xl h-full bg-[#0B0D10]/95 backdrop-blur-md border-l border-zinc-800/80 p-6 sm:p-7 shadow-2xl flex flex-col justify-between overflow-y-auto animate-in slide-in-from-right duration-300"
+        className="w-full max-w-2xl h-full bg-white/95 dark:bg-[#0B0D10]/95 backdrop-blur-md border-l border-zinc-200 dark:border-zinc-800/80 p-6 sm:p-7 shadow-2xl flex flex-col justify-between overflow-y-auto animate-in slide-in-from-right duration-300 text-zinc-900 dark:text-zinc-100"
       >
         <div>
           {/* Header */}
-          <div className="flex items-start justify-between pb-5 border-b border-zinc-800/80">
+          <div className="flex items-start justify-between pb-5 border-b border-zinc-200 dark:border-zinc-800/80">
             <div>
-              <div className="text-[10px] font-mono text-yellow-500 uppercase tracking-widest font-semibold">
+              <div className="text-[10px] font-mono text-yellow-600 dark:text-yellow-500 uppercase tracking-widest font-semibold">
                 Cryptographic AST Inspection
               </div>
-              <h2 className="text-xl font-bold tracking-tight text-white mt-1 font-mono">{title}</h2>
-              {subtitle && <p className="text-xs font-mono text-zinc-400 mt-1 truncate max-w-md">{subtitle}</p>}
+              <h2 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-white mt-1 font-mono">{title}</h2>
+              {subtitle && <p className="text-xs font-mono text-zinc-500 dark:text-zinc-400 mt-1 truncate max-w-md">{subtitle}</p>}
             </div>
             <button
               onClick={onClose}
-              className="p-2 rounded-xl bg-zinc-900/60 border border-zinc-800 text-zinc-400 hover:text-white hover:border-zinc-600 transition-colors"
+              className="p-2 rounded-xl bg-zinc-100 dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800 text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:border-zinc-400 dark:hover:border-zinc-600 transition-colors"
             >
               <X className="w-4 h-4" />
             </button>
@@ -53,9 +53,9 @@ export function DetailDrawer({
         </div>
 
         {/* Footer */}
-        <div className="pt-4 border-t border-zinc-800/80 flex items-center justify-between text-xs font-mono text-zinc-500">
+        <div className="pt-4 border-t border-zinc-200 dark:border-zinc-800/80 flex items-center justify-between text-xs font-mono text-zinc-500">
           <span>ENCRYPT PLUS AST ENGINE</span>
-          <Button variant="outline" size="sm" onClick={onClose} className="border-zinc-800/80 bg-transparent text-white hover:bg-zinc-900/30 rounded-xl">
+          <Button variant="outline" size="sm" onClick={onClose} className="border-zinc-300 dark:border-zinc-800/80 bg-transparent text-zinc-900 dark:text-white hover:bg-zinc-100 dark:hover:bg-zinc-900/30 rounded-xl">
             Close Inspector
           </Button>
         </div>

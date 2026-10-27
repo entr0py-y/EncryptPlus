@@ -41,8 +41,8 @@ export default function MoscaPage() {
       {/* Simulator Hero Panel */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         {/* Left: Interactive Controls */}
-        <div className="lg:col-span-6 p-8 rounded-3xl border border-zinc-800 bg-[#121215] space-y-6">
-          <div className="text-xs font-mono uppercase tracking-widest text-zinc-400 font-semibold">
+        <div className="lg:col-span-6 p-8 rounded-3xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-[#121215] space-y-6">
+          <div className="text-xs font-mono uppercase tracking-widest text-zinc-500 dark:text-zinc-400 font-semibold">
             Adjust Threat & Architecture Parameters
           </div>
 
@@ -50,8 +50,8 @@ export default function MoscaPage() {
             {/* Slider X */}
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <span className="text-zinc-300">Data Shelf-Life (X)</span>
-                <span className="text-white font-bold">{dataLifetimeX} Years</span>
+                <span className="text-zinc-600 dark:text-zinc-300">Data Shelf-Life (X)</span>
+                <span className="text-zinc-900 dark:text-white font-bold">{dataLifetimeX} Years</span>
               </div>
               <input
                 type="range"
@@ -59,7 +59,7 @@ export default function MoscaPage() {
                 max="25"
                 value={dataLifetimeX}
                 onChange={(e) => setDataLifetimeX(Number(e.target.value))}
-                className="w-full accent-white bg-zinc-800 h-2 rounded-lg cursor-pointer"
+                className="w-full accent-amber-500 dark:accent-white bg-zinc-200 dark:bg-zinc-800 h-2 rounded-lg cursor-pointer"
               />
               <p className="text-[10px] text-zinc-500">
                 How long proprietary data, health records, or secrets must remain confidential.
@@ -69,8 +69,8 @@ export default function MoscaPage() {
             {/* Slider Y */}
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <span className="text-zinc-300">Migration & Transition Time (Y)</span>
-                <span className="text-white font-bold">{migrationTimeY} Years</span>
+                <span className="text-zinc-600 dark:text-zinc-300">Migration & Transition Time (Y)</span>
+                <span className="text-zinc-900 dark:text-white font-bold">{migrationTimeY} Years</span>
               </div>
               <input
                 type="range"
@@ -78,7 +78,7 @@ export default function MoscaPage() {
                 max="15"
                 value={migrationTimeY}
                 onChange={(e) => setMigrationTimeY(Number(e.target.value))}
-                className="w-full accent-white bg-zinc-800 h-2 rounded-lg cursor-pointer"
+                className="w-full accent-amber-500 dark:accent-white bg-zinc-200 dark:bg-zinc-800 h-2 rounded-lg cursor-pointer"
               />
               <p className="text-[10px] text-zinc-500">
                 Time required to re-architect, re-encrypt, and deploy PQC across enterprise nodes.
@@ -88,8 +88,8 @@ export default function MoscaPage() {
             {/* Slider Z */}
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <span className="text-zinc-300">CRQC Arrival Horizon (Z)</span>
-                <span className="text-white font-bold">~{crqcHorizonZ} Years</span>
+                <span className="text-zinc-600 dark:text-zinc-300">CRQC Arrival Horizon (Z)</span>
+                <span className="text-zinc-900 dark:text-white font-bold">~{crqcHorizonZ} Years</span>
               </div>
               <input
                 type="range"
@@ -97,7 +97,7 @@ export default function MoscaPage() {
                 max="20"
                 value={crqcHorizonZ}
                 onChange={(e) => setCrqcHorizonZ(Number(e.target.value))}
-                className="w-full accent-white bg-zinc-800 h-2 rounded-lg cursor-pointer"
+                className="w-full accent-amber-500 dark:accent-white bg-zinc-200 dark:bg-zinc-800 h-2 rounded-lg cursor-pointer"
               />
               <p className="text-[10px] text-zinc-500">
                 Assumed timeframe until an adversary achieves fault-tolerant quantum cryptanalysis.
@@ -107,27 +107,27 @@ export default function MoscaPage() {
         </div>
 
         {/* Right: Real-Time Equation Evaluation */}
-        <div className="lg:col-span-6 p-8 rounded-3xl border border-zinc-800 bg-[#121215] space-y-6">
-          <div className="text-xs font-mono uppercase tracking-widest text-zinc-400 font-semibold">
+        <div className="lg:col-span-6 p-8 rounded-3xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-[#121215] space-y-6">
+          <div className="text-xs font-mono uppercase tracking-widest text-zinc-500 dark:text-zinc-400 font-semibold">
             Mathematical Result
           </div>
 
-          <div className="p-6 rounded-2xl bg-zinc-950 border border-zinc-800 text-center space-y-3 font-mono">
+          <div className="p-6 rounded-2xl bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 text-center space-y-3 font-mono">
             <div className="text-sm text-zinc-500">
-              {dataLifetimeX} yrs (X) + {migrationTimeY} yrs (Y) = <strong className="text-white text-base">{totalExposure} Years</strong>
+              {dataLifetimeX} yrs (X) + {migrationTimeY} yrs (Y) = <strong className="text-zinc-900 dark:text-white text-base">{totalExposure} Years</strong>
             </div>
 
-            <div className="text-3xl font-bold font-mono text-white">
+            <div className="text-3xl font-bold font-mono text-zinc-900 dark:text-white">
               {totalExposure} {isVulnerable ? ">" : "≤"} {crqcHorizonZ}
             </div>
 
             <div className="pt-2">
               {isVulnerable ? (
-                <div className="p-3 rounded-xl bg-white text-zinc-950 font-bold text-xs uppercase">
+                <div className="p-3 rounded-xl bg-zinc-900 text-white dark:bg-white dark:text-zinc-950 font-bold text-xs uppercase">
                   Data Compromised ({exposureDelta} Years Exposure Deficit)
                 </div>
               ) : (
-                <div className="p-3 rounded-xl bg-zinc-900 border border-zinc-700 text-zinc-200 font-bold text-xs uppercase">
+                <div className="p-3 rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 text-zinc-800 dark:text-zinc-200 font-bold text-xs uppercase">
                   Data Secure (Zero Exposure Deficit)
                 </div>
               )}

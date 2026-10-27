@@ -42,33 +42,33 @@ export default function CertificatesPage() {
           </p>
         </div>
         <div className="text-xs font-mono text-zinc-400">
-          <strong className="text-white">{certAssets.length}</strong> Certificate Operations Catalogued
+          <strong className="text-zinc-900 dark:text-white">{certAssets.length}</strong> Certificate Operations Catalogued
         </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs font-mono">
-        <div className="p-5 rounded-2xl border border-zinc-800 bg-[#121215] space-y-1">
+        <div className="p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-[#121215] space-y-1">
           <div className="text-[10px] text-zinc-500 uppercase">Expiration Checks</div>
-          <div className="text-3xl font-bold text-white font-mono">
+          <div className="text-3xl font-bold text-zinc-900 dark:text-white font-mono">
             {certAssets.filter((c) => (c.algorithm || "").includes("Expiration")).length}
           </div>
-          <div className="text-zinc-400 text-[11px]">Validity Audits</div>
+          <div className="text-zinc-500 dark:text-zinc-400 text-[11px]">Validity Audits</div>
         </div>
 
-        <div className="p-5 rounded-2xl border border-zinc-800 bg-[#121215] space-y-1">
+        <div className="p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-[#121215] space-y-1">
           <div className="text-[10px] text-zinc-500 uppercase">Signature Algorithms</div>
-          <div className="text-3xl font-bold text-white font-mono">
+          <div className="text-3xl font-bold text-zinc-900 dark:text-white font-mono">
             {certAssets.filter((c) => (c.algorithm || "").includes("Signature")).length}
           </div>
-          <div className="text-zinc-400 text-[11px]">RSA & ECDSA Signatures</div>
+          <div className="text-zinc-500 dark:text-zinc-400 text-[11px]">RSA & ECDSA Signatures</div>
         </div>
 
-        <div className="p-5 rounded-2xl border border-zinc-800 bg-[#121215] space-y-1">
+        <div className="p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-[#121215] space-y-1">
           <div className="text-[10px] text-zinc-500 uppercase">Pinning & Chains</div>
-          <div className="text-3xl font-bold text-white font-mono">
+          <div className="text-3xl font-bold text-zinc-900 dark:text-white font-mono">
             {certAssets.filter((c) => (c.algorithm || "").includes("Pinning") || (c.algorithm || "").includes("Chain")).length}
           </div>
-          <div className="text-zinc-400 text-[11px]">Trust Anchor Validations</div>
+          <div className="text-zinc-500 dark:text-zinc-400 text-[11px]">Trust Anchor Validations</div>
         </div>
       </div>
 

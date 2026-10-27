@@ -47,18 +47,18 @@ export default function AlgorithmsPage() {
           </p>
         </div>
         <div className="text-xs font-mono text-zinc-400">
-          <strong className="text-white">{algoEntries.length}</strong> Distinct Mechanisms Catalogued
+          <strong className="text-zinc-900 dark:text-white">{algoEntries.length}</strong> Distinct Mechanisms Catalogued
         </div>
       </div>
 
-      <div className="flex items-center gap-4 bg-[#121215] p-3 rounded-2xl border border-zinc-800">
+      <div className="flex items-center gap-4 bg-white dark:bg-[#121215] p-3 rounded-2xl border border-zinc-200 dark:border-zinc-800">
         <Search className="w-4 h-4 text-zinc-500 ml-2" />
         <input
           type="text"
           placeholder="Filter algorithms by name..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full h-9 bg-transparent text-xs font-mono text-white placeholder:text-zinc-600 focus:outline-none"
+          className="w-full h-9 bg-transparent text-xs font-mono text-zinc-900 dark:text-white placeholder:text-zinc-400 dark:placeholder:text-zinc-600 focus:outline-none"
         />
       </div>
 

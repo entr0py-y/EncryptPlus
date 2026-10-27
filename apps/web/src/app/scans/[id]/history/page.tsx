@@ -60,12 +60,12 @@ export default function HistoryComparisonPage() {
       </div>
 
       {/* Comparison Selector */}
-      <div className="flex items-center gap-4 bg-[#121215] p-4 rounded-2xl border border-zinc-800 text-xs font-mono">
-        <span className="text-zinc-400">Comparing Current Scan #{id} against:</span>
+      <div className="flex items-center gap-4 bg-white dark:bg-[#121215] p-4 rounded-2xl border border-zinc-200 dark:border-zinc-800 text-xs font-mono">
+        <span className="text-zinc-500 dark:text-zinc-400">Comparing Current Scan #{id} against:</span>
         <select
           value={prevScanId}
           onChange={(e) => handleCompare(e.target.value)}
-          className="h-9 px-3 rounded-xl bg-zinc-900 border border-zinc-700 text-white font-mono focus:outline-none"
+          className="h-9 px-3 rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 text-zinc-900 dark:text-white font-mono focus:outline-none"
         >
           {scans
             .filter((s) => String(s.id) !== String(id))

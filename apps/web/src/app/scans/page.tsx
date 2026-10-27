@@ -134,33 +134,33 @@ export default function ScansPage() {
           </div>
 
           {/* Stepper Pipeline Indicator */}
-          <div className="p-5 sm:p-6 rounded-2xl bg-yellow-500/[0.03] dark:bg-yellow-500/[0.03] border border-yellow-500/20 dark:border-yellow-500/20">
-            <div className="text-xs font-mono text-yellow-600 dark:text-yellow-400 uppercase tracking-widest mb-3.5 font-semibold">
+          <div className="p-5 sm:p-6 rounded-2xl bg-transparent dark:bg-zinc-950/20 border border-zinc-200/80 dark:border-zinc-800/60">
+            <div className="text-xs font-mono text-zinc-500 uppercase tracking-widest mb-3.5 font-semibold">
               Automated Inspection Pipeline Architecture
             </div>
             <div className="grid grid-cols-2 md:grid-cols-5 gap-3.5 font-mono">
-              <div className="p-3.5 sm:p-4 rounded-xl border border-yellow-500/30 dark:border-yellow-500/25 bg-yellow-500/[0.06] dark:bg-yellow-500/[0.08] hover:bg-yellow-500/[0.12] hover:border-yellow-500/50 transition-all">
-                <div className="text-zinc-600 dark:text-zinc-400 text-xs font-semibold">STAGE 01</div>
+              <div className="p-3.5 sm:p-4 rounded-xl border border-zinc-200/70 dark:border-zinc-800/60 bg-transparent dark:bg-zinc-900/20 hover:border-zinc-700 transition-colors">
+                <div className="text-zinc-500 text-xs font-semibold">STAGE 01</div>
                 <div className="text-sm sm:text-[15px] font-bold text-zinc-900 dark:text-zinc-100 mt-1 leading-snug">Repository Clone</div>
                 <div className="text-xs text-yellow-600 dark:text-yellow-400 mt-1.5 font-medium leading-normal">Git fetch & isolation</div>
               </div>
-              <div className="p-3.5 sm:p-4 rounded-xl border border-yellow-500/30 dark:border-yellow-500/25 bg-yellow-500/[0.06] dark:bg-yellow-500/[0.08] hover:bg-yellow-500/[0.12] hover:border-yellow-500/50 transition-all">
-                <div className="text-zinc-600 dark:text-zinc-400 text-xs font-semibold">STAGE 02</div>
+              <div className="p-3.5 sm:p-4 rounded-xl border border-zinc-200/70 dark:border-zinc-800/60 bg-transparent dark:bg-zinc-900/20 hover:border-zinc-700 transition-colors">
+                <div className="text-zinc-500 text-xs font-semibold">STAGE 02</div>
                 <div className="text-sm sm:text-[15px] font-bold text-zinc-900 dark:text-zinc-100 mt-1 leading-snug">CryptoScan AST</div>
                 <div className="text-xs text-yellow-600 dark:text-yellow-400 mt-1.5 font-medium leading-normal">Pattern & syntax parse</div>
               </div>
-              <div className="p-3.5 sm:p-4 rounded-xl border border-yellow-500/30 dark:border-yellow-500/25 bg-yellow-500/[0.06] dark:bg-yellow-500/[0.08] hover:bg-yellow-500/[0.12] hover:border-yellow-500/50 transition-all">
-                <div className="text-zinc-600 dark:text-zinc-400 text-xs font-semibold">STAGE 03</div>
+              <div className="p-3.5 sm:p-4 rounded-xl border border-zinc-200/70 dark:border-zinc-800/60 bg-transparent dark:bg-zinc-900/20 hover:border-zinc-700 transition-colors">
+                <div className="text-zinc-500 text-xs font-semibold">STAGE 03</div>
                 <div className="text-sm sm:text-[15px] font-bold text-zinc-900 dark:text-zinc-100 mt-1 leading-snug">CBOM Discovery</div>
                 <div className="text-xs text-yellow-600 dark:text-yellow-400 mt-1.5 font-medium leading-normal">Asset normalization</div>
               </div>
-              <div className="p-3.5 sm:p-4 rounded-xl border border-yellow-500/30 dark:border-yellow-500/25 bg-yellow-500/[0.06] dark:bg-yellow-500/[0.08] hover:bg-yellow-500/[0.12] hover:border-yellow-500/50 transition-all">
-                <div className="text-zinc-600 dark:text-zinc-400 text-xs font-semibold">STAGE 04</div>
+              <div className="p-3.5 sm:p-4 rounded-xl border border-zinc-200/70 dark:border-zinc-800/60 bg-transparent dark:bg-zinc-900/20 hover:border-zinc-700 transition-colors">
+                <div className="text-zinc-500 text-xs font-semibold">STAGE 04</div>
                 <div className="text-sm sm:text-[15px] font-bold text-zinc-900 dark:text-zinc-100 mt-1 leading-snug">Quantum & Risk</div>
                 <div className="text-xs text-yellow-600 dark:text-yellow-400 mt-1.5 font-medium leading-normal">Shor/Grover & Mosca</div>
               </div>
-              <div className="p-3.5 sm:p-4 rounded-xl border border-yellow-500/30 dark:border-yellow-500/25 bg-yellow-500/[0.06] dark:bg-yellow-500/[0.08] hover:bg-yellow-500/[0.12] hover:border-yellow-500/50 transition-all">
-                <div className="text-zinc-600 dark:text-zinc-400 text-xs font-semibold">STAGE 05</div>
+              <div className="p-3.5 sm:p-4 rounded-xl border border-zinc-200/70 dark:border-zinc-800/60 bg-transparent dark:bg-zinc-900/20 hover:border-zinc-700 transition-colors">
+                <div className="text-zinc-500 text-xs font-semibold">STAGE 05</div>
                 <div className="text-sm sm:text-[15px] font-bold text-zinc-900 dark:text-zinc-100 mt-1 leading-snug">10-Section Report</div>
                 <div className="text-xs text-yellow-600 dark:text-yellow-400 mt-1.5 font-medium leading-normal">Audit generation</div>
               </div>

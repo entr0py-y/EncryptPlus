@@ -341,9 +341,9 @@ export default function LongFormAssessmentPage() {
       {/* ========================================================================= */}
       {/* 2. THE 4 PRIMARY METRIC CARDS (Matching Home Page Pipeline Architecture) */}
       {/* ========================================================================= */}
-      <div className="p-5 sm:p-6 rounded-2xl bg-yellow-500/[0.03] dark:bg-yellow-500/[0.03] border border-yellow-500/20 dark:border-yellow-500/20 font-mono shadow-xl">
+      <div className="p-5 sm:p-6 rounded-2xl bg-transparent dark:bg-zinc-950/20 border border-zinc-200/80 dark:border-zinc-800/60 font-mono shadow-xl">
         <div className="flex items-center justify-between mb-3.5">
-          <div className="text-[10px] font-mono text-yellow-600 dark:text-yellow-400 uppercase tracking-widest font-semibold">
+          <div className="text-[10px] font-mono text-zinc-500 uppercase tracking-widest">
             Core Cryptographic & Quantum Risk Vectors
           </div>
           <span className="text-[10px] font-mono text-yellow-500/80">
@@ -353,45 +353,45 @@ export default function LongFormAssessmentPage() {
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5 text-xs font-mono">
           {/* Card 01: Overall Risk */}
-          <div className="p-4 rounded-xl border border-yellow-500/30 dark:border-yellow-500/25 bg-yellow-500/[0.06] dark:bg-yellow-500/[0.08] hover:bg-yellow-500/[0.12] hover:border-yellow-500/50 transition-all group">
-            <div className="text-zinc-600 dark:text-zinc-400 text-[10px] uppercase font-semibold">VECTOR 01 // OVERALL RISK</div>
-            <div className="font-bold text-3xl sm:text-4xl text-zinc-900 dark:text-white mt-1 group-hover:text-yellow-500 transition-colors">
+          <div className="p-4 rounded-xl border border-zinc-200/70 dark:border-zinc-800/60 bg-transparent dark:bg-zinc-900/20 hover:border-zinc-700 transition-colors group">
+            <div className="text-zinc-500 text-[10px] uppercase">VECTOR 01 // OVERALL RISK</div>
+            <div className="font-bold text-3xl sm:text-4xl text-zinc-900 dark:text-white mt-1 group-hover:text-yellow-400 transition-colors">
               {scan.overall_risk_score !== null ? Number(scan.overall_risk_score).toFixed(1) : "—"}
             </div>
-            <div className="text-[10px] text-yellow-600 dark:text-yellow-400 mt-1.5 font-medium flex items-center gap-1.5">
+            <div className="text-[10px] text-yellow-500 dark:text-yellow-400 mt-1.5 font-medium flex items-center gap-1.5">
               <span>{scan.overall_risk_level || "MODERATE"} EXPOSURE</span>
             </div>
           </div>
 
           {/* Card 02: PQC Readiness */}
-          <div className="p-4 rounded-xl border border-yellow-500/30 dark:border-yellow-500/25 bg-yellow-500/[0.06] dark:bg-yellow-500/[0.08] hover:bg-yellow-500/[0.12] hover:border-yellow-500/50 transition-all group">
-            <div className="text-zinc-600 dark:text-zinc-400 text-[10px] uppercase font-semibold">VECTOR 02 // PQC READINESS</div>
-            <div className="font-bold text-3xl sm:text-4xl text-zinc-900 dark:text-white mt-1 group-hover:text-yellow-500 transition-colors">
+          <div className="p-4 rounded-xl border border-zinc-200/70 dark:border-zinc-800/60 bg-transparent dark:bg-zinc-900/20 hover:border-zinc-700 transition-colors group">
+            <div className="text-zinc-500 text-[10px] uppercase">VECTOR 02 // PQC READINESS</div>
+            <div className="font-bold text-3xl sm:text-4xl text-zinc-900 dark:text-white mt-1 group-hover:text-yellow-400 transition-colors">
               {scan.pqc_readiness_score !== null ? `${Number(scan.pqc_readiness_score).toFixed(1)}%` : "0.0%"}
             </div>
-            <div className="text-[10px] text-yellow-600 dark:text-yellow-400 mt-1.5 font-medium">
+            <div className="text-[10px] text-yellow-500 dark:text-yellow-400 mt-1.5 font-medium">
               {scan.pqc_readiness_level || "DEVELOPING"} POSTURE
             </div>
           </div>
 
           {/* Card 03: Crypto Assets */}
-          <div className="p-4 rounded-xl border border-yellow-500/30 dark:border-yellow-500/25 bg-yellow-500/[0.06] dark:bg-yellow-500/[0.08] hover:bg-yellow-500/[0.12] hover:border-yellow-500/50 transition-all group">
-            <div className="text-zinc-600 dark:text-zinc-400 text-[10px] uppercase font-semibold">VECTOR 03 // CBOM DISCOVERY</div>
-            <div className="font-bold text-3xl sm:text-4xl text-zinc-900 dark:text-white mt-1 group-hover:text-yellow-500 transition-colors">
+          <div className="p-4 rounded-xl border border-zinc-200/70 dark:border-zinc-800/60 bg-transparent dark:bg-zinc-900/20 hover:border-zinc-700 transition-colors group">
+            <div className="text-zinc-500 text-[10px] uppercase">VECTOR 03 // CBOM DISCOVERY</div>
+            <div className="font-bold text-3xl sm:text-4xl text-zinc-900 dark:text-white mt-1 group-hover:text-yellow-400 transition-colors">
               {scan.total_findings.toLocaleString()}
             </div>
-            <div className="text-[10px] text-yellow-600 dark:text-yellow-400 mt-1.5 font-medium">
+            <div className="text-[10px] text-yellow-500 dark:text-yellow-400 mt-1.5 font-medium">
               {distinctAlgos} Distinct Algorithms
             </div>
           </div>
 
           {/* Card 04: Quantum Vulnerable */}
-          <div className="p-4 rounded-xl border border-yellow-500/30 dark:border-yellow-500/25 bg-yellow-500/[0.06] dark:bg-yellow-500/[0.08] hover:bg-yellow-500/[0.12] hover:border-yellow-500/50 transition-all group">
-            <div className="text-zinc-600 dark:text-zinc-400 text-[10px] uppercase font-semibold">VECTOR 04 // QUANTUM VULN</div>
-            <div className="font-bold text-3xl sm:text-4xl text-zinc-900 dark:text-white mt-1 group-hover:text-yellow-500 transition-colors">
+          <div className="p-4 rounded-xl border border-zinc-200/70 dark:border-zinc-800/60 bg-transparent dark:bg-zinc-900/20 hover:border-zinc-700 transition-colors group">
+            <div className="text-zinc-500 text-[10px] uppercase">VECTOR 04 // QUANTUM VULN</div>
+            <div className="font-bold text-3xl sm:text-4xl text-zinc-900 dark:text-white mt-1 group-hover:text-yellow-400 transition-colors">
               {scan.quantum_vulnerable_count.toLocaleString()}
             </div>
-            <div className={`text-[10px] mt-1.5 font-medium ${scan.quantum_vulnerable_count > 0 ? "text-rose-500 dark:text-rose-400" : "text-emerald-500 dark:text-emerald-400"}`}>
+            <div className={`text-[10px] mt-1.5 font-medium ${scan.quantum_vulnerable_count > 0 ? "text-rose-400" : "text-emerald-400"}`}>
               {scan.quantum_vulnerable_count > 0 ? "Shor's Susceptible" : "0 Shor Susceptible (Safe)"}
             </div>
           </div>

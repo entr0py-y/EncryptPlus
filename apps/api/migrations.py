@@ -103,6 +103,9 @@ def run_migrations():
                 {"user_id": "dev_user"}, synchronize_session=False
             )
             db.commit()
+
+            # 5. Auto-seed essential historical scans (EncryptPlus, AuditMind, FinTech, demo_repo) if missing
+            seed_scans_if_empty(db)
         except Exception as e:
             logger.warning(f"Note during legacy user migration: {e}")
             db.rollback()
@@ -112,6 +115,62 @@ def run_migrations():
         logger.info("Database migration check completed successfully.")
     except Exception as exc:
         logger.error(f"Non-fatal error during database migration check: {exc}", exc_info=True)
+
+def seed_scans_if_empty(db: Session):
+    """Auto-seeds essential historical scans (EncryptPlus, AuditMind, FinTech, demo_repo) if database is missing them."""
+    try:
+        import os
+        import gzip
+        import json
+        from datetime import datetime
+
+        def parse_dt(v):
+            if not v:
+                return None
+            try:
+                return datetime.fromisoformat(str(v).replace("Z", "+00:00"))
+            except Exception:
+                return None
+
+        pushkar_scan_count = db.query(models.Scan).filter(
+            (models.Scan.user_id == "usr_7213be1d3966") | (models.Scan.user_id == "dev_user")
+        ).count()
+        if pushkar_scan_count >= 4:
+            logger.info(f"Database already contains {pushkar_scan_count} scan(s); skipping seed.")
+            return
+
+        seed_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), "seed_scans.json.gz")
+        if not os.path.exists(seed_file):
+            logger.warning(f"Seed file not found at {seed_file}")
+            return
+
+        logger.info(f"Loading historical scans and assets from {seed_file}...")
+        with gzip.open(seed_file, "rt", encoding="utf-8") as f:
+            data = json.load(f)
+
+        for s_data in data.get("scans", []):
+            s_data["started_at"] = parse_dt(s_data.get("started_at"))
+            s_data["completed_at"] = parse_dt(s_data.get("completed_at"))
+            db.merge(models.Scan(**s_data))
+        db.commit()
+
+        for a_data in data.get("crypto_assets", []):
+            a_data["created_at"] = parse_dt(a_data.get("created_at"))
+            db.merge(models.CryptoAsset(**a_data))
+        db.commit()
+
+        for c_data in data.get("compliance_results", []):
+            db.merge(models.ComplianceResult(**c_data))
+        db.commit()
+
+        for r_data in data.get("recommendations", []):
+            db.merge(models.Recommendation(**r_data))
+        db.commit()
+
+        logger.info(f"Successfully auto-seeded {len(data.get('scans', []))} historical scans and assets into database.")
+    except Exception as e:
+        logger.warning(f"Note during scan seeding: {e}")
+        db.rollback()
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)

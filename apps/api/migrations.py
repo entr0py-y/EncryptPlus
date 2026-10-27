@@ -82,6 +82,19 @@ def run_migrations():
             db.add(admin_user)
             logger.info("Created default 'admin@encryptplus.com' account.")
 
+        # 4d. Pushkar Jha (pushkarjha880@gmail.com) - preserved with exact local password hash
+        user_pushkar = db.query(models.User).filter(models.User.email == "pushkarjha880@gmail.com").first()
+        if not user_pushkar:
+            user_pushkar = models.User(
+                id="usr_7213be1d3966",
+                email="pushkarjha880@gmail.com",
+                name="Pushkar Jha",
+                password_hash="$argon2id$v=19$m=65536,t=3,p=4$+JqrAjy5taAch2aO3Z2p3Q$+Nv4e4+oscGDOO8LYsVE6ftRkk/+7V405ya2hkN8Z3Y",
+                is_active=True
+            )
+            db.add(user_pushkar)
+            logger.info("Preserved 'pushkarjha880@gmail.com' account.")
+
         db.commit()
 
         # Ensure any pre-existing unowned scans are claimed by dev_user to preserve legacy data
